@@ -44,7 +44,13 @@ Use these as Tailwind classes: `bg-cream`, `text-sage`, `text-terracotta`, `text
 ## Conventions
 
 - Pages live in `src/pages/`, shared components in `src/components/`
+- All authenticated pages use `<Sidebar />` from `src/components/Sidebar.tsx`
+- Page layout: `<div className="min-h-screen flex bg-cream">` with `<Sidebar />` + `<main className="flex-1 h-screen overflow-y-auto bg-paper flex flex-col">`
+- Sticky toolbar: `sticky top-0 z-20 bg-white border-b border-border-soft px-6 lg:px-8 py-4`
+- Card shadow: `style={{ boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)' }}`
+- Slide-over panels: fixed right panel toggled with `translate-x-full` / `translate-x-0` + backdrop overlay
 - Notebook-style inputs: `border-0 border-b border-border-soft bg-transparent focus:outline-none focus:border-sage`
 - Auth pages (login, register): centered single-column layout, logo links to `/`
+- Range slider thumb color: `style={{ accentColor: '#7D8E7A' }}` (or terracotta hex as needed)
 - No comments in code unless the why is non-obvious
 - Remove unused imports — TypeScript strict mode will catch them

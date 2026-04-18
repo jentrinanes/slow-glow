@@ -28,16 +28,15 @@ slow-glow/
 ├── ux/                          # UX designs from UX Pilot
 │   ├── desktop/                 # Desktop screen designs (HTML)
 │   └── mobile/                  # Mobile screen designs (HTML)
+├── public/
+│   └── images/                  # Static assets (onboarding images)
 ├── src/
 │   ├── pages/                   # Page components
-│   │   ├── LandingPage.tsx
-│   │   ├── LoginPage.tsx
-│   │   └── RegisterPage.tsx
-│   ├── components/              # Shared components (coming soon)
+│   ├── components/              # Shared components
+│   │   └── Sidebar.tsx          # Global nav sidebar
 │   ├── App.tsx                  # Root component with routes
 │   ├── main.tsx
 │   └── index.css                # Global styles + Tailwind theme
-└── public/
 ```
 
 ## Pages
@@ -47,16 +46,16 @@ slow-glow/
 | `/` | Landing Page | Done |
 | `/login` | Login | Done |
 | `/register` | Registration | Done |
-| `/onboarding` | Onboarding (3 steps) | Planned |
-| `/dashboard` | Home Dashboard | Planned |
-| `/inventory` | Product Inventory | Planned |
-| `/routines` | Routine Scheduler | Planned |
-| `/actives` | Active Ingredient Tracker | Planned |
-| `/reactions` | Skin Reaction Log | Planned |
-| `/project-pan` | Project Pan Tracker | Planned |
-| `/milestones` | Milestones | Planned |
-| `/skin-analysis` | Skin Analysis Log | Planned |
-| `/settings` | Settings | Planned |
+| `/onboarding` | Onboarding (3 steps) | Done |
+| `/dashboard` | Home Dashboard | Done |
+| `/inventory` | Product Inventory | Done |
+| `/routines` | Routine Scheduler | Done |
+| `/actives` | Progression Tracker | Done |
+| `/reactions` | Skin Reaction Log | Done |
+| `/project-pan` | Project Pan Tracker | Done |
+| `/milestones` | Milestones | Done |
+| `/skin-analysis` | Skin Analysis Log | Done |
+| `/settings` | Settings | Done |
 
 ## Getting Started
 
