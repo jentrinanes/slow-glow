@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Routine Scheduler - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Drag and Drop Styles */
+        .draggable-item.dragging {
+            opacity: 0.5;
+            background-color: #F5F5F5;
+            border: 1px dashed #8DA290;
+        }
+        .drag-handle {
+            cursor: grab;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex m-0 p-0 overflow-hidden">
+
+    <!-- Global Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-brand-border h-screen flex flex-col shrink-0 hidden md:flex">
+        <div class="p-6 flex items-center gap-3 border-b border-brand-border">
+            <i class="fa-solid fa-leaf text-brand-sage text-xl"></i>
+            <span class="text-brand-charcoal font-bold text-lg tracking-tight">Slow Glow</span>
+        </div>
+        
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-border-all w-5 text-center"></i>
+                <span class="text-sm">Home Dashboard</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-box-open w-5 text-center"></i>
+                <span class="text-sm">Product Inventory</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand-sage/10 text-brand-charcoal font-medium transition-colors">
+                <i class="fa-regular fa-calendar w-5 text-center text-brand-sage"></i>
+                <span class="text-sm">Routine Scheduler</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                <span class="text-sm">Progression Tracker</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-book-medical w-5 text-center"></i>
+                <span class="text-sm">Reaction Log</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-bullseye w-5 text-center"></i>
+                <span class="text-sm">Project Pan</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-flag-checkered w-5 text-center"></i>
+                <span class="text-sm">Milestones</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-magnifying-glass-chart w-5 text-center"></i>
+                <span class="text-sm">Skin Analysis Log</span>
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-100">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                    <i class="fa-solid fa-gear w-5 text-center"></i>
+                    <span class="text-sm">Settings</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="p-4 border-t border-brand-border">
+            <div class="flex items-center gap-3">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
+                <div>
+                    <p class="text-sm font-medium text-brand-charcoal">Jane Doe</p>
+                    <p class="text-xs text-gray-500">Combination Skin</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-screen overflow-y-auto bg-brand-lightGray flex flex-col relative">
+        <!-- Top Toolbar -->
+        <div class="bg-white border-b border-brand-border px-6 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+            <div>
+                <h1 class="text-2xl font-bold text-brand-charcoal tracking-tight">Routine Scheduler</h1>
+                <p class="text-sm text-gray-500 mt-1">Design your daily and alternating regimens.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="px-4 py-2 border border-brand-border rounded-lg text-sm font-medium text-brand-charcoal bg-white hover:bg-gray-50 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 p-6 lg:p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
+            
+            <!-- Patience & Progress Header -->
+            <section id="patience-header" class="bg-white rounded-[16px] border border-brand-border p-6 shadow-card flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <h2 class="text-lg font-bold text-brand-charcoal flex items-center gap-2">
+                        <i class="fa-solid fa-seedling text-brand-sage"></i> Patience & Progress
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-2 max-w-md">Consistency is key. You've maintained your core hydration routine for 14 consecutive days. Skin barrier repair takes time.</p>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Current Streak</span>
+                        <span class="text-lg font-bold text-brand-charcoal">14 Days</span>
+                    </div>
+                    <!-- Minimalist Streak Tracker -->
+                    <div class="flex gap-1.5">
+                        <div class="w-8 h-1 rounded-full bg-brand-sage"></div>
+                        <div class="w-8 h-1 rounded-full bg-brand-sage"></div>
+                        <div class="w-8 h-1 rounded-full bg-brand-sage"></div>
+                        <div class="w-8 h-1 rounded-full bg-brand-sage"></div>
+                        <div class="w-8 h-1 rounded-full bg-brand-sage"></div>
+                        <div class="w-8 h-1 rounded-full bg-brand-border"></div>
+                        <div class="w-8 h-1 rounded-full bg-brand-border"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Split Pane: AM / PM -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- AM Routine -->
+                <section id="am-routine" class="flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-bold text-brand-charcoal flex items-center gap-2">
+                            <i class="fa-regular fa-sun text-brand-terracotta"></i> AM Routine
+                        </h3>
+                        <button class="text-sm font-medium text-brand-sage hover:text-brand-sage/80 transition-colors">
+                            + Add Step
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-[16px] border border-brand-terracotta/20 p-2 shadow-card min-h-[400px]">
+                        <ul class="space-y-2 p-2">
+                            <!-- Step 1 -->
+                            <li class="draggable-item flex items-center gap-4 p-3 rounded-[10px] bg-brand-lightGray border border-brand-border group">
+                                <div class="drag-handle text-gray-400 hover:text-brand-charcoal px-1">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-white border border-brand-border flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-droplet text-gray-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-brand-sage">Step 1</span>
+                                        <h4 class="text-sm font-semibold text-brand-charcoal">Gentle Cleanser</h4>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">CeraVe Hydrating Cleanser</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-brand-terracotta transition-all px-2">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 2 -->
+                            <li class="draggable-item flex items-center gap-4 p-3 rounded-[10px] bg-brand-lightGray border border-brand-border group">
+                                <div class="drag-handle text-gray-400 hover:text-brand-charcoal px-1">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-white border border-brand-border flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-spray-can text-gray-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-brand-sage">Step 2</span>
+                                        <h4 class="text-sm font-semibold text-brand-charcoal">Vitamin C Serum</h4>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">Timeless 20% Vitamin C + E</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-brand-terracotta transition-all px-2">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 3 -->
+                            <li class="draggable-item flex items-center gap-4 p-3 rounded-[10px] bg-brand-lightGray border border-brand-border group">
+                                <div class="drag-handle text-gray-400 hover:text-brand-charcoal px-1">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-white border border-brand-border flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-pump-soap text-gray-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-brand-sage">Step 3</span>
+                                        <h4 class="text-sm font-semibold text-brand-charcoal">Moisturizer</h4>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">Vanicream Daily Facial Moisturizer</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-brand-terracotta transition-all px-2">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 4 -->
+                            <li class="draggable-item flex items-center gap-4 p-3 rounded-[10px] bg-brand-lightGray border border-brand-border group">
+                                <div class="drag-handle text-gray-400 hover:text-brand-charcoal px-1">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-white border border-brand-border flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-shield-sun text-gray-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-brand-sage">Step 4</span>
+                                        <h4 class="text-sm font-semibold text-brand-charcoal">Sunscreen (SPF 50+)</h4>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">Beauty of Joseon Relief Sun</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-brand-terracotta transition-all px-2">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- PM Routine -->
+                <section id="pm-routine" class="flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-bold text-brand-charcoal flex items-center gap-2">
+                            <i class="fa-solid fa-moon text-gray-500"></i> PM Routine
+                        </h3>
+                        <button class="text-sm font-medium text-brand-sage hover:text-brand-sage/80 transition-colors">
+                            + Add Step
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-[16px] border border-brand-border p-2 shadow-card min-h-[400px]">
+                        
+                        <!-- Alternating Night Cadence Indicator -->
+                        <div class="px-4 py-3 mb-2 flex items-center justify-between border-b border-brand-border">
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tonight's Focus</span>
+                            <span class="px-3 py-1 bg-brand-sage/10 text-brand-sage rounded-full text-xs font-bold border border-brand-sage/20">
+                                Retinol Night (Mon/Thu)
+                            </span>
+                        </div>
+
+                        <ul class="space-y-2 p-2">
+                            <!-- Step 1 -->
+                            <li class="draggable-item flex items-center gap-4 p-3 rounded-[10px] bg-brand-lightGray border border-brand-border group">
+                                <div class="drag-handle text-gray-400 hover:text-brand-charcoal px-1">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-white border border-brand-border flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-bottle-droplet text-gray-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-gray-500">Step 1</span>
+                                        <h4 class="text-sm font-semibold text-brand-charcoal">Oil Cleanser</h4>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">Kose Softymo Speedy Cleansing Oil</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-brand-terracotta transition-all px-2">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 2 -->
+                            <li class="draggable-item flex items-center gap-4 p-3 rounded-[10px] bg-brand-lightGray border border-brand-border group">
+                                <div class="drag-handle text-gray-400 hover:text-brand-charcoal px-1">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-white border border-brand-border flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-droplet text-gray-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-gray-500">Step 2</span>
+                                        <h4 class="text-sm font-semibold text-brand-charcoal">Water-based Cleanser</h4>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">CeraVe Hydrating Cleanser</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-brand-terracotta transition-all px-2">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 3 (Active) -->
+                            <li class="draggable-item flex items-center gap-4 p-3 rounded-[10px] bg-brand-sage/5 border border-brand-sage/30 group">
+                                <div class="drag-handle text-gray-400 hover:text-brand-charcoal px-1">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-white border border-brand-sage/30 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-flask text-brand-sage text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-brand-sage">Step 3</span>
+                                        <h4 class="text-sm font-semibold text-brand-charcoal">Retinoid</h4>
+                                        <span class="text-[10px] font-bold px-1.5 py-0.5 bg-brand-sage/20 text-brand-sage rounded uppercase">Active</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">Tretinoin 0.025% Cream</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-brand-terracotta transition-all px-2">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 4 -->
+                            <li class="draggable-item flex items-center gap-4 p-3 rounded-[10px] bg-brand-lightGray border border-brand-border group">
+                                <div class="drag-handle text-gray-400 hover:text-brand-charcoal px-1">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-white border border-brand-border flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-pump-soap text-gray-400 text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-bold text-gray-500">Step 4</span>
+                                        <h4 class="text-sm font-semibold text-brand-charcoal">Heavy Moisturizer</h4>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-0.5">La Roche-Posay Cicaplast Baume B5</p>
+                                </div>
+                                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-brand-terracotta transition-all px-2">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Reaction Quick Links -->
+            <section id="reaction-quick-links" class="mt-4 border-t border-brand-border pt-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-brand-cream/50 rounded-[16px] border border-brand-border p-6">
+                    <div>
+                        <h3 class="text-sm font-bold text-brand-charcoal tracking-wide">Post-Routine Log</h3>
+                        <p class="text-xs text-gray-500 mt-1">Document any immediate reactions or sensitivities.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="px-4 py-2 bg-brand-sage/10 text-brand-charcoal rounded-lg text-sm font-medium hover:bg-brand-sage/20 transition-colors border border-brand-sage/20 flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-face-flushed text-brand-terracotta"></i> Log Redness
+                        </button>
+                        <button class="px-4 py-2 bg-brand-sage/10 text-brand-charcoal rounded-lg text-sm font-medium hover:bg-brand-sage/20 transition-colors border border-brand-sage/20 flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-fire text-brand-terracotta"></i> Log Irritation
+                        </button>
+                        <button class="px-4 py-2 bg-white text-brand-charcoal rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors border border-brand-border flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-check text-brand-sage"></i> Routine Clear
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Simple drag and drop visual feedback logic
+        const draggables = document.querySelectorAll('.draggable-item');
+        
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+    </script>
+</body>
+</html>

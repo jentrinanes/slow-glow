@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#7A9482',
+                            cream: '#F9F7F2',
+                            terracotta: '#D67D5C',
+                            dark: '#2C3E35',
+                            gray: '#E5E7EB',
+                            text: '#4B5563'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F9F7F2;
+            -webkit-font-smoothing: antialiased;
+        }
+        .input-notebook {
+            border: none;
+            border-bottom: 1px solid #E5E7EB;
+            border-radius: 0;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .input-notebook:focus {
+            outline: none;
+            border-bottom-color: #7A9482;
+            box-shadow: 0 1px 0 0 #7A9482;
+        }
+        .input-notebook.error {
+            border-bottom-color: #D67D5C;
+        }
+        .input-notebook.error:focus {
+            box-shadow: 0 1px 0 0 #D67D5C;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex text-brand-dark font-sans">
+
+    <!-- Split Screen Layout -->
+    <div id="auth-wrapper" class="flex w-full min-h-screen">
+        
+        <!-- Left Column: Form Area -->
+        <div id="form-section" class="w-full lg:w-[45%] flex flex-col justify-center px-8 sm:px-16 lg:px-24 xl:px-32 relative z-10 bg-brand-cream">
+            
+            <!-- Brand Header -->
+            <div id="brand-header" class="absolute top-8 left-8 sm:top-12 sm:left-16 lg:left-24 xl:left-32 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-brand-sage flex items-center justify-center text-white">
+                    <i class="fa-solid fa-leaf text-sm"></i>
+                </div>
+                <span class="font-serif font-medium text-xl tracking-wide text-brand-dark">Slow Glow</span>
+            </div>
+
+            <!-- Main Form Container -->
+            <div id="login-container" class="w-full max-w-[420px] mx-auto mt-20 lg:mt-0">
+                
+                <!-- Icon/Avatar Placeholder -->
+                <div class="w-12 h-12 rounded-xl bg-white shadow-soft border border-brand-gray/50 flex items-center justify-center mb-6">
+                    <i class="fa-regular fa-user text-brand-sage text-xl"></i>
+                </div>
+
+                <h1 class="text-3xl font-serif font-semibold text-brand-dark mb-2">Welcome back</h1>
+                <p class="text-brand-text text-sm mb-8">Please enter your details to access your routine.</p>
+
+                <form id="login-form" class="space-y-6" onsubmit="event.preventDefault();">
+                    
+                    <!-- Email Field -->
+                    <div class="space-y-2">
+                        <label for="email" class="block text-sm font-medium text-brand-dark">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            class="input-notebook w-full py-2.5 text-brand-dark placeholder:text-gray-400" 
+                            placeholder="Enter your email"
+                            value="sarah@example.com"
+                        >
+                    </div>
+
+                    <!-- Password Field with Error State -->
+                    <div class="space-y-2">
+                        <label for="password" class="block text-sm font-medium text-brand-dark">Password</label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                class="input-notebook error w-full py-2.5 text-brand-dark placeholder:text-gray-400 pr-10" 
+                                placeholder="••••••••"
+                                value="wrongpassword"
+                            >
+                            <button type="button" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-dark">
+                                <i class="fa-regular fa-eye-slash text-sm"></i>
+                            </button>
+                        </div>
+                        <p class="text-brand-terracotta text-xs mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                            Incorrect password. Please try again.
+                        </p>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="flex items-center">
+                            <input 
+                                id="remember-me" 
+                                type="checkbox" 
+                                class="h-4 w-4 rounded border-gray-300 text-brand-sage focus:ring-brand-sage accent-brand-sage"
+                            >
+                            <label for="remember-me" class="ml-2 block text-sm text-brand-text">
+                                Remember for 30 days
+                            </label>
+                        </div>
+
+                        <div class="text-sm">
+                            <a href="#" class="font-medium text-brand-sage hover:text-brand-dark transition-colors">
+                                Forgot password?
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Primary CTA -->
+                    <button 
+                        type="submit" 
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-[8px] shadow-sm text-sm font-medium text-white bg-brand-sage hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-sage transition-colors mt-4"
+                    >
+                        Sign In
+                    </button>
+
+                    <!-- OAuth -->
+                    <button 
+                        type="button" 
+                        class="w-full flex justify-center items-center gap-2 py-3 px-4 border border-brand-gray rounded-[8px] shadow-sm text-sm font-medium text-brand-dark bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-sage transition-colors"
+                    >
+                        <i class="fa-brands fa-google"></i>
+                        Sign in with Google
+                    </button>
+                </form>
+
+                <!-- Secondary Link -->
+                <p class="mt-8 text-center text-sm text-brand-text">
+                    Don't have an account? 
+                    <a href="#" class="font-medium text-brand-sage hover:text-brand-dark transition-colors">
+                        Sign up
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Column: Visual/Dashboard Preview -->
+        <div id="visual-section" class="hidden lg:flex lg:w-[55%] relative bg-gradient-to-br from-brand-sage/10 to-brand-cream items-center justify-center p-12 overflow-hidden">
+            
+            <!-- Decorative Background Elements -->
+            <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-sage/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-brand-terracotta/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
+
+            <!-- Mockup Container (Inner App Preview) -->
+            <div class="relative w-full max-w-[800px] h-[700px] glass-panel rounded-[24px] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden flex flex-col">
+                
+                <!-- Mockup Header -->
+                <div class="h-16 border-b border-brand-gray/50 flex items-center px-8 justify-between bg-white/50">
+                    <div class="flex items-center gap-6">
+                        <span class="font-serif font-medium text-lg">Routine Tracker</span>
+                        <div class="h-4 w-[1px] bg-brand-gray"></div>
+                        <span class="text-sm text-brand-text">Morning Protocol</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full overflow-hidden border border-brand-gray">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mockup Content -->
+                <div class="flex-1 p-8 grid grid-cols-12 gap-6 bg-[#FAFAFA]/50">
+                    <!-- Left Nav Area -->
+                    <div class="col-span-3 space-y-2">
+                        <div class="px-4 py-2 bg-brand-sage/10 text-brand-dark rounded-[8px] text-sm font-medium flex items-center gap-3">
+                            <i class="fa-solid fa-droplet text-brand-sage"></i> Active Serums
+                        </div>
+                        <div class="px-4 py-2 text-brand-text hover:bg-white rounded-[8px] text-sm font-medium flex items-center gap-3 transition-colors cursor-pointer">
+                            <i class="fa-solid fa-sun text-gray-400"></i> SPF Log
+                        </div>
+                        <div class="px-4 py-2 text-brand-text hover:bg-white rounded-[8px] text-sm font-medium flex items-center gap-3 transition-colors cursor-pointer">
+                            <i class="fa-solid fa-moon text-gray-400"></i> Night Repair
+                        </div>
+                    </div>
+
+                    <!-- Main Data Area -->
+                    <div class="col-span-9 space-y-6">
+                        <!-- KPI Cards -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="bg-white p-5 rounded-[12px] shadow-sm border border-brand-gray/30">
+                                <div class="text-sm text-brand-text mb-1">Consistency Score</div>
+                                <div class="text-2xl font-serif text-brand-dark">92%</div>
+                                <div class="text-xs text-brand-sage mt-2"><i class="fa-solid fa-arrow-up mr-1"></i>+4% this week</div>
+                            </div>
+                            <div class="bg-brand-sage p-5 rounded-[12px] shadow-sm text-white">
+                                <div class="text-sm text-white/80 mb-1">Current Focus</div>
+                                <div class="text-xl font-serif mt-1">Barrier Repair</div>
+                                <div class="text-xs text-white/80 mt-2">Week 3 of 6</div>
+                            </div>
+                            <div class="bg-white p-5 rounded-[12px] shadow-sm border border-brand-gray/30">
+                                <div class="text-sm text-brand-text mb-1">Products Used</div>
+                                <div class="text-2xl font-serif text-brand-dark">4</div>
+                                <div class="text-xs text-brand-text mt-2">Minimalist routine</div>
+                            </div>
+                        </div>
+
+                        <!-- Chart Area Placeholder -->
+                        <div class="bg-white rounded-[12px] shadow-sm border border-brand-gray/30 p-6 h-[280px] flex flex-col">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="font-medium text-brand-dark">Hydration Levels</h3>
+                                <div class="flex gap-2">
+                                    <span class="px-3 py-1 text-xs rounded-full bg-brand-gray/30 text-brand-dark">7 days</span>
+                                    <span class="px-3 py-1 text-xs rounded-full text-brand-text hover:bg-brand-gray/20 cursor-pointer transition-colors">30 days</span>
+                                </div>
+                            </div>
+                            
+                            <!-- SVG Chart Representation (Simulating reference style) -->
+                            <div class="flex-1 relative w-full mt-4">
+                                <!-- Grid lines -->
+                                <div class="absolute inset-0 flex flex-col justify-between">
+                                    <div class="border-t border-gray-100 w-full h-0"></div>
+                                    <div class="border-t border-gray-100 w-full h-0"></div>
+                                    <div class="border-t border-gray-100 w-full h-0"></div>
+                                    <div class="border-t border-gray-100 w-full h-0"></div>
+                                </div>
+                                
+                                <!-- Fake Line Chart -->
+                                <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+                                    <path d="M0,80 Q10,70 20,75 T40,60 T60,40 T80,30 T100,20 L100,100 L0,100 Z" fill="rgba(122, 148, 130, 0.1)" />
+                                    <path d="M0,80 Q10,70 20,75 T40,60 T60,40 T80,30 T100,20" fill="none" stroke="#7A9482" stroke-width="2" vector-effect="non-scaling-stroke" />
+                                    
+                                    <!-- Data Points -->
+                                    <circle cx="20" cy="75" r="3" fill="#fff" stroke="#7A9482" stroke-width="2" vector-effect="non-scaling-stroke" />
+                                    <circle cx="40" cy="60" r="3" fill="#fff" stroke="#7A9482" stroke-width="2" vector-effect="non-scaling-stroke" />
+                                    <circle cx="60" cy="40" r="3" fill="#fff" stroke="#7A9482" stroke-width="2" vector-effect="non-scaling-stroke" />
+                                    <circle cx="80" cy="30" r="3" fill="#fff" stroke="#7A9482" stroke-width="2" vector-effect="non-scaling-stroke" />
+                                </svg>
+                            </div>
+                            
+                            <!-- X Axis Labels -->
+                            <div class="flex justify-between text-[10px] text-gray-400 mt-2 px-2">
+                                <span>Mon</span>
+                                <span>Tue</span>
+                                <span>Wed</span>
+                                <span>Thu</span>
+                                <span>Fri</span>
+                                <span>Sat</span>
+                                <span>Sun</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

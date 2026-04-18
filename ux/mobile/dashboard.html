@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .routine-check input:checked + div {
+            background-color: #8DA290;
+            border-color: #8DA290;
+        }
+        .routine-check input:checked + div i {
+            opacity: 1;
+        }
+        .slide-over {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .slide-over.open {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body class="bg-brand-cream">
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="nav-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+    
+    <!-- Mobile Sidebar -->
+    <aside id="mobile-sidebar" class="fixed top-0 left-0 w-80 max-w-[85vw] h-full bg-white z-50 slide-over shadow-xl">
+        <div class="p-4 flex items-center justify-between border-b border-brand-border">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-leaf text-brand-sage text-xl"></i>
+                <span class="text-brand-charcoal font-bold text-lg tracking-tight">Slow Glow</span>
+            </div>
+            <button id="close-nav" class="w-8 h-8 flex items-center justify-center text-gray-500">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg bg-brand-sage/10 text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-border-all w-5 text-center text-brand-sage"></i>
+                <span class="text-sm">Home Dashboard</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-box-open w-5 text-center"></i>
+                <span class="text-sm">Product Inventory</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-regular fa-calendar w-5 text-center"></i>
+                <span class="text-sm">Routine Scheduler</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                <span class="text-sm">Progression Tracker</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-book-medical w-5 text-center"></i>
+                <span class="text-sm">Reaction Log</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-bullseye w-5 text-center"></i>
+                <span class="text-sm">Project Pan</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-flag-checkered w-5 text-center"></i>
+                <span class="text-sm">Milestones</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-magnifying-glass-chart w-5 text-center"></i>
+                <span class="text-sm">Skin Analysis Log</span>
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-100">
+                <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                    <i class="fa-solid fa-gear w-5 text-center"></i>
+                    <span class="text-sm">Settings</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="p-4 border-t border-brand-border">
+            <div class="flex items-center gap-3">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
+                <div>
+                    <p class="text-sm font-medium text-brand-charcoal">Jane Doe</p>
+                    <p class="text-xs text-gray-500">Combination Skin</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content" class="min-h-screen bg-brand-lightGray">
+        
+        <!-- Mobile Header -->
+        <header class="bg-white border-b border-brand-border p-4 sticky top-0 z-30">
+            <div class="flex items-center justify-between">
+                <button id="menu-btn" class="w-10 h-10 flex items-center justify-center text-brand-charcoal">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-leaf text-brand-sage text-lg"></i>
+                    <span class="text-brand-charcoal font-bold text-lg tracking-tight">Slow Glow</span>
+                </div>
+                
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="p-4 space-y-6">
+            
+            <!-- Title Section -->
+            <div class="text-center">
+                <h1 class="text-xl font-bold text-brand-charcoal tracking-tight">Today's Overview</h1>
+                <p class="text-sm text-gray-500 mt-1">Thursday, October 24th</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-brand-border">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-sage/10 flex items-center justify-center">
+                            <i class="fa-solid fa-fire text-brand-sage text-sm"></i>
+                        </div>
+                        <span class="text-xs text-gray-500 font-medium">Streak</span>
+                    </div>
+                    <p class="text-lg font-bold text-brand-charcoal">14 Days</p>
+                </div>
+                
+                <button class="bg-white rounded-xl p-4 shadow-sm border border-brand-terracotta/30 text-left">
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-terracotta/10 flex items-center justify-center">
+                            <i class="fa-solid fa-triangle-exclamation text-brand-terracotta text-sm"></i>
+                        </div>
+                        <span class="text-xs text-gray-500 font-medium">Barrier Load</span>
+                    </div>
+                    <p class="text-sm font-bold text-brand-terracotta">Moderate</p>
+                </button>
+            </div>
+
+            <!-- AM Routine -->
+            <div id="am-routine" class="bg-white rounded-xl shadow-card border border-brand-border p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-lg font-semibold text-brand-charcoal">AM Routine</h2>
+                        <p class="text-xs text-gray-500">Focus: Protection & Hydration</p>
+                    </div>
+                    <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">3 Steps</span>
+                </div>
+                
+                <div class="space-y-3">
+                    <label class="routine-check flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer group">
+                        <input type="checkbox" class="sr-only">
+                        <div class="w-5 h-5 rounded-md border-2 border-gray-300 mt-0.5 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-brand-charcoal group-hover:text-brand-sage transition-colors">Gentle Cleanser</p>
+                            <p class="text-xs text-gray-500 mt-0.5">Oat So Simple Water Cream</p>
+                        </div>
+                    </label>
+                    
+                    <label class="routine-check flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer group">
+                        <input type="checkbox" class="sr-only">
+                        <div class="w-5 h-5 rounded-md border-2 border-gray-300 mt-0.5 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <p class="text-sm font-medium text-brand-charcoal group-hover:text-brand-sage transition-colors">Vitamin C Serum</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Mad Hippie (10% SAP)</p>
+                                </div>
+                                <span class="px-2 py-0.5 bg-brand-sage/10 text-brand-sage rounded text-[10px] font-medium shrink-0">Active</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="routine-check flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer group">
+                        <input type="checkbox" class="sr-only">
+                        <div class="w-5 h-5 rounded-md border-2 border-gray-300 mt-0.5 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-brand-charcoal group-hover:text-brand-sage transition-colors">Sunscreen SPF 50</p>
+                            <p class="text-xs text-gray-500 mt-0.5">Beauty of Joseon Relief Sun</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- PM Routine -->
+            <div id="pm-routine" class="bg-white rounded-xl shadow-card border border-brand-border p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-lg font-semibold text-brand-charcoal">PM Routine</h2>
+                        <p class="text-xs text-gray-500">Focus: Repair & Renewal</p>
+                    </div>
+                    <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-medium">4 Steps</span>
+                </div>
+                
+                <div class="space-y-3">
+                    <label class="routine-check flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer group">
+                        <input type="checkbox" class="sr-only">
+                        <div class="w-5 h-5 rounded-md border-2 border-gray-300 mt-0.5 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-brand-charcoal group-hover:text-brand-sage transition-colors">Cleansing Balm</p>
+                            <p class="text-xs text-gray-500 mt-0.5">Heimish All Clean Balm</p>
+                        </div>
+                    </label>
+                    
+                    <label class="routine-check flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer group">
+                        <input type="checkbox" class="sr-only">
+                        <div class="w-5 h-5 rounded-md border-2 border-gray-300 mt-0.5 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-brand-charcoal group-hover:text-brand-sage transition-colors">Water-based Cleanser</p>
+                            <p class="text-xs text-gray-500 mt-0.5">Krave Matcha Hemp</p>
+                        </div>
+                    </label>
+
+                    <label class="routine-check flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer group">
+                        <input type="checkbox" class="sr-only">
+                        <div class="w-5 h-5 rounded-md border-2 border-gray-300 mt-0.5 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <p class="text-sm font-medium text-brand-charcoal group-hover:text-brand-sage transition-colors">Retinoid</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">Differin Gel (0.1% Adapalene)</p>
+                                </div>
+                                <span class="px-2 py-0.5 bg-brand-terracotta/10 text-brand-terracotta rounded text-[10px] font-medium shrink-0">Strong Active</span>
+                            </div>
+                        </div>
+                    </label>
+                    
+                    <label class="routine-check flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer group">
+                        <input type="checkbox" class="sr-only">
+                        <div class="w-5 h-5 rounded-md border-2 border-gray-300 mt-0.5 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-check text-white text-xs opacity-0 transition-opacity"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-brand-charcoal group-hover:text-brand-sage transition-colors">Barrier Cream</p>
+                            <p class="text-xs text-gray-500 mt-0.5">Illiyoon Ceramide Ato</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Tolerance Progression Chart -->
+            <div id="progression-section" class="bg-white rounded-xl shadow-card border border-brand-border p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-lg font-semibold text-brand-charcoal">Tolerance Progression</h2>
+                        <p class="text-xs text-gray-500">Adapalene 0.1% Introduction</p>
+                    </div>
+                    <button class="w-8 h-8 rounded-full hover:bg-gray-50 flex items-center justify-center text-gray-400 transition-colors">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                    </button>
+                </div>
+                
+                <div class="h-48 w-full">
+                    <div id="progression-chart" class="w-full h-full"></div>
+                </div>
+            </div>
+
+            <!-- Expiry Alerts -->
+            <div id="expiry-section" class="bg-white rounded-xl shadow-card border border-brand-border p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-brand-charcoal">Expiry Watchlist</h2>
+                    <a href="#" class="text-sm text-brand-sage hover:underline font-medium">View All</a>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="p-4 rounded-xl border border-brand-terracotta/20 bg-[#FDFBF7]">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-8 h-8 rounded-full bg-brand-terracotta/10 flex items-center justify-center">
+                                <i class="fa-solid fa-hourglass-half text-brand-terracotta text-sm"></i>
+                            </div>
+                            <span class="text-xs font-semibold text-brand-terracotta bg-brand-terracotta/10 px-2 py-1 rounded">14 Days left</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-brand-charcoal">Vitamin C Serum</p>
+                            <p class="text-xs text-gray-500 mt-0.5">PAO: 3 Months</p>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 rounded-xl border border-gray-200 bg-white">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                                <i class="fa-regular fa-clock text-gray-500 text-sm"></i>
+                            </div>
+                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">2 Months</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-brand-charcoal">BHA Liquid Exfoliant</p>
+                            <p class="text-xs text-gray-500 mt-0.5">PAO: 12 Months</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Reactions -->
+            <div id="reactions-section" class="bg-white rounded-xl shadow-card border border-brand-border p-5">
+                <div class="flex justify-between items-center mb-5">
+                    <h2 class="text-lg font-semibold text-brand-charcoal">Recent Reactions</h2>
+                    <button class="text-sm font-medium text-brand-sage">Add Log</button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-sage text-white flex items-center justify-center shrink-0 shadow-sm">
+                            <i class="fa-solid fa-face-smile text-xs"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-semibold text-brand-sage">Clear</span>
+                                <span class="text-xs text-gray-400">Oct 22</span>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed">No stinging after retinoid application. Barrier feels intact.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-terracotta/80 text-white flex items-center justify-center shrink-0 shadow-sm">
+                            <i class="fa-solid fa-face-frown text-xs"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-semibold text-brand-terracotta">Mild Redness</span>
+                                <span class="text-xs text-gray-400">Oct 19</span>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed">Slight flush on cheeks after Vitamin C. Skipping tomorrow.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Mobile Navigation
+        const menuBtn = document.getElementById('menu-btn');
+        const closeNav = document.getElementById('close-nav');
+        const sidebar = document.getElementById('mobile-sidebar');
+        const overlay = document.getElementById('nav-overlay');
+
+        function openNav() {
+            sidebar.classList.add('open');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNavigation() {
+            sidebar.classList.remove('open');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        menuBtn.addEventListener('click', openNav);
+        closeNav.addEventListener('click', closeNavigation);
+        overlay.addEventListener('click', closeNavigation);
+
+        // Initialize Chart
+        function initializeCharts() {
+            try {
+                const chartData = [{
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    x: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6'],
+                    y: [1, 1, 2, 2, 3, 3],
+                    name: 'Usage Frequency',
+                    line: {
+                        color: '#8DA290',
+                        width: 3,
+                        shape: 'spline',
+                        smoothing: 0.8
+                    },
+                    marker: {
+                        size: 8,
+                        color: '#FDFBF7',
+                        line: { color: '#8DA290', width: 2 }
+                    }
+                }];
+
+                const layout = {
+                    margin: { t: 10, r: 10, b: 30, l: 30 },
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    xaxis: {
+                        showgrid: false,
+                        color: '#9CA3AF',
+                        tickfont: { size: 10, family: 'Inter' }
+                    },
+                    yaxis: {
+                        showgrid: true,
+                        gridcolor: 'rgba(229, 231, 235, 0.5)',
+                        color: '#9CA3AF',
+                        tickfont: { size: 10, family: 'Inter' },
+                        dtick: 1,
+                        range: [0, 4]
+                    },
+                    showlegend: false,
+                    hovermode: 'closest'
+                };
+
+                const config = {
+                    responsive: true,
+                    displayModeBar: false,
+                    displaylogo: false
+                };
+
+                Plotly.newPlot('progression-chart', chartData, layout, config);
+            } catch (error) {
+                console.error("Chart initialization failed", error);
+            }
+        }
+
+        window.addEventListener('load', initializeCharts);
+        setTimeout(initializeCharts, 1200);
+    </script>
+
+</body>
+</html>

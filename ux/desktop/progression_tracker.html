@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progression Tracker - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex m-0 p-0 overflow-hidden">
+
+    <!-- Global Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-brand-border h-screen flex flex-col shrink-0 hidden md:flex">
+        <div class="p-6 flex items-center gap-3 border-b border-brand-border">
+            <i class="fa-solid fa-leaf text-brand-sage text-xl"></i>
+            <span class="text-brand-charcoal font-bold text-lg tracking-tight">Slow Glow</span>
+        </div>
+        
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-border-all w-5 text-center"></i>
+                <span class="text-sm">Home Dashboard</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-box-open w-5 text-center"></i>
+                <span class="text-sm">Product Inventory</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-regular fa-calendar w-5 text-center"></i>
+                <span class="text-sm">Routine Scheduler</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand-sage/10 text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-chart-line w-5 text-center text-brand-sage"></i>
+                <span class="text-sm">Progression Tracker</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-book-medical w-5 text-center"></i>
+                <span class="text-sm">Reaction Log</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-bullseye w-5 text-center"></i>
+                <span class="text-sm">Project Pan</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-flag-checkered w-5 text-center"></i>
+                <span class="text-sm">Milestones</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-magnifying-glass-chart w-5 text-center"></i>
+                <span class="text-sm">Skin Analysis Log</span>
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-100">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                    <i class="fa-solid fa-gear w-5 text-center"></i>
+                    <span class="text-sm">Settings</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="p-4 border-t border-brand-border">
+            <div class="flex items-center gap-3">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
+                <div>
+                    <p class="text-sm font-medium text-brand-charcoal">Jane Doe</p>
+                    <p class="text-xs text-gray-500">Combination Skin</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-screen overflow-y-auto bg-brand-lightGray flex flex-col relative">
+        <!-- Top Toolbar -->
+        <div class="bg-white border-b border-brand-border px-6 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+            <div>
+                <h1 class="text-2xl font-bold text-brand-charcoal tracking-tight">Progression Tracker</h1>
+                <p class="text-sm text-gray-500 mt-1">Monitor active ingredient introduction and body zone tolerance.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="px-4 py-2 border border-brand-border rounded-lg text-sm font-medium text-brand-charcoal bg-white hover:bg-gray-50 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Track New Active
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 p-6 lg:p-8 flex flex-col gap-8 max-w-7xl mx-auto w-full">
+            
+            <!-- Active Selection Tabs -->
+            <div class="flex gap-2 border-b border-brand-border pb-px overflow-x-auto">
+                <button class="px-4 py-2 text-sm font-bold text-brand-sage border-b-2 border-brand-sage whitespace-nowrap">
+                    Retinoids
+                </button>
+                <button class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-brand-charcoal whitespace-nowrap">
+                    Vitamin C
+                </button>
+                <button class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-brand-charcoal whitespace-nowrap">
+                    AHA/BHA
+                </button>
+            </div>
+
+            <!-- Overload Alert -->
+            <section id="overload-alert" class="bg-brand-cream border border-brand-terracotta/30 rounded-[16px] p-4 flex items-start gap-4 shadow-sm">
+                <div class="w-10 h-10 rounded-full bg-brand-terracotta/10 flex items-center justify-center shrink-0 mt-1">
+                    <i class="fa-solid fa-triangle-exclamation text-brand-terracotta"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-sm font-bold text-brand-charcoal">Potential Overload Detected</h3>
+                    <p class="text-xs text-gray-600 mt-1">You've logged AHA/BHA usage on the same night as Retinoids. This increases the risk of barrier damage.</p>
+                    <a href="#" class="text-xs font-bold text-brand-terracotta mt-2 inline-block hover:underline">View Conflict Details &rarr;</a>
+                </div>
+            </section>
+
+            <!-- Patience Meter & Stats -->
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Patience Meter -->
+                <div class="col-span-1 md:col-span-2 bg-white rounded-[16px] border border-brand-border p-6 shadow-card flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Patience Meter</h2>
+                        <div class="flex items-end gap-3">
+                            <span class="text-3xl font-bold text-brand-charcoal">Level 4</span>
+                            <span class="text-sm text-brand-sage font-medium mb-1">Steady Progress</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">You are successfully maintaining a slow introduction rate. No rapid increases detected.</p>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <div class="flex justify-between text-xs text-gray-500 mb-2">
+                            <span>Start (0.025%)</span>
+                            <span>Goal (0.05% Daily)</span>
+                        </div>
+                        <div class="w-full h-3 bg-brand-lightGray rounded-full overflow-hidden">
+                            <div class="h-full bg-brand-sage w-[45%] rounded-full relative">
+                                <div class="absolute right-0 top-0 bottom-0 w-1 bg-white/50"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-gray-400 mt-1">
+                            <span>Week 1</span>
+                            <span>Week 12+</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Frequency Stats -->
+                <div class="bg-white rounded-[16px] border border-brand-border p-6 shadow-card flex flex-col justify-center gap-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Current Frequency</p>
+                            <p class="text-2xl font-bold text-brand-charcoal mt-1">2x / Week</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-brand-sage/10 flex items-center justify-center">
+                            <i class="fa-regular fa-calendar-check text-brand-sage"></i>
+                        </div>
+                    </div>
+                    <div class="h-px bg-brand-border w-full"></div>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Next Milestone</p>
+                            <p class="text-sm font-bold text-brand-charcoal mt-1">3x / Week in 14 days</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Timeline Chart -->
+            <section class="bg-white rounded-[16px] border border-brand-border p-6 shadow-card">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-bold text-brand-charcoal">Introduction Timeline</h2>
+                    <select class="bg-brand-lightGray border-none text-sm text-brand-charcoal rounded-lg px-3 py-1.5 outline-none">
+                        <option>Last 3 Months</option>
+                        <option>Last 6 Months</option>
+                        <option>All Time</option>
+                    </select>
+                </div>
+                <div id="timeline-chart" class="h-[300px] w-full"></div>
+            </section>
+
+            <!-- Body Zone Tracking Table -->
+            <section class="bg-white rounded-[16px] border border-brand-border shadow-card overflow-hidden">
+                <div class="p-6 border-b border-brand-border flex items-center justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-brand-charcoal">Body Zone Tracking</h2>
+                        <p class="text-xs text-gray-500 mt-1">Monitor tolerance across different areas.</p>
+                    </div>
+                    <button class="text-sm text-brand-sage font-medium hover:underline">Edit Zones</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-brand-lightGray border-b border-brand-border">
+                                <th class="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Zone</th>
+                                <th class="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Current Product</th>
+                                <th class="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Frequency</th>
+                                <th class="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Tolerance Level</th>
+                                <th class="p-4 text-xs font-bold text-gray-500 uppercase tracking-wider">Last Reaction</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-brand-border">
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="p-4 font-medium text-brand-charcoal">Face (Cheeks/Forehead)</td>
+                                <td class="p-4 text-gray-600">Tretinoin 0.025% Cream</td>
+                                <td class="p-4 text-gray-600">2x/week</td>
+                                <td class="p-4">
+                                    <span class="px-2 py-1 bg-brand-sage/10 text-brand-sage rounded text-xs font-bold">Good</span>
+                                </td>
+                                <td class="p-4 text-gray-500 text-xs">None in 3 weeks</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="p-4 font-medium text-brand-charcoal">Neck</td>
+                                <td class="p-4 text-gray-600">Retinol 0.3% Serum</td>
+                                <td class="p-4 text-gray-600">1x/week</td>
+                                <td class="p-4">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">Sensitive</span>
+                                </td>
+                                <td class="p-4 text-gray-500 text-xs">Mild redness (2 days ago)</td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="p-4 font-medium text-brand-charcoal">Chest / Decolletage</td>
+                                <td class="p-4 text-gray-600">Retinol 0.3% Serum</td>
+                                <td class="p-4 text-gray-600">2x/week</td>
+                                <td class="p-4">
+                                    <span class="px-2 py-1 bg-brand-sage/10 text-brand-sage rounded text-xs font-bold">Good</span>
+                                </td>
+                                <td class="p-4 text-gray-500 text-xs">None recorded</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Safety Notes & Reminders -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-brand-cream border border-brand-border rounded-[16px] p-6 shadow-sm">
+                    <h3 class="text-sm font-bold text-brand-charcoal flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-shield-halved text-brand-sage"></i> Safety Rules of Thumb
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-brand-sage mt-1 text-xs"></i>
+                            <span>Always apply to completely dry skin to minimize irritation.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-brand-sage mt-1 text-xs"></i>
+                            <span>Use the "sandwich method" (moisturizer, active, moisturizer) if experiencing dryness.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-brand-sage mt-1 text-xs"></i>
+                            <span>Daily sunscreen is non-negotiable while using retinoids.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border border-brand-border rounded-[16px] p-6 shadow-sm">
+                    <h3 class="text-sm font-bold text-brand-charcoal flex items-center gap-2 mb-4">
+                        <i class="fa-regular fa-bell text-gray-500"></i> Application Reminders
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-brand-charcoal">Tonight's Application</p>
+                                <p class="text-xs text-gray-500">Scheduled for PM Routine</p>
+                            </div>
+                            <div class="w-10 h-6 bg-brand-sage rounded-full relative cursor-pointer">
+                                <div class="w-4 h-4 bg-white rounded-full absolute right-1 top-1"></div>
+                            </div>
+                        </div>
+                        <div class="h-px bg-brand-border w-full"></div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-brand-charcoal">Milestone Check-in</p>
+                                <p class="text-xs text-gray-500">Remind me to evaluate tolerance</p>
+                            </div>
+                            <div class="w-10 h-6 bg-brand-sage rounded-full relative cursor-pointer">
+                                <div class="w-4 h-4 bg-white rounded-full absolute right-1 top-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // Initialize Plotly Chart
+        window.addEventListener('load', function() {
+            try {
+                const trace1 = {
+                    x: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+                    y: [1, 1, 2, 2, 2, 3, 3, 3], // Frequency per week
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Applications/Week',
+                    line: {
+                        color: '#8DA290', // brand-sage
+                        width: 3,
+                        shape: 'spline',
+                        smoothing: 1.3
+                    },
+                    marker: {
+                        size: 8,
+                        color: '#8DA290'
+                    },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(141, 162, 144, 0.1)'
+                };
+
+                const layout = {
+                    margin: { t: 20, r: 20, b: 40, l: 40 },
+                    plot_bgcolor: 'transparent',
+                    paper_bgcolor: 'transparent',
+                    xaxis: {
+                        showgrid: false,
+                        color: '#6B7280',
+                        tickfont: { size: 12 }
+                    },
+                    yaxis: {
+                        showgrid: true,
+                        gridcolor: '#E5E7EB', // brand-border
+                        color: '#6B7280',
+                        tickfont: { size: 12 },
+                        dtick: 1,
+                        range: [0, 5]
+                    },
+                    showlegend: false,
+                    hovermode: 'x unified'
+                };
+
+                const config = {
+                    responsive: true,
+                    displayModeBar: false,
+                    displaylogo: false
+                };
+
+                Plotly.newPlot('timeline-chart', [trace1], layout, config);
+            } catch(e) {
+                console.error('Error rendering chart:', e);
+            }
+        });
+    </script>
+</body>
+</html>

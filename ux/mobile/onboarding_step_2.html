@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slow Glow - Step 2: Concerns & Experience</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Custom chip styles */
+        .concern-chip input:checked + div {
+            background-color: #8DA290;
+            border-color: #8DA290;
+            color: white;
+        }
+        
+        /* Experience mode radio styles */
+        .experience-mode input:checked + div {
+            border-color: #C68B77;
+            background-color: rgba(198, 139, 119, 0.05);
+        }
+        .experience-mode input:checked + div .check-circle {
+            background-color: #C68B77;
+            border-color: #C68B77;
+        }
+        .experience-mode input:checked + div .check-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+        }
+    </style>
+</head>
+<body class="min-h-[100dvh] flex flex-col m-0 p-0 w-full max-w-[430px] mx-auto bg-brand-cream relative">
+
+    <!-- Top Navigation Area / Progress -->
+    <header class="w-full bg-white px-5 pt-6 pb-4 border-b border-brand-border sticky top-0 z-50">
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center gap-2 text-brand-charcoal font-semibold">
+                <i class="fa-solid fa-leaf text-brand-sage"></i>
+                <span class="text-sm">Slow Glow</span>
+            </div>
+            <button class="text-xs font-medium text-gray-500 hover:text-brand-charcoal transition-colors p-2 -mr-2">
+                Save & Exit
+            </button>
+        </div>
+
+        <!-- Mobile Progress Bar -->
+        <div class="w-full">
+            <div class="flex justify-between text-xs font-medium mb-2">
+                <span class="text-gray-500">Step 2 of 3</span>
+                <span class="text-brand-charcoal">Concerns & Experience</span>
+            </div>
+            <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-blue rounded-full w-[66%] transition-all duration-300"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full px-5 py-6 flex flex-col gap-8 pb-32">
+        
+        <!-- Header Text -->
+        <div>
+            <h1 class="text-2xl font-bold text-brand-charcoal mb-2 tracking-tight">Focus areas & experience.</h1>
+            <p class="text-gray-600 text-sm leading-relaxed">Select your primary concerns to help us tailor your tracking. You can always adjust these later.</p>
+        </div>
+
+        <form class="space-y-8 flex-1 flex flex-col">
+            
+            <!-- Skin Concerns Multi-Select -->
+            <div id="concern-selection" class="flex flex-col gap-3">
+                <label class="text-sm font-medium text-brand-charcoal flex justify-between items-center mb-1">
+                    <span>Primary Concerns <span class="text-gray-400 font-normal ml-1">(Select up to 3)</span></span>
+                </label>
+                
+                <div class="flex flex-wrap gap-2.5">
+                    <label class="concern-chip cursor-pointer">
+                        <input type="checkbox" class="sr-only" value="acne">
+                        <div class="px-4 py-2.5 rounded-full border border-gray-200 text-sm font-medium text-gray-700 transition-all flex items-center gap-2 min-h-[44px]">
+                            <i class="fa-solid fa-droplet text-xs opacity-70"></i> Acne
+                        </div>
+                    </label>
+                    
+                    <label class="concern-chip cursor-pointer">
+                        <input type="checkbox" class="sr-only" value="hyperpigmentation" checked>
+                        <div class="px-4 py-2.5 rounded-full border border-gray-200 text-sm font-medium text-gray-700 transition-all flex items-center gap-2 min-h-[44px]">
+                            <i class="fa-solid fa-sun text-xs opacity-70"></i> Pigmentation
+                        </div>
+                    </label>
+                    
+                    <label class="concern-chip cursor-pointer">
+                        <input type="checkbox" class="sr-only" value="sensitivity" checked>
+                        <div class="px-4 py-2.5 rounded-full border border-gray-200 text-sm font-medium text-gray-700 transition-all flex items-center gap-2 min-h-[44px]">
+                            <i class="fa-solid fa-feather text-xs opacity-70"></i> Sensitivity
+                        </div>
+                    </label>
+                    
+                    <label class="concern-chip cursor-pointer">
+                        <input type="checkbox" class="sr-only" value="aging">
+                        <div class="px-4 py-2.5 rounded-full border border-gray-200 text-sm font-medium text-gray-700 transition-all flex items-center gap-2 min-h-[44px]">
+                            <i class="fa-solid fa-clock-rotate-left text-xs opacity-70"></i> Fine Lines
+                        </div>
+                    </label>
+                    
+                    <label class="concern-chip cursor-pointer">
+                        <input type="checkbox" class="sr-only" value="texture">
+                        <div class="px-4 py-2.5 rounded-full border border-gray-200 text-sm font-medium text-gray-700 transition-all flex items-center gap-2 min-h-[44px]">
+                            <i class="fa-solid fa-layer-group text-xs opacity-70"></i> Texture
+                        </div>
+                    </label>
+                    
+                    <label class="concern-chip cursor-pointer">
+                        <input type="checkbox" class="sr-only" value="dryness">
+                        <div class="px-4 py-2.5 rounded-full border border-gray-200 text-sm font-medium text-gray-700 transition-all flex items-center gap-2 min-h-[44px]">
+                            <i class="fa-solid fa-water text-xs opacity-70"></i> Dryness
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Optional Notes -->
+            <div class="flex flex-col gap-2">
+                <label for="concernNotes" class="text-sm font-medium text-brand-charcoal flex justify-between">
+                    <span>Context Notes <span class="text-gray-400 font-normal ml-1">(Optional)</span></span>
+                </label>
+                <textarea id="concernNotes" rows="3" placeholder="e.g. Diagnosed with rosacea..." class="w-full px-4 py-3 rounded-[12px] border border-gray-200 focus:border-brand-blue focus:ring-1 focus:ring-brand-blue outline-none transition-all shadow-input text-brand-charcoal placeholder-gray-400 resize-none text-sm"></textarea>
+            </div>
+
+            <!-- Experience Level Preview -->
+            <div id="experience-preview" class="flex flex-col gap-4 pt-6 border-t border-brand-border/50">
+                <div class="mb-2">
+                    <label class="text-sm font-medium text-brand-charcoal block mb-1">How do you prefer to track?</label>
+                    <p class="text-xs text-gray-500">This sets your default dashboard view.</p>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <!-- Guided Mode -->
+                    <label class="experience-mode cursor-pointer relative block w-full">
+                        <input type="radio" name="experienceMode" class="sr-only" value="guided" checked>
+                        <div class="w-full p-4 rounded-[16px] border border-gray-200 transition-all relative bg-white min-h-[44px]">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-[#F5F5F5] flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-compass text-gray-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <h4 class="font-semibold text-brand-charcoal text-sm">Guided Routine</h4>
+                                        <div class="w-5 h-5 rounded-full border-2 border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 leading-relaxed pr-2">Simple tracking by product type (cleanser, serum, moisturizer).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Ingredient Nerd Mode -->
+                    <label class="experience-mode cursor-pointer relative block w-full">
+                        <input type="radio" name="experienceMode" class="sr-only" value="nerd">
+                        <div class="w-full p-4 rounded-[16px] border border-gray-200 transition-all relative bg-white min-h-[44px]">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full bg-[#F5F5F5] flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-flask text-gray-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <h4 class="font-semibold text-brand-charcoal text-sm">Ingredient Nerd</h4>
+                                        <div class="w-5 h-5 rounded-full border-2 border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 leading-relaxed pr-2">Track specific actives, monitor conflicts, and log concentrations.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <!-- Fixed Bottom Action Bar -->
+    <div class="fixed bottom-0 left-0 right-0 w-full max-w-[430px] mx-auto bg-white/90 backdrop-blur-md border-t border-gray-100 p-5 pb-8 z-50">
+        <div class="flex items-center gap-3">
+            <button type="button" class="px-5 py-3.5 text-sm font-medium text-brand-charcoal bg-white rounded-[12px] transition-colors border border-gray-200 min-w-[44px] min-h-[44px] flex items-center justify-center">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <button type="button" class="flex-1 py-3.5 bg-brand-blue hover:bg-blue-600 text-white text-sm font-semibold rounded-[12px] transition-colors shadow-sm flex items-center justify-center min-h-[44px]">
+                Next Step
+            </button>
+        </div>
+        <div class="text-center mt-3">
+            <button type="button" class="text-xs font-medium text-gray-500 hover:text-brand-charcoal p-2">
+                Skip for now
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>

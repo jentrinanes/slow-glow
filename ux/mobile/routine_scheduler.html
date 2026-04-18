@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Routine Scheduler - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        'nav': '0 -4px 20px rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Drag and Drop Styles */
+        .draggable-item.dragging {
+            opacity: 0.5;
+            background-color: #F5F5F5;
+            border: 1px dashed #8DA290;
+        }
+        .drag-handle {
+            cursor: grab;
+            touch-action: none;
+        }
+        .drag-handle:active {
+            cursor: grabbing;
+        }
+        
+        /* Hide PM content by default in mobile tab view */
+        #pm-content { display: none; }
+    </style>
+</head>
+<body class="m-0 p-0 flex justify-center bg-gray-100">
+
+    <!-- Mobile Viewport Container -->
+    <div class="w-full max-w-[430px] h-[100dvh] bg-brand-lightGray flex flex-col relative overflow-hidden shadow-2xl mx-auto">
+        
+        <!-- Top Header -->
+        <header id="mobile-header" class="bg-white border-b border-brand-border px-4 py-3 flex items-center justify-between shrink-0 z-20 sticky top-0">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-full bg-brand-sage/10 flex items-center justify-center">
+                    <i class="fa-solid fa-leaf text-brand-sage text-lg"></i>
+                </div>
+                <span class="text-brand-charcoal font-bold tracking-tight">Slow Glow</span>
+            </div>
+            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-9 h-9 rounded-full border border-gray-200 object-cover">
+        </header>
+
+        <!-- Main Scrollable Content -->
+        <main class="flex-1 overflow-y-auto pb-24">
+            
+            <!-- Page Title & Actions -->
+            <div class="px-4 py-5 flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-brand-charcoal tracking-tight">Scheduler</h1>
+                </div>
+                <button class="w-10 h-10 rounded-full bg-white border border-brand-border text-brand-charcoal flex items-center justify-center shadow-sm active:bg-gray-50 transition-colors">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </button>
+            </div>
+
+            <div class="px-4 flex flex-col gap-6">
+                
+                <!-- Patience & Progress Card -->
+                <section id="patience-header" class="bg-white rounded-[20px] border border-brand-border p-5 shadow-card">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-base font-bold text-brand-charcoal flex items-center gap-2">
+                            <i class="fa-solid fa-seedling text-brand-sage"></i> Progress
+                        </h2>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Streak</span>
+                            <span class="text-base font-bold text-brand-charcoal">14 Days</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">Consistency is key. You've maintained your core hydration routine. Barrier repair takes time.</p>
+                    
+                    <!-- Mobile Streak Tracker -->
+                    <div class="flex justify-between gap-1.5">
+                        <div class="flex-1 h-1.5 rounded-full bg-brand-sage"></div>
+                        <div class="flex-1 h-1.5 rounded-full bg-brand-sage"></div>
+                        <div class="flex-1 h-1.5 rounded-full bg-brand-sage"></div>
+                        <div class="flex-1 h-1.5 rounded-full bg-brand-sage"></div>
+                        <div class="flex-1 h-1.5 rounded-full bg-brand-sage"></div>
+                        <div class="flex-1 h-1.5 rounded-full bg-brand-border"></div>
+                        <div class="flex-1 h-1.5 rounded-full bg-brand-border"></div>
+                    </div>
+                </section>
+
+                <!-- Routine Section with Tabs -->
+                <section id="routine-section" class="flex flex-col gap-4">
+                    
+                    <!-- Segmented Control (Tabs) -->
+                    <div class="bg-white p-1 rounded-xl border border-brand-border flex shadow-sm">
+                        <button onclick="switchTab('am')" id="tab-am" class="flex-1 py-2.5 rounded-lg bg-brand-sage/10 text-brand-sage font-semibold text-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fa-regular fa-sun"></i> AM Routine
+                        </button>
+                        <button onclick="switchTab('pm')" id="tab-pm" class="flex-1 py-2.5 rounded-lg text-gray-500 font-medium text-sm transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-moon"></i> PM Routine
+                        </button>
+                    </div>
+                    
+                    <!-- AM Content -->
+                    <div id="am-content" class="bg-white rounded-[20px] border border-brand-terracotta/20 p-2.5 shadow-card">
+                        <div class="px-2 py-2 mb-1 flex items-center justify-between">
+                            <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">4 Steps</span>
+                            <button class="text-sm font-bold text-brand-sage active:opacity-70">
+                                + Add
+                            </button>
+                        </div>
+                        
+                        <ul class="space-y-2.5">
+                            <!-- Step 1 -->
+                            <li class="draggable-item flex items-center gap-3 p-3 rounded-[14px] bg-brand-lightGray border border-brand-border relative">
+                                <div class="drag-handle text-gray-400 p-2 -ml-2 active:text-brand-charcoal">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-white border border-brand-border flex items-center justify-center shrink-0 shadow-sm">
+                                    <i class="fa-solid fa-droplet text-gray-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 pr-6">
+                                    <span class="text-[10px] font-bold text-brand-sage uppercase">Step 1</span>
+                                    <h4 class="text-sm font-bold text-brand-charcoal truncate">Gentle Cleanser</h4>
+                                    <p class="text-xs text-gray-500 truncate mt-0.5">CeraVe Hydrating Cleanser</p>
+                                </div>
+                                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 active:text-brand-terracotta p-2">
+                                    <i class="fa-solid fa-circle-minus"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 2 -->
+                            <li class="draggable-item flex items-center gap-3 p-3 rounded-[14px] bg-brand-lightGray border border-brand-border relative">
+                                <div class="drag-handle text-gray-400 p-2 -ml-2 active:text-brand-charcoal">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-white border border-brand-border flex items-center justify-center shrink-0 shadow-sm">
+                                    <i class="fa-solid fa-spray-can text-gray-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 pr-6">
+                                    <span class="text-[10px] font-bold text-brand-sage uppercase">Step 2</span>
+                                    <h4 class="text-sm font-bold text-brand-charcoal truncate">Vitamin C Serum</h4>
+                                    <p class="text-xs text-gray-500 truncate mt-0.5">Timeless 20% Vit C</p>
+                                </div>
+                                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 active:text-brand-terracotta p-2">
+                                    <i class="fa-solid fa-circle-minus"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 3 -->
+                            <li class="draggable-item flex items-center gap-3 p-3 rounded-[14px] bg-brand-lightGray border border-brand-border relative">
+                                <div class="drag-handle text-gray-400 p-2 -ml-2 active:text-brand-charcoal">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-white border border-brand-border flex items-center justify-center shrink-0 shadow-sm">
+                                    <i class="fa-solid fa-pump-soap text-gray-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 pr-6">
+                                    <span class="text-[10px] font-bold text-brand-sage uppercase">Step 3</span>
+                                    <h4 class="text-sm font-bold text-brand-charcoal truncate">Moisturizer</h4>
+                                    <p class="text-xs text-gray-500 truncate mt-0.5">Vanicream Daily</p>
+                                </div>
+                                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 active:text-brand-terracotta p-2">
+                                    <i class="fa-solid fa-circle-minus"></i>
+                                </button>
+                            </li>
+                            
+                            <!-- Step 4 -->
+                            <li class="draggable-item flex items-center gap-3 p-3 rounded-[14px] bg-brand-lightGray border border-brand-border relative">
+                                <div class="drag-handle text-gray-400 p-2 -ml-2 active:text-brand-charcoal">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-white border border-brand-border flex items-center justify-center shrink-0 shadow-sm">
+                                    <i class="fa-solid fa-shield-sun text-gray-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 pr-6">
+                                    <span class="text-[10px] font-bold text-brand-sage uppercase">Step 4</span>
+                                    <h4 class="text-sm font-bold text-brand-charcoal truncate">Sunscreen</h4>
+                                    <p class="text-xs text-gray-500 truncate mt-0.5">Beauty of Joseon</p>
+                                </div>
+                                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 active:text-brand-terracotta p-2">
+                                    <i class="fa-solid fa-circle-minus"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- PM Content (Hidden initially) -->
+                    <div id="pm-content" class="bg-white rounded-[20px] border border-brand-border p-2.5 shadow-card">
+                        
+                        <!-- Cadence Indicator -->
+                        <div class="px-2 py-3 mb-2 flex flex-col gap-2 border-b border-brand-border/50">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tonight</span>
+                                <button class="text-sm font-bold text-brand-sage active:opacity-70">+ Add</button>
+                            </div>
+                            <span class="inline-flex self-start px-3 py-1.5 bg-brand-sage/10 text-brand-sage rounded-lg text-xs font-bold border border-brand-sage/20">
+                                Retinol Night (Mon/Thu)
+                            </span>
+                        </div>
+
+                        <ul class="space-y-2.5">
+                            <!-- Step 1 -->
+                            <li class="draggable-item flex items-center gap-3 p-3 rounded-[14px] bg-brand-lightGray border border-brand-border relative">
+                                <div class="drag-handle text-gray-400 p-2 -ml-2 active:text-brand-charcoal">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-white border border-brand-border flex items-center justify-center shrink-0 shadow-sm">
+                                    <i class="fa-solid fa-bottle-droplet text-gray-400"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 pr-6">
+                                    <span class="text-[10px] font-bold text-gray-500 uppercase">Step 1</span>
+                                    <h4 class="text-sm font-bold text-brand-charcoal truncate">Oil Cleanser</h4>
+                                    <p class="text-xs text-gray-500 truncate mt-0.5">Kose Softymo</p>
+                                </div>
+                                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 active:text-brand-terracotta p-2">
+                                    <i class="fa-solid fa-circle-minus"></i>
+                                </button>
+                            </li>
+
+                            <!-- Step 3 (Active) -->
+                            <li class="draggable-item flex items-center gap-3 p-3 rounded-[14px] bg-brand-sage/5 border border-brand-sage/30 relative">
+                                <div class="drag-handle text-brand-sage p-2 -ml-2 active:text-brand-charcoal">
+                                    <i class="fa-solid fa-grip-vertical"></i>
+                                </div>
+                                <div class="w-11 h-11 rounded-xl bg-white border border-brand-sage/30 flex items-center justify-center shrink-0 shadow-sm">
+                                    <i class="fa-solid fa-flask text-brand-sage"></i>
+                                </div>
+                                <div class="flex-1 min-w-0 pr-6">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold text-brand-sage uppercase">Step 3</span>
+                                        <span class="text-[9px] font-bold px-1.5 py-0.5 bg-brand-sage/20 text-brand-sage rounded uppercase">Active</span>
+                                    </div>
+                                    <h4 class="text-sm font-bold text-brand-charcoal truncate mt-0.5">Retinoid</h4>
+                                    <p class="text-xs text-gray-500 truncate mt-0.5">Tretinoin 0.025%</p>
+                                </div>
+                                <button class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 active:text-brand-terracotta p-2">
+                                    <i class="fa-solid fa-circle-minus"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                </section>
+
+                <!-- Post-Routine Log -->
+                <section id="reaction-quick-links" class="bg-brand-cream/50 rounded-[20px] border border-brand-border p-5 shadow-sm mt-2">
+                    <h3 class="text-sm font-bold text-brand-charcoal tracking-wide mb-1">Post-Routine Log</h3>
+                    <p class="text-xs text-gray-500 mb-4">Document immediate reactions.</p>
+                    
+                    <div class="flex flex-col gap-3">
+                        <div class="flex gap-3">
+                            <button class="flex-1 py-3 bg-brand-sage/10 text-brand-charcoal rounded-[12px] text-sm font-bold active:bg-brand-sage/20 transition-colors border border-brand-sage/20 flex flex-col items-center justify-center gap-1">
+                                <i class="fa-solid fa-face-flushed text-brand-terracotta text-lg"></i> 
+                                <span>Redness</span>
+                            </button>
+                            <button class="flex-1 py-3 bg-brand-sage/10 text-brand-charcoal rounded-[12px] text-sm font-bold active:bg-brand-sage/20 transition-colors border border-brand-sage/20 flex flex-col items-center justify-center gap-1">
+                                <i class="fa-solid fa-fire text-brand-terracotta text-lg"></i> 
+                                <span>Irritation</span>
+                            </button>
+                        </div>
+                        <button class="w-full py-3.5 bg-brand-charcoal text-white rounded-[12px] text-sm font-bold active:bg-brand-charcoal/90 transition-colors flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-check"></i> Complete Routine
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- Fixed Bottom Navigation -->
+        <nav class="bg-white border-t border-brand-border absolute bottom-0 w-full pb-safe px-2 py-2 flex justify-around items-center shadow-nav z-20">
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-12 text-gray-400 active:text-brand-charcoal transition-colors">
+                <i class="fa-solid fa-border-all text-[20px] mb-1"></i>
+                <span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-12 text-gray-400 active:text-brand-charcoal transition-colors">
+                <i class="fa-solid fa-box-open text-[20px] mb-1"></i>
+                <span class="text-[10px] font-medium">Stash</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-12 text-brand-sage transition-colors">
+                <i class="fa-solid fa-calendar-check text-[20px] mb-1"></i>
+                <span class="text-[10px] font-bold">Routine</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-12 text-gray-400 active:text-brand-charcoal transition-colors">
+                <i class="fa-solid fa-book-medical text-[20px] mb-1"></i>
+                <span class="text-[10px] font-medium">Log</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-12 text-gray-400 active:text-brand-charcoal transition-colors">
+                <i class="fa-solid fa-ellipsis text-[20px] mb-1"></i>
+                <span class="text-[10px] font-medium">More</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script>
+        // Tab switching logic
+        function switchTab(tab) {
+            const amTab = document.getElementById('tab-am');
+            const pmTab = document.getElementById('tab-pm');
+            const amContent = document.getElementById('am-content');
+            const pmContent = document.getElementById('pm-content');
+
+            if (tab === 'am') {
+                amTab.classList.add('bg-brand-sage/10', 'text-brand-sage', 'font-semibold');
+                amTab.classList.remove('text-gray-500', 'font-medium');
+                
+                pmTab.classList.remove('bg-brand-sage/10', 'text-brand-sage', 'font-semibold');
+                pmTab.classList.add('text-gray-500', 'font-medium');
+                
+                amContent.style.display = 'block';
+                pmContent.style.display = 'none';
+            } else {
+                pmTab.classList.add('bg-brand-sage/10', 'text-brand-sage', 'font-semibold');
+                pmTab.classList.remove('text-gray-500', 'font-medium');
+                
+                amTab.classList.remove('bg-brand-sage/10', 'text-brand-sage', 'font-semibold');
+                amTab.classList.add('text-gray-500', 'font-medium');
+                
+                pmContent.style.display = 'block';
+                amContent.style.display = 'none';
+            }
+        }
+
+        // Simple drag visual feedback (mobile touch support requires more robust library, keeping basic for now)
+        const draggables = document.querySelectorAll('.draggable-item');
+        
+        draggables.forEach(draggable => {
+            draggable.addEventListener('touchstart', () => {
+                draggable.classList.add('dragging', 'scale-[0.98]', 'transition-transform');
+            }, {passive: true});
+
+            draggable.addEventListener('touchend', () => {
+                draggable.classList.remove('dragging', 'scale-[0.98]');
+            });
+        });
+    </script>
+</body>
+</html>

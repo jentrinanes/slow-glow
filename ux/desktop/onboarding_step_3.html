@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slow Glow - Step 3: Health Screening</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Custom radio/checkbox styles matching previous screen */
+        .screening-option input:checked + div {
+            border-color: #8DA290;
+            background-color: rgba(141, 162, 144, 0.05);
+        }
+        .screening-option input:checked + div .check-circle {
+            background-color: #8DA290;
+            border-color: #8DA290;
+        }
+        .screening-option input:checked + div .check-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+        }
+
+        /* Tooltip hover trigger */
+        .group:hover .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+
+    <!-- Main Container -->
+    <main id="main-container" class="w-full max-w-[1200px] bg-white rounded-[24px] shadow-card overflow-hidden flex flex-col md:flex-row h-auto md:h-[800px]">
+        
+        <!-- Left Illustration Section -->
+        <div id="illustration-section" class="hidden md:block w-full md:w-[45%] bg-brand-blue relative overflow-hidden">
+            <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/f946bc13d0-8137cb92ecef2dce001d.png" alt="abstract science-based skincare illustration, clean lines, blue background, notebook style doodles, wellness theme, focus on health, molecules and gentle care" />
+            
+            <!-- Safety Insight Overlay -->
+            <div class="absolute bottom-12 left-8 right-8 bg-[#FDFBF7]/90 backdrop-blur-sm p-6 rounded-[16px] border border-[#E5E7EB] shadow-lg">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-full bg-[#8DA290]/20 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-shield-heart text-[#8DA290]"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-[#2D2D2D] mb-1">Safety First</h4>
+                        <p class="text-sm text-[#2D2D2D]/80 leading-relaxed italic">"Your skin barrier is your first line of defense. We ask these questions to ensure we never recommend tracking routines that could compromise it."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Form Section -->
+        <div id="form-section" class="w-full md:w-[55%] flex flex-col p-8 lg:p-12 h-full overflow-y-auto relative">
+            
+            <!-- Header / Save & Exit -->
+            <header id="onboarding-header" class="flex justify-between items-center mb-10 w-full shrink-0">
+                <div class="flex items-center gap-2 text-brand-charcoal font-semibold text-lg">
+                    <i class="fa-solid fa-leaf text-brand-sage"></i>
+                    <span>Slow Glow</span>
+                </div>
+                <button class="text-sm font-medium text-gray-500 hover:text-brand-charcoal transition-colors">
+                    Save & Exit
+                </button>
+            </header>
+
+            <!-- Progress Stepper -->
+            <div id="progress-stepper" class="flex items-center gap-4 mb-12 border-b border-brand-border pb-6 shrink-0">
+                <!-- Step 1 (Completed) -->
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-md bg-gray-100 text-gray-500 flex items-center justify-center font-semibold text-sm">
+                        <i class="fa-solid fa-check text-brand-sage"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-500 hidden sm:block">Basics</span>
+                </div>
+                
+                <!-- Divider -->
+                <div class="w-8 h-[1px] bg-gray-200"></div>
+                
+                <!-- Step 2 (Completed) -->
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-md bg-gray-100 text-gray-500 flex items-center justify-center font-semibold text-sm">
+                        <i class="fa-solid fa-check text-brand-sage"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-500 hidden sm:block">Skin Concerns</span>
+                </div>
+
+                <!-- Divider -->
+                <div class="w-8 h-[1px] bg-gray-200"></div>
+                
+                <!-- Step 3 (Active) -->
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-md bg-brand-blue text-white flex items-center justify-center font-semibold text-sm">
+                        3
+                    </div>
+                    <span class="text-sm font-medium text-brand-charcoal">Health & Safety</span>
+                </div>
+            </div>
+
+            <!-- Form Content -->
+            <div id="health-form-container" class="flex-1 flex flex-col">
+                <div class="mb-8">
+                    <p class="text-sm text-gray-500 font-medium mb-2">Step 3/3</p>
+                    <h1 class="text-3xl font-bold text-brand-charcoal mb-3 tracking-tight">Health screening.</h1>
+                    <p class="text-gray-600 text-sm leading-relaxed max-w-md">To ensure your tracking is safe and effective, we need to know about any underlying conditions or strong treatments.</p>
+                </div>
+
+                <form class="space-y-8 flex-1">
+                    
+                    <!-- Pregnancy / Breastfeeding -->
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-semibold text-brand-charcoal">Are you currently pregnant or breastfeeding?</label>
+                            <div class="relative group cursor-help">
+                                <i class="fa-solid fa-circle-info text-gray-400 text-xs"></i>
+                                <div class="tooltip-content invisible opacity-0 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-brand-charcoal text-white text-xs rounded-lg shadow-lg transition-all z-10">
+                                    Certain actives like Retinoids and high-strength Salicylic Acid are generally advised against during pregnancy.
+                                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-brand-charcoal"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="screening-option cursor-pointer">
+                                <input type="radio" name="pregnancy" class="sr-only" value="yes">
+                                <div class="px-4 py-3 rounded-[8px] border border-gray-200 flex items-center justify-between transition-all hover:border-brand-sage/50 bg-white">
+                                    <span class="text-sm font-medium text-gray-700">Yes</span>
+                                    <div class="w-4 h-4 rounded-full border border-gray-300 check-circle relative transition-colors"></div>
+                                </div>
+                            </label>
+                            <label class="screening-option cursor-pointer">
+                                <input type="radio" name="pregnancy" class="sr-only" value="no" checked>
+                                <div class="px-4 py-3 rounded-[8px] border border-gray-200 flex items-center justify-between transition-all hover:border-brand-sage/50 bg-white">
+                                    <span class="text-sm font-medium text-gray-700">No</span>
+                                    <div class="w-4 h-4 rounded-full border border-gray-300 check-circle relative transition-colors"></div>
+                                </div>
+                            </label>
+                            <label class="screening-option cursor-pointer">
+                                <input type="radio" name="pregnancy" class="sr-only" value="unsure">
+                                <div class="px-4 py-3 rounded-[8px] border border-gray-200 flex items-center justify-between transition-all hover:border-brand-sage/50 bg-white">
+                                    <span class="text-sm font-medium text-gray-700">I'm not sure</span>
+                                    <div class="w-4 h-4 rounded-full border border-gray-300 check-circle relative transition-colors"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Prescription Treatments -->
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-semibold text-brand-charcoal">Are you currently using prescription topical treatments?</label>
+                            <div class="relative group cursor-help">
+                                <i class="fa-solid fa-circle-info text-gray-400 text-xs"></i>
+                                <div class="tooltip-content invisible opacity-0 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-brand-charcoal text-white text-xs rounded-lg shadow-lg transition-all z-10">
+                                    Examples: Tretinoin, Accutane, prescription Azelaic Acid, Clindamycin. These heavily impact how you should introduce other actives.
+                                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-brand-charcoal"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="screening-option cursor-pointer">
+                                <input type="radio" name="prescriptions" class="sr-only" value="yes">
+                                <div class="px-4 py-3 rounded-[8px] border border-gray-200 flex items-center justify-between transition-all hover:border-brand-sage/50 bg-white">
+                                    <span class="text-sm font-medium text-gray-700">Yes, currently using</span>
+                                    <div class="w-4 h-4 rounded-full border border-gray-300 check-circle relative transition-colors"></div>
+                                </div>
+                            </label>
+                            <label class="screening-option cursor-pointer">
+                                <input type="radio" name="prescriptions" class="sr-only" value="no" checked>
+                                <div class="px-4 py-3 rounded-[8px] border border-gray-200 flex items-center justify-between transition-all hover:border-brand-sage/50 bg-white">
+                                    <span class="text-sm font-medium text-gray-700">No prescriptions</span>
+                                    <div class="w-4 h-4 rounded-full border border-gray-300 check-circle relative transition-colors"></div>
+                                </div>
+                            </label>
+                        </div>
+                        
+                        <!-- Dynamic Warning Note (Simulated active state) -->
+                        <div class="hidden bg-brand-terracotta/10 border border-brand-terracotta/20 rounded-[8px] p-4 mt-2">
+                            <div class="flex gap-3">
+                                <i class="fa-solid fa-triangle-exclamation text-brand-terracotta mt-0.5"></i>
+                                <div>
+                                    <p class="text-sm font-medium text-brand-charcoal mb-1">Caution with Actives</p>
+                                    <p class="text-xs text-gray-600 leading-relaxed">Since you're using prescriptions, we recommend tracking only basic hydration routines right now. Adding OTC actives can compromise your barrier.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Barrier Impairment -->
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-semibold text-brand-charcoal">Do you suspect your skin barrier is currently impaired?</label>
+                            <div class="relative group cursor-help">
+                                <i class="fa-solid fa-circle-info text-gray-400 text-xs"></i>
+                                <div class="tooltip-content invisible opacity-0 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-brand-charcoal text-white text-xs rounded-lg shadow-lg transition-all z-10">
+                                    Signs include: stinging when applying gentle products, excessive redness, tight/shiny appearance, or sudden severe breakouts.
+                                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-brand-charcoal"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="screening-option cursor-pointer">
+                                <input type="radio" name="barrier" class="sr-only" value="yes">
+                                <div class="px-4 py-3 rounded-[8px] border border-gray-200 flex items-center justify-between transition-all hover:border-brand-sage/50 bg-white">
+                                    <span class="text-sm font-medium text-gray-700">Yes</span>
+                                    <div class="w-4 h-4 rounded-full border border-gray-300 check-circle relative transition-colors"></div>
+                                </div>
+                            </label>
+                            <label class="screening-option cursor-pointer">
+                                <input type="radio" name="barrier" class="sr-only" value="no" checked>
+                                <div class="px-4 py-3 rounded-[8px] border border-gray-200 flex items-center justify-between transition-all hover:border-brand-sage/50 bg-white">
+                                    <span class="text-sm font-medium text-gray-700">No</span>
+                                    <div class="w-4 h-4 rounded-full border border-gray-300 check-circle relative transition-colors"></div>
+                                </div>
+                            </label>
+                            <label class="screening-option cursor-pointer">
+                                <input type="radio" name="barrier" class="sr-only" value="unsure">
+                                <div class="px-4 py-3 rounded-[8px] border border-gray-200 flex items-center justify-between transition-all hover:border-brand-sage/50 bg-white">
+                                    <span class="text-sm font-medium text-gray-700">I'm not sure</span>
+                                    <div class="w-4 h-4 rounded-full border border-gray-300 check-circle relative transition-colors"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Action Footer -->
+            <div id="action-footer" class="mt-8 pt-8 border-t border-gray-100 flex items-center justify-between shrink-0">
+                <button type="button" class="px-6 py-3 text-sm font-medium text-brand-charcoal hover:bg-gray-50 rounded-[8px] transition-colors border border-gray-200">
+                    Back
+                </button>
+                <div class="flex gap-3">
+                    <button type="button" class="px-6 py-3 text-sm font-medium text-gray-500 hover:text-brand-charcoal transition-colors">
+                        Skip for now
+                    </button>
+                    <button type="button" class="px-8 py-3 bg-brand-blue hover:bg-blue-600 text-white text-sm font-medium rounded-[8px] transition-colors shadow-sm flex items-center gap-2">
+                        Complete Setup
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

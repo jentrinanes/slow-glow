@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Slow Glow Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#7A9482',
+                            cream: '#F9F7F2',
+                            terracotta: '#D67D5C',
+                            dark: '#2C3E35',
+                            gray: '#E5E7EB',
+                            text: '#4B5563'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F9F7F2;
+            -webkit-font-smoothing: antialiased;
+        }
+        .input-mobile {
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            background: #FFFFFF;
+            transition: all 0.2s ease;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        .input-mobile:focus {
+            outline: none;
+            border-color: #7A9482;
+            box-shadow: 0 0 0 2px rgba(122, 148, 130, 0.1);
+        }
+        .input-mobile.error {
+            border-color: #D67D5C;
+        }
+        .input-mobile.error:focus {
+            box-shadow: 0 0 0 2px rgba(214, 125, 92, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-brand-dark font-sans m-0 p-0">
+
+    <!-- Mobile Wrapper -->
+    <div id="mobile-auth-wrapper" class="flex flex-col w-full min-h-screen bg-brand-cream relative overflow-hidden">
+        
+        <!-- Decorative Background Header -->
+        <div class="absolute top-0 left-0 w-full h-[280px] bg-gradient-to-b from-brand-sage/15 to-transparent -z-10 overflow-hidden">
+            <div class="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-brand-sage/10 rounded-full blur-2xl"></div>
+            <div class="absolute top-[50px] left-[-50px] w-[150px] h-[150px] bg-brand-terracotta/10 rounded-full blur-2xl"></div>
+        </div>
+
+        <!-- Header Area -->
+        <div id="mobile-brand-header" class="w-full px-6 pt-12 pb-6 flex flex-col items-center justify-center text-center">
+            <div class="w-12 h-12 rounded-full bg-brand-sage flex items-center justify-center text-white mb-4 shadow-soft">
+                <i class="fa-solid fa-leaf text-lg"></i>
+            </div>
+            <span class="font-serif font-medium text-2xl tracking-wide text-brand-dark">Slow Glow</span>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="login-form-container" class="flex-1 w-full px-6 pb-8 flex flex-col justify-center z-10">
+            
+            <div class="mb-8 text-center">
+                <h1 class="text-[28px] font-serif font-semibold text-brand-dark mb-2">Welcome back</h1>
+                <p class="text-brand-text text-[15px]">Please enter your details to access your routine.</p>
+            </div>
+
+            <form id="mobile-login-form" class="space-y-5" onsubmit="event.preventDefault();">
+                
+                <!-- Email Field -->
+                <div class="space-y-2">
+                    <label for="mobile-email" class="block text-sm font-medium text-brand-dark ml-1">Email</label>
+                    <input 
+                        type="email" 
+                        id="mobile-email" 
+                        class="input-mobile w-full h-[52px] text-brand-dark placeholder:text-gray-400 text-[16px]" 
+                        placeholder="Enter your email"
+                        value="sarah@example.com"
+                    >
+                </div>
+
+                <!-- Password Field -->
+                <div class="space-y-2">
+                    <label for="mobile-password" class="block text-sm font-medium text-brand-dark ml-1">Password</label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="mobile-password" 
+                            class="input-mobile error w-full h-[52px] text-brand-dark placeholder:text-gray-400 pr-12 text-[16px]" 
+                            placeholder="••••••••"
+                            value="wrongpassword"
+                        >
+                        <button type="button" class="absolute right-0 top-0 h-[52px] w-[52px] flex items-center justify-center text-gray-400 hover:text-brand-dark">
+                            <i class="fa-regular fa-eye-slash text-[16px]"></i>
+                        </button>
+                    </div>
+                    <p class="text-brand-terracotta text-[13px] mt-1.5 ml-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-exclamation text-[12px]"></i>
+                        Incorrect password. Please try again.
+                    </p>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div id="secondary-actions-nav" class="flex items-center justify-between pt-1 pb-2">
+                    <div class="flex items-center h-11">
+                        <input 
+                            id="mobile-remember" 
+                            type="checkbox" 
+                            class="h-5 w-5 rounded-[4px] border-gray-300 text-brand-sage focus:ring-brand-sage accent-brand-sage"
+                        >
+                        <label for="mobile-remember" class="ml-3 block text-[15px] text-brand-text">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <a href="#" class="text-[15px] font-medium text-brand-sage hover:text-brand-dark transition-colors h-11 flex items-center">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <!-- Primary CTA -->
+                <button 
+                    type="submit" 
+                    class="w-full h-[56px] flex justify-center items-center rounded-[12px] shadow-soft text-[16px] font-medium text-white bg-brand-sage hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-sage transition-colors mt-2"
+                >
+                    Sign In
+                </button>
+
+                <!-- Social Auth -->
+                <div id="social-auth-stack" class="pt-4 space-y-4">
+                    <div class="relative flex items-center py-2">
+                        <div class="flex-grow border-t border-brand-gray"></div>
+                        <span class="flex-shrink-0 mx-4 text-brand-text text-[13px]">Or continue with</span>
+                        <div class="flex-grow border-t border-brand-gray"></div>
+                    </div>
+
+                    <button 
+                        type="button" 
+                        class="w-full h-[56px] flex justify-center items-center gap-3 border border-brand-gray rounded-[12px] shadow-sm text-[16px] font-medium text-brand-dark bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-sage transition-colors"
+                    >
+                        <i class="fa-brands fa-google text-[18px]"></i>
+                        Google
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        class="w-full h-[56px] flex justify-center items-center gap-3 border border-brand-gray rounded-[12px] shadow-sm text-[16px] font-medium text-brand-dark bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-sage transition-colors"
+                    >
+                        <i class="fa-brands fa-apple text-[20px]"></i>
+                        Apple
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+        <!-- Footer -->
+        <div id="footer-minimal" class="w-full px-6 py-8 text-center mt-auto">
+            <p class="text-[15px] text-brand-text">
+                Don't have an account? 
+                <a href="#" class="font-medium text-brand-sage hover:text-brand-dark transition-colors inline-flex h-11 items-center px-1">
+                    Sign up
+                </a>
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>

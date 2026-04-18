@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Inventory - Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        'floating': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        /* Custom Checkbox */
+        .routine-check input:checked + div {
+            background-color: #8DA290;
+            border-color: #8DA290;
+        }
+        .routine-check input:checked + div i {
+            opacity: 1;
+        }
+        
+        /* Slide-over Transition */
+        #slide-over {
+            transition: transform 0.3s ease-in-out;
+        }
+        #slide-over.open {
+            transform: translateY(0);
+        }
+        #slide-over-backdrop {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #slide-over-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Filter Chips Scroll */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Accordion transition */
+        .accordion-content {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.expanded {
+            max-height: 200px;
+            opacity: 1;
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-icon.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="min-h-[100dvh] flex flex-col m-0 p-0 overflow-hidden bg-brand-lightGray relative max-w-[430px] mx-auto w-full shadow-2xl">
+
+    <!-- Mobile Header -->
+    <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-30 border-b border-brand-border shrink-0">
+        <div class="flex items-center gap-3">
+            <button class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-lightGray text-brand-charcoal hover:bg-gray-200 transition-colors">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <div>
+                <h1 class="text-xl font-bold text-brand-charcoal tracking-tight flex items-center gap-2">
+                    <i class="fa-solid fa-leaf text-brand-sage text-base"></i>
+                    Slow Glow
+                </h1>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button class="relative w-10 h-10 flex items-center justify-center rounded-full bg-brand-lightGray text-brand-charcoal hover:bg-gray-200 transition-colors">
+                <i class="fa-regular fa-bell text-lg"></i>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-brand-terracotta rounded-full border border-white"></span>
+            </button>
+            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-10 h-10 rounded-full border border-brand-border object-cover">
+        </div>
+    </header>
+
+    <!-- Main Scrollable Content -->
+    <main class="flex-1 overflow-y-auto pb-24 flex flex-col relative" id="main-scroll">
+        
+        <!-- Page Title & Search Sticky Area -->
+        <div class="bg-white px-5 pt-5 pb-4 sticky top-0 z-20 border-b border-brand-border shadow-sm">
+            <div class="mb-4">
+                <h2 class="text-2xl font-bold text-brand-charcoal tracking-tight">Inventory</h2>
+                <p class="text-sm text-gray-500 mt-1">Manage your skincare collection.</p>
+            </div>
+
+            <!-- Search -->
+            <div class="relative w-full mb-4">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" placeholder="Search products, brands..." class="w-full pl-11 pr-4 py-3.5 rounded-[16px] border border-brand-border text-[15px] focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage transition-all bg-brand-lightGray shadow-input">
+            </div>
+
+            <!-- Scrollable Filter Chips -->
+            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 -mx-5 px-5">
+                <button class="px-4 py-2 rounded-full bg-brand-charcoal text-white text-sm font-medium whitespace-nowrap shrink-0 transition-colors">
+                    All Products
+                </button>
+                <button class="px-4 py-2 rounded-full bg-brand-lightGray text-brand-charcoal border border-brand-border text-sm font-medium whitespace-nowrap shrink-0 hover:bg-gray-100 transition-colors">
+                    Active
+                </button>
+                <button class="px-4 py-2 rounded-full bg-brand-lightGray text-brand-charcoal border border-brand-border text-sm font-medium whitespace-nowrap shrink-0 hover:bg-gray-100 transition-colors">
+                    Upcoming
+                </button>
+                <button class="px-4 py-2 rounded-full bg-brand-lightGray text-brand-charcoal border border-brand-border text-sm font-medium whitespace-nowrap shrink-0 hover:bg-gray-100 transition-colors">
+                    Cleansers
+                </button>
+                <button class="px-4 py-2 rounded-full bg-brand-lightGray text-brand-charcoal border border-brand-border text-sm font-medium whitespace-nowrap shrink-0 hover:bg-gray-100 transition-colors">
+                    Serums
+                </button>
+                <button class="w-10 h-10 rounded-full bg-brand-lightGray text-brand-charcoal border border-brand-border flex items-center justify-center shrink-0 hover:bg-gray-100 transition-colors">
+                    <i class="fa-solid fa-sliders text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Bulk Actions Toolbar (Hidden by default) -->
+        <div id="bulk-actions" class="bg-brand-sage/10 border-b border-brand-sage/30 px-5 py-3 flex items-center justify-between shadow-sm sticky top-[160px] z-10 hidden backdrop-blur-md">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-brand-sage bg-white px-2 py-1 rounded-md shadow-sm border border-brand-sage/20">2 Selected</span>
+                <button class="w-8 h-8 flex items-center justify-center text-brand-charcoal hover:bg-white rounded-full transition-colors"><i class="fa-solid fa-pause text-sm"></i></button>
+                <button class="w-8 h-8 flex items-center justify-center text-brand-charcoal hover:bg-white rounded-full transition-colors"><i class="fa-solid fa-check-double text-sm"></i></button>
+                <button class="w-8 h-8 flex items-center justify-center text-brand-terracotta hover:bg-white rounded-full transition-colors"><i class="fa-solid fa-box-archive text-sm"></i></button>
+            </div>
+            <button onclick="document.getElementById('bulk-actions').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-white rounded-full transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Product List (Vertical Stack for Mobile) -->
+        <div class="p-5 flex flex-col gap-4">
+            
+            <!-- Product Card 1 (Active) -->
+            <div class="bg-white rounded-[20px] border border-brand-border p-4 shadow-card relative overflow-hidden">
+                <!-- Status Bar Top -->
+                <div class="absolute top-0 left-0 w-full h-1 bg-brand-sage"></div>
+                
+                <div class="flex gap-4 items-start">
+                    <!-- Image/Icon Thumbnail -->
+                    <div class="w-16 h-16 rounded-[12px] bg-brand-lightGray border border-brand-border flex flex-col items-center justify-center shrink-0 relative">
+                        <label class="routine-check absolute -top-2 -left-2 cursor-pointer z-10">
+                            <input type="checkbox" class="sr-only" onchange="toggleBulkActions()">
+                            <div class="w-6 h-6 rounded-full border-2 border-white shadow-sm bg-white flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-check text-white text-[10px] opacity-0 transition-opacity"></i>
+                            </div>
+                        </label>
+                        <i class="fa-solid fa-pump-soap text-gray-400 text-xl mb-1"></i>
+                        <span class="text-[9px] font-bold text-gray-500 uppercase">Serum</span>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="flex-1 min-w-0 pt-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-bold text-brand-charcoal leading-tight truncate pr-2">C E Ferulic</h3>
+                            <button class="text-gray-400 hover:text-brand-charcoal p-1 -mr-1"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <p class="text-[13px] text-gray-500 mb-3 truncate">Skinceuticals</p>
+                        
+                        <!-- Mini Progress -->
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-1.5">
+                                    <span class="text-[11px] font-medium text-gray-500">PAO</span>
+                                    <span class="text-[11px] font-bold text-brand-sage">2 Mo Left</span>
+                                </div>
+                                <div class="w-full bg-brand-lightGray rounded-full h-1.5 overflow-hidden">
+                                    <div class="bg-brand-sage h-1.5 rounded-full" style="width: 66%"></div>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 bg-brand-sage/10 text-brand-sage rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0 border border-brand-sage/20">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Accordion Details (Progressive Disclosure) -->
+                <div class="mt-3 pt-3 border-t border-brand-border border-dashed">
+                    <button class="w-full flex items-center justify-between text-[13px] font-medium text-gray-500 py-1" onclick="toggleAccordion('details-1', this)">
+                        <span>Quick Details</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] accordion-icon transition-transform"></i>
+                    </button>
+                    <div id="details-1" class="accordion-content space-y-2 mt-2">
+                        <div class="grid grid-cols-2 gap-2 text-[12px]">
+                            <div class="bg-brand-lightGray p-2 rounded-lg">
+                                <span class="block text-gray-400 mb-0.5">Opened</span>
+                                <span class="font-medium text-brand-charcoal">Oct 12, 2023</span>
+                            </div>
+                            <div class="bg-brand-lightGray p-2 rounded-lg">
+                                <span class="block text-gray-400 mb-0.5">Size</span>
+                                <span class="font-medium text-brand-charcoal">30 ml</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button class="flex-1 py-2 bg-white border border-brand-border rounded-lg text-[13px] font-medium text-brand-charcoal shadow-sm">Log Reaction</button>
+                            <button class="flex-1 py-2 bg-white border border-brand-border rounded-lg text-[13px] font-medium text-brand-charcoal shadow-sm">Add to Routine</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 2 (Active - Warning) -->
+            <div class="bg-white rounded-[20px] border border-brand-border p-4 shadow-card relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-brand-terracotta"></div>
+                
+                <div class="flex gap-4 items-start">
+                    <div class="w-16 h-16 rounded-[12px] bg-brand-lightGray border border-brand-border flex flex-col items-center justify-center shrink-0 relative">
+                        <label class="routine-check absolute -top-2 -left-2 cursor-pointer z-10">
+                            <input type="checkbox" class="sr-only" onchange="toggleBulkActions()">
+                            <div class="w-6 h-6 rounded-full border-2 border-white shadow-sm bg-white flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-check text-white text-[10px] opacity-0 transition-opacity"></i>
+                            </div>
+                        </label>
+                        <i class="fa-solid fa-jar text-gray-400 text-xl mb-1"></i>
+                        <span class="text-[9px] font-bold text-gray-500 uppercase">Moisturizer</span>
+                    </div>
+
+                    <div class="flex-1 min-w-0 pt-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-bold text-brand-charcoal leading-tight truncate pr-2">Toleriane Double Repair</h3>
+                            <button class="text-gray-400 hover:text-brand-charcoal p-1 -mr-1"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <p class="text-[13px] text-gray-500 mb-3 truncate">La Roche-Posay</p>
+                        
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1">
+                                <div class="flex justify-between items-end mb-1.5">
+                                    <span class="text-[11px] font-medium text-gray-500">PAO</span>
+                                    <span class="text-[11px] font-bold text-brand-terracotta">14 Days Left</span>
+                                </div>
+                                <div class="w-full bg-brand-lightGray rounded-full h-1.5 overflow-hidden">
+                                    <div class="bg-brand-terracotta h-1.5 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 bg-brand-terracotta/10 text-brand-terracotta rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0 border border-brand-terracotta/20">Expiring</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Card 3 (Upcoming) -->
+            <div class="bg-white rounded-[20px] border border-brand-border p-4 shadow-card relative overflow-hidden opacity-90">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gray-300"></div>
+                
+                <div class="flex gap-4 items-start">
+                    <div class="w-16 h-16 rounded-[12px] bg-brand-lightGray border border-brand-border flex flex-col items-center justify-center shrink-0 relative">
+                        <label class="routine-check absolute -top-2 -left-2 cursor-pointer z-10">
+                            <input type="checkbox" class="sr-only" onchange="toggleBulkActions()">
+                            <div class="w-6 h-6 rounded-full border-2 border-white shadow-sm bg-white flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-check text-white text-[10px] opacity-0 transition-opacity"></i>
+                            </div>
+                        </label>
+                        <i class="fa-solid fa-bottle-droplet text-gray-400 text-xl mb-1"></i>
+                        <span class="text-[9px] font-bold text-gray-500 uppercase">Exfoliant</span>
+                    </div>
+
+                    <div class="flex-1 min-w-0 pt-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-bold text-brand-charcoal leading-tight truncate pr-2">2% BHA Liquid Exfoliant</h3>
+                            <button class="text-gray-400 hover:text-brand-charcoal p-1 -mr-1"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <p class="text-[13px] text-gray-500 mb-3 truncate">Paula's Choice</p>
+                        
+                        <div class="flex items-center gap-3">
+                            <div class="flex-1 flex justify-between items-center bg-brand-lightGray px-3 py-1.5 rounded-lg">
+                                <span class="text-[11px] font-medium text-gray-500">Status</span>
+                                <span class="text-[11px] font-bold text-brand-charcoal">Unopened</span>
+                            </div>
+                            <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0 border border-brand-border">Upcoming</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Action for Upcoming -->
+                <button class="w-full mt-3 py-2.5 bg-brand-sage/10 text-brand-sage font-semibold text-[13px] rounded-xl border border-brand-sage/20 hover:bg-brand-sage/20 transition-colors">
+                    Mark as Opened
+                </button>
+            </div>
+
+            <!-- Product Card 4 (Paused) -->
+            <div class="bg-white rounded-[20px] border border-brand-border p-4 shadow-card relative overflow-hidden bg-gray-50/50">
+                <div class="flex gap-4 items-start opacity-70">
+                    <div class="w-16 h-16 rounded-[12px] bg-white border border-brand-border flex flex-col items-center justify-center shrink-0 relative">
+                        <label class="routine-check absolute -top-2 -left-2 cursor-pointer z-10">
+                            <input type="checkbox" class="sr-only" onchange="toggleBulkActions()">
+                            <div class="w-6 h-6 rounded-full border-2 border-white shadow-sm bg-white flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-check text-white text-[10px] opacity-0 transition-opacity"></i>
+                            </div>
+                        </label>
+                        <i class="fa-solid fa-tube text-gray-400 text-xl mb-1"></i>
+                        <span class="text-[9px] font-bold text-gray-500 uppercase">Retinoid</span>
+                    </div>
+
+                    <div class="flex-1 min-w-0 pt-1">
+                        <div class="flex justify-between items-start mb-1">
+                            <h3 class="text-base font-bold text-brand-charcoal leading-tight truncate pr-2 line-through decoration-gray-300">Differin Gel</h3>
+                            <button class="text-gray-400 hover:text-brand-charcoal p-1 -mr-1"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        </div>
+                        <p class="text-[13px] text-gray-500 mb-3 truncate">Galderma</p>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-gray-500">Paused on Nov 1</span>
+                            <span class="px-2 py-1 bg-gray-200 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider shrink-0">Paused</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Padding for scroll past FAB -->
+            <div class="h-10"></div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button (Primary CTA) -->
+    <button onclick="toggleSlideOver()" class="fixed bottom-[90px] right-5 w-14 h-14 bg-brand-sage text-white rounded-full shadow-floating flex items-center justify-center hover:bg-[#7A8F7D] transition-transform active:scale-95 z-20 border-2 border-white">
+        <i class="fa-solid fa-plus text-xl"></i>
+    </button>
+
+    <!-- Bottom Navigation Shell -->
+    <nav class="bg-white border-t border-brand-border px-6 py-2 pb-safe sticky bottom-0 z-30 flex justify-between items-center w-full shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] shrink-0">
+        <a href="#" class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-brand-charcoal transition-colors">
+            <i class="fa-solid fa-border-all text-xl"></i>
+            <span class="text-[10px] font-medium">Home</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 p-2 text-brand-sage transition-colors relative">
+            <div class="absolute -top-1 w-8 h-1 bg-brand-sage rounded-b-full"></div>
+            <i class="fa-solid fa-box-open text-xl"></i>
+            <span class="text-[10px] font-bold">Inventory</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-brand-charcoal transition-colors">
+            <i class="fa-regular fa-calendar text-xl"></i>
+            <span class="text-[10px] font-medium">Routine</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-brand-charcoal transition-colors">
+            <i class="fa-solid fa-book-medical text-xl"></i>
+            <span class="text-[10px] font-medium">Logs</span>
+        </a>
+    </nav>
+
+    <!-- Slide-over Panel: Add Product (Mobile Bottom Sheet) -->
+    <div id="slide-over-backdrop" class="fixed inset-0 bg-brand-charcoal/40 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity" onclick="toggleSlideOver()"></div>
+    
+    <div id="slide-over" class="fixed inset-x-0 bottom-0 h-[85vh] bg-white rounded-t-[24px] shadow-2xl z-50 transform translate-y-full transition-transform flex flex-col border-t border-brand-border">
+        <!-- Drag Handle -->
+        <div class="w-full flex justify-center pt-3 pb-1" onclick="toggleSlideOver()">
+            <div class="w-12 h-1.5 bg-gray-300 rounded-full"></div>
+        </div>
+
+        <!-- Slide-over Header -->
+        <div class="px-5 pb-4 pt-2 border-b border-brand-border flex items-center justify-between bg-white">
+            <h2 class="text-xl font-bold text-brand-charcoal">Add Product</h2>
+            <button onclick="toggleSlideOver()" class="w-8 h-8 flex items-center justify-center rounded-full bg-brand-lightGray text-gray-500 hover:text-brand-charcoal transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+        
+        <!-- Slide-over Content -->
+        <div class="flex-1 overflow-y-auto p-5 space-y-5 hide-scrollbar">
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[13px] font-semibold text-brand-charcoal mb-1.5 ml-1">Product Name</label>
+                    <input type="text" placeholder="e.g. C E Ferulic" class="w-full px-4 py-3.5 rounded-[14px] border border-brand-border text-[15px] focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage shadow-input bg-brand-lightGray/50">
+                </div>
+                
+                <div>
+                    <label class="block text-[13px] font-semibold text-brand-charcoal mb-1.5 ml-1">Brand</label>
+                    <input type="text" placeholder="e.g. Skinceuticals" class="w-full px-4 py-3.5 rounded-[14px] border border-brand-border text-[15px] focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage shadow-input bg-brand-lightGray/50">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[13px] font-semibold text-brand-charcoal mb-1.5 ml-1">Category</label>
+                        <div class="relative">
+                            <select class="w-full pl-4 pr-10 py-3.5 rounded-[14px] border border-brand-border text-[15px] text-brand-charcoal bg-brand-lightGray/50 focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage appearance-none shadow-input">
+                                <option>Select...</option>
+                                <option>Cleanser</option>
+                                <option>Serum</option>
+                                <option>Moisturizer</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[13px] font-semibold text-brand-charcoal mb-1.5 ml-1">Status</label>
+                        <div class="relative">
+                            <select class="w-full pl-4 pr-10 py-3.5 rounded-[14px] border border-brand-border text-[15px] text-brand-charcoal bg-brand-lightGray/50 focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage appearance-none shadow-input">
+                                <option>Active</option>
+                                <option>Upcoming</option>
+                                <option>Paused</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-brand-sage/5 p-4 rounded-[16px] border border-brand-sage/20 mt-2">
+                    <label class="block text-[13px] font-semibold text-brand-charcoal mb-1.5 flex items-center justify-between">
+                        Period After Opening (PAO)
+                        <i class="fa-solid fa-circle-info text-brand-sage text-xs"></i>
+                    </label>
+                    <div class="flex gap-3 mt-3">
+                        <input type="number" placeholder="12" class="w-20 px-4 py-3.5 rounded-[14px] border border-brand-border text-[15px] text-center focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage shadow-input bg-white">
+                        <div class="relative flex-1">
+                            <select class="w-full pl-4 pr-10 py-3.5 rounded-[14px] border border-brand-border text-[15px] text-brand-charcoal bg-white focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage appearance-none shadow-input">
+                                <option>Months</option>
+                                <option>Weeks</option>
+                                <option>Years</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="h-6"></div> <!-- Bottom padding -->
+        </div>
+        
+        <!-- Slide-over Footer -->
+        <div class="p-5 border-t border-brand-border bg-white flex gap-3 pb-safe">
+            <button onclick="toggleSlideOver()" class="w-1/3 px-4 py-4 rounded-[16px] text-[15px] font-bold text-brand-charcoal bg-brand-lightGray hover:bg-gray-200 transition-colors">
+                Cancel
+            </button>
+            <button class="w-2/3 px-4 py-4 bg-brand-sage text-white rounded-[16px] text-[15px] font-bold hover:bg-[#7A8F7D] transition-colors shadow-md flex justify-center items-center gap-2">
+                Save Product <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Toggle bulk actions visibility
+        function toggleBulkActions() {
+            const checkboxes = document.querySelectorAll('.routine-check input[type="checkbox"]');
+            const bulkActions = document.getElementById('bulk-actions');
+            let anyChecked = false;
+            
+            checkboxes.forEach(cb => {
+                if(cb.checked) anyChecked = true;
+            });
+            
+            if(anyChecked) {
+                bulkActions.classList.remove('hidden');
+            } else {
+                bulkActions.classList.add('hidden');
+            }
+        }
+
+        // Toggle bottom sheet slide-over
+        function toggleSlideOver() {
+            const slideOver = document.getElementById('slide-over');
+            const backdrop = document.getElementById('slide-over-backdrop');
+            
+            slideOver.classList.toggle('open');
+            backdrop.classList.toggle('open');
+        }
+
+        // Accordion functionality for progressive disclosure
+        function toggleAccordion(id, button) {
+            const content = document.getElementById(id);
+            const icon = button.querySelector('.accordion-icon');
+            
+            content.classList.toggle('expanded');
+            icon.classList.toggle('rotated');
+        }
+    </script>
+</body>
+</html>

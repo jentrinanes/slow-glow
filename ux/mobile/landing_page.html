@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Slow Glow - Skincare Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cream: '#FDFBF7',
+                        sage: '#7D8E7A',
+                        terracotta: '#C27059',
+                        ink: '#1A1A1A',
+                        paper: '#F5F2EA',
+                        border: '#E8E4D9'
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        mono: ['Space Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'float': '0 12px 32px -4px rgba(0, 0, 0, 0.08)'
+                    },
+                    backgroundImage: {
+                        'noise': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22 opacity=%220.05%22/%3E%3C/svg%3E')"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { margin: 0; padding: 0; background-color: #FDFBF7; color: #1A1A1A; overflow-x: hidden; }
+        ::-webkit-scrollbar { display: none; }
+        .glass-card { background: rgba(253, 251, 247, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid #E8E4D9; }
+        .notebook-line { border-bottom: 1px dashed #E8E4D9; }
+        /* Mobile specific touch targets */
+        button, a { min-height: 44px; min-width: 44px; }
+    </style>
+</head>
+<body class="font-sans antialiased relative w-full max-w-[430px] mx-auto bg-white shadow-2xl min-h-screen pb-24">
+    <div class="fixed inset-0 pointer-events-none bg-noise z-50 mix-blend-multiply opacity-50 max-w-[430px] mx-auto"></div>
+
+    <!-- Mobile Header -->
+    <nav id="mobile-header" class="sticky top-0 w-full z-40 glass-card border-b border-border transition-all duration-300">
+        <div class="px-5 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-leaf text-sage text-lg"></i>
+                <span class="font-serif text-xl font-semibold tracking-tight text-ink">Slow Glow</span>
+            </div>
+            <button class="w-10 h-10 flex items-center justify-center text-ink/70 hover:text-ink transition-colors">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Hero Section -->
+    <section id="mobile-hero" class="pt-10 pb-12 px-5 relative overflow-hidden bg-cream">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute -top-10 -left-10 w-48 h-48 bg-sage/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 -right-10 w-56 h-56 bg-terracotta/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 text-center flex flex-col items-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-sage/30 bg-sage/5 text-sage font-mono text-[10px] mb-6 uppercase tracking-widest">
+                <i class="fa-solid fa-microscope text-[10px]"></i>
+                <span>The Science of Patience</span>
+            </div>
+            
+            <h1 class="font-serif text-4xl md:text-5xl font-medium leading-[1.1] mb-5 text-ink">
+                Skincare is an <br>
+                <span class="italic text-sage">experiment.</span>
+            </h1>
+            
+            <p class="font-sans text-base text-ink/70 mb-8 leading-relaxed max-w-[300px]">
+                Log ingredients, track usage cycles, and observe real results.
+            </p>
+            
+            <div class="w-full flex flex-col gap-3 px-2">
+                <button class="w-full bg-ink text-cream hover:bg-ink/90 py-3.5 rounded-full font-mono text-sm transition-all shadow-lg flex items-center justify-center gap-2">
+                    Create Your Lab <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+                <button class="w-full py-3.5 rounded-full font-mono text-sm text-ink border border-border hover:border-sage transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-regular fa-circle-play"></i> See How It Works
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Dashboard Preview (Hero Widget) -->
+    <section id="mobile-hero-widget" class="px-4 -mt-4 relative z-20 pb-12">
+        <div class="bg-white rounded-[20px] p-1.5 shadow-float border border-border">
+            <div class="bg-paper rounded-[16px] p-4 border border-border/50">
+                <div class="flex items-start justify-between mb-5 border-b border-border pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-sage/10 flex items-center justify-center text-sage shrink-0">
+                            <i class="fa-solid fa-flask text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-base font-semibold leading-tight mb-1 text-ink">Retinoid Protocol</h3>
+                            <p class="font-mono text-[10px] text-ink/50">Week 4 • PM Only</p>
+                        </div>
+                    </div>
+                    <button class="w-8 h-8 flex items-center justify-center text-ink/40 hover:text-ink">
+                        <i class="fa-solid fa-ellipsis-vertical text-sm"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="bg-white rounded-xl p-4 border border-border shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="font-mono text-[10px] text-ink/50 uppercase tracking-wider">Barrier Health</h4>
+                            <span class="text-sage text-xs font-mono">+12%</span>
+                        </div>
+                        <div id="mobile-hero-chart" class="h-[140px] w-full"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-white rounded-xl p-3 border border-border shadow-sm flex flex-col justify-between h-24">
+                            <i class="fa-solid fa-droplet text-sage/30 text-lg mb-2"></i>
+                            <div>
+                                <p class="font-mono text-[10px] text-ink/50 mb-0.5">Hydration</p>
+                                <p class="font-serif text-xl text-sage leading-none">84%</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl p-3 border border-border shadow-sm flex flex-col justify-between h-24">
+                            <i class="fa-solid fa-fire text-terracotta/30 text-lg mb-2"></i>
+                            <div>
+                                <p class="font-mono text-[10px] text-ink/50 mb-0.5">Irritation</p>
+                                <p class="font-serif text-xl text-terracotta leading-none">Low</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Ingredients Section -->
+    <section id="mobile-ingredients" class="py-12 px-5 bg-paper/50 border-t border-border">
+        <div class="text-center mb-8">
+            <h2 class="font-serif text-3xl font-medium mb-3 text-ink">
+                Decode your formulas.
+            </h2>
+            <p class="font-sans text-sm text-ink/70 leading-relaxed px-2">
+                Log products, flag irritants, and prevent overlapping active treatments.
+            </p>
+        </div>
+
+        <!-- Ingredient List Widget -->
+        <div class="bg-white rounded-[20px] p-4 shadow-soft border border-border relative z-10 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-serif text-lg font-semibold text-ink">Active Routine</h3>
+                <span class="text-xs font-mono text-ink/40">3 Items</span>
+            </div>
+            
+            <div class="space-y-3">
+                <!-- Ingredient Item -->
+                <div class="p-3 rounded-xl border border-border bg-paper/30 flex items-center justify-between active:border-sage transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-1.5 h-8 bg-sage rounded-full"></div>
+                        <div>
+                            <p class="font-mono text-xs font-bold text-ink mb-0.5">Niacinamide (5%)</p>
+                            <p class="font-sans text-[10px] text-ink/50">Barrier Support</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 bg-white rounded text-[9px] font-mono border border-border text-sage">Safe</span>
+                </div>
+                
+                <!-- Ingredient Item -->
+                <div class="p-3 rounded-xl border border-border bg-paper/30 flex items-center justify-between active:border-terracotta transition-colors">
+                    <div class="flex items-center gap-3">
+                        <div class="w-1.5 h-8 bg-terracotta rounded-full"></div>
+                        <div>
+                            <p class="font-mono text-xs font-bold text-ink mb-0.5">Salicylic Acid (BHA)</p>
+                            <p class="font-sans text-[10px] text-ink/50">Exfoliant</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 bg-white rounded text-[9px] font-mono border border-border text-terracotta">Active</span>
+                </div>
+                
+                <!-- Ingredient Item -->
+                <div class="p-3 rounded-xl border border-border bg-paper/30 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-1.5 h-8 bg-ink/20 rounded-full"></div>
+                        <div>
+                            <p class="font-mono text-xs font-bold text-ink mb-0.5">Glycerin</p>
+                            <p class="font-sans text-[10px] text-ink/50">Humectant</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-0.5 bg-white rounded text-[9px] font-mono border border-border text-ink/50">Base</span>
+                </div>
+            </div>
+            
+            <button class="w-full mt-4 py-3 rounded-xl font-mono text-xs text-ink bg-paper/50 hover:bg-paper transition-colors flex items-center justify-center gap-2 border border-border border-dashed">
+                <i class="fa-solid fa-plus text-[10px]"></i> Add Product
+            </button>
+        </div>
+        
+        <ul class="space-y-4 font-mono text-xs px-2">
+            <li class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full bg-sage/20 text-sage flex items-center justify-center shrink-0 mt-0.5">
+                    <i class="fa-solid fa-check text-[9px]"></i>
+                </div>
+                <div>
+                    <strong class="block text-ink mb-0.5 font-sans">Conflict Detection</strong>
+                    <span class="text-ink/60 leading-tight block">Automatically flags overlapping actives.</span>
+                </div>
+            </li>
+            <li class="flex items-start gap-3">
+                <div class="w-5 h-5 rounded-full bg-terracotta/20 text-terracotta flex items-center justify-center shrink-0 mt-0.5">
+                    <i class="fa-solid fa-check text-[9px]"></i>
+                </div>
+                <div>
+                    <strong class="block text-ink mb-0.5 font-sans">INCI Integration</strong>
+                    <span class="text-ink/60 leading-tight block">Scan labels to break down formulas.</span>
+                </div>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Mobile CTA & Footer -->
+    <section id="mobile-cta" class="pt-16 pb-12 px-5 bg-ink text-cream text-center rounded-t-[32px] mt-4 relative">
+        <i class="fa-solid fa-book-journal-whills text-3xl text-sage mb-5"></i>
+        <h2 class="font-serif text-3xl font-medium mb-4 leading-tight">
+            Start your journal.
+        </h2>
+        <p class="font-sans text-sm text-cream/70 mb-8 px-4">
+            Join thousands tracking their way to healthier skin through data.
+        </p>
+        <button class="w-full bg-terracotta text-white py-4 rounded-full font-mono text-sm transition-all shadow-lg active:scale-[0.98]">
+            Register Free Account
+        </button>
+        
+        <div class="mt-12 pt-8 border-t border-cream/10 flex flex-col items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-leaf text-sage text-sm"></i>
+                <span class="font-serif text-lg text-cream">Slow Glow</span>
+            </div>
+            <div class="font-mono text-[10px] text-cream/40">
+                &copy; 2024 Slow Glow Lab.
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile Bottom Navigation (Quick Actions) -->
+    <nav id="mobile-bottom-nav" class="fixed bottom-0 w-full max-w-[430px] z-50 glass-card border-t border-border pb-safe">
+        <div class="flex items-center justify-around h-16 px-2">
+            <button class="flex flex-col items-center justify-center w-16 h-full text-sage gap-1">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="font-mono text-[9px]">Home</span>
+            </button>
+            <button class="flex flex-col items-center justify-center w-16 h-full text-ink/40 hover:text-ink gap-1 transition-colors">
+                <i class="fa-solid fa-flask text-lg"></i>
+                <span class="font-mono text-[9px]">Lab</span>
+            </button>
+            <div class="relative -top-5">
+                <button class="w-14 h-14 rounded-full bg-terracotta text-white shadow-lg flex items-center justify-center active:scale-95 transition-transform border-4 border-white">
+                    <i class="fa-solid fa-plus text-xl"></i>
+                </button>
+            </div>
+            <button class="flex flex-col items-center justify-center w-16 h-full text-ink/40 hover:text-ink gap-1 transition-colors">
+                <i class="fa-regular fa-calendar text-lg"></i>
+                <span class="font-mono text-[9px]">Log</span>
+            </button>
+            <button class="flex flex-col items-center justify-center w-16 h-full text-ink/40 hover:text-ink gap-1 transition-colors">
+                <i class="fa-regular fa-user text-lg"></i>
+                <span class="font-mono text-[9px]">Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Chart Initialization for Mobile
+        function initializeCharts() {
+            try {
+                const data = [{
+                    x: ['W1', 'W2', 'W3', 'W4', 'W5'],
+                    y: [60, 65, 58, 75, 84],
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    line: { shape: 'spline', smoothing: 1.3, color: '#7D8E7A', width: 2.5 },
+                    marker: { size: 6, color: '#FDFBF7', line: { color: '#7D8E7A', width: 2 } },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(125, 142, 122, 0.1)'
+                }];
+
+                const layout = {
+                    margin: { t: 5, r: 5, b: 20, l: 20 },
+                    paper_bgcolor: 'transparent',
+                    plot_bgcolor: 'transparent',
+                    xaxis: { 
+                        showgrid: false,
+                        tickfont: { family: 'Space Mono', size: 9, color: '#1A1A1A' },
+                        fixedrange: true
+                    },
+                    yaxis: { 
+                        showgrid: true,
+                        gridcolor: 'rgba(232, 228, 217, 0.5)',
+                        tickfont: { family: 'Space Mono', size: 9, color: '#1A1A1A' },
+                        fixedrange: true
+                    },
+                    showlegend: false,
+                    dragmode: false
+                };
+
+                const config = {
+                    displayModeBar: false, 
+                    responsive: true,
+                    staticPlot: true // Better for mobile scrolling
+                };
+
+                Plotly.newPlot('mobile-hero-chart', data, layout, config);
+            } catch(e) { console.error('Chart error:', e); }
+        }
+
+        window.addEventListener('load', initializeCharts);
+        setTimeout(initializeCharts, 1200);
+    </script>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Skin Analysis Log - Slow Glow Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['DM Serif Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                        'nav': '0 -4px 20px -5px rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #8DA290;
+            cursor: pointer;
+            margin-top: -10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #E5E7EB;
+            border-radius: 2px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+        
+        /* Mobile specific utility for touch targets */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    </style>
+</head>
+<body class="min-h-screen m-0 p-0 overflow-x-hidden flex flex-col bg-brand-lightGray pb-20">
+
+    <!-- Mobile Top Header -->
+    <header class="bg-white border-b border-brand-border px-5 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-leaf text-brand-sage text-lg"></i>
+            <span class="text-brand-charcoal font-bold text-base tracking-tight">Slow Glow</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button class="touch-target flex items-center justify-center text-gray-500 hover:text-brand-charcoal transition-colors">
+                <i class="fa-regular fa-bell text-lg"></i>
+            </button>
+            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full max-w-[375px] mx-auto sm:max-w-md px-4 py-6 space-y-6">
+        
+        <!-- Page Title & Actions -->
+        <div class="flex items-end justify-between mb-2">
+            <div>
+                <h1 class="text-2xl font-bold text-brand-charcoal font-serif tracking-tight">Analysis Log</h1>
+                <p class="text-xs text-gray-500 mt-1">May 24, 2024</p>
+            </div>
+            <button class="touch-target px-3 py-2 bg-white border border-brand-border text-brand-charcoal rounded-lg text-xs font-medium shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-download"></i> Export
+            </button>
+        </div>
+
+        <!-- Manual Entry Form (Progressive Disclosure) -->
+        <section class="bg-white rounded-[20px] border border-brand-border shadow-card overflow-hidden">
+            <!-- Accordion Header -->
+            <div class="p-5 border-b border-brand-border bg-brand-cream/50 flex justify-between items-center cursor-pointer" onclick="document.getElementById('entry-form').classList.toggle('hidden'); document.getElementById('entry-chevron').classList.toggle('rotate-180');">
+                <h2 class="text-base font-bold text-brand-charcoal font-serif flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-brand-sage text-sm"></i> Today's Entry
+                </h2>
+                <i id="entry-chevron" class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200"></i>
+            </div>
+
+            <!-- Form Content -->
+            <div id="entry-form" class="p-5 space-y-6">
+                <!-- Hydration Slider -->
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-sm font-medium text-brand-charcoal">Hydration Level</label>
+                        <span class="text-[10px] font-bold text-brand-sage bg-brand-sage/10 px-2 py-1 rounded-md">8/10 Optimal</span>
+                    </div>
+                    <div class="px-2">
+                        <input type="range" min="1" max="10" value="8" class="w-full touch-target">
+                        <div class="flex justify-between text-[10px] text-gray-400 mt-2">
+                            <span>Dry</span>
+                            <span>Balanced</span>
+                            <span>Oily</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Redness Slider -->
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-sm font-medium text-brand-charcoal">Redness / Inflammation</label>
+                        <span class="text-[10px] font-bold text-brand-terracotta bg-brand-terracotta/10 px-2 py-1 rounded-md">3/10 Mild</span>
+                    </div>
+                    <div class="px-2">
+                        <input type="range" min="1" max="10" value="3" class="w-full touch-target">
+                        <div class="flex justify-between text-[10px] text-gray-400 mt-2">
+                            <span>Clear</span>
+                            <span>Moderate</span>
+                            <span>Severe</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breakout Activity (Grid adapted for mobile) -->
+                <div>
+                    <label class="text-sm font-medium text-brand-charcoal block mb-3">Breakout Activity</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" class="touch-target border border-brand-border rounded-xl text-xs font-medium text-gray-600 bg-white">None</button>
+                        <button type="button" class="touch-target border border-brand-sage bg-brand-sage/10 rounded-xl text-xs font-medium text-brand-sage">Mild</button>
+                        <button type="button" class="touch-target border border-brand-border rounded-xl text-xs font-medium text-gray-600 bg-white">Moderate</button>
+                        <button type="button" class="touch-target border border-brand-border rounded-xl text-xs font-medium text-gray-600 bg-white">Severe</button>
+                    </div>
+                </div>
+
+                <!-- Tags stacked -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-medium text-gray-600 block mb-1.5">Routine Version</label>
+                        <select class="w-full touch-target bg-brand-lightGray border border-brand-border rounded-xl px-4 text-sm text-brand-charcoal focus:outline-none appearance-none">
+                            <option>Protocol A (Tretinoin Night)</option>
+                            <option>Protocol B (Recovery Night)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium text-gray-600 block mb-1.5">Primary Zone</label>
+                        <select class="w-full touch-target bg-brand-lightGray border border-brand-border rounded-xl px-4 text-sm text-brand-charcoal focus:outline-none appearance-none">
+                            <option>Full Face</option>
+                            <option>Cheeks / Jawline</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="button" class="w-full touch-target bg-brand-sage text-white rounded-xl text-sm font-bold shadow-sm active:scale-[0.98] transition-transform">
+                    Save Log Entry
+                </button>
+            </div>
+        </section>
+
+        <!-- Progress Chart -->
+        <section class="bg-white rounded-[20px] border border-brand-border shadow-card p-5">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-base font-bold text-brand-charcoal font-serif">Progress Trends</h3>
+                <select class="bg-brand-lightGray border border-brand-border rounded-lg text-[10px] font-medium text-brand-charcoal px-2 py-1 outline-none">
+                    <option>30 Days</option>
+                    <option>3 Months</option>
+                </select>
+            </div>
+            
+            <div id="progress-chart-mobile" class="w-full h-[220px] -ml-2"></div>
+            
+            <!-- Custom Mobile Legend -->
+            <div class="flex flex-wrap gap-3 mt-2 justify-center">
+                <div class="flex items-center gap-1.5 text-[10px] font-medium text-gray-600"><span class="w-2 h-2 rounded-full bg-brand-sage"></span> Hydration</div>
+                <div class="flex items-center gap-1.5 text-[10px] font-medium text-gray-600"><span class="w-2 h-2 rounded-full bg-brand-terracotta"></span> Redness</div>
+                <div class="flex items-center gap-1.5 text-[10px] font-medium text-gray-600"><span class="w-2 h-2 rounded-full bg-brand-charcoal"></span> Texture</div>
+            </div>
+        </section>
+
+        <!-- Photo Diary Grid (Stacked for Mobile) -->
+        <section class="bg-white rounded-[20px] border border-brand-border shadow-card p-5">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-base font-bold text-brand-charcoal font-serif">Photo Diary</h3>
+                <button class="text-[10px] text-brand-sage font-bold uppercase tracking-wider">View All</button>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Comparison Card 1 -->
+                <div class="border border-brand-border rounded-[16px] p-3.5 bg-brand-lightGray">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-sm font-bold text-brand-charcoal">Week 1 vs Week 4</span>
+                        <span class="text-[10px] bg-white px-2 py-0.5 rounded border border-brand-border text-gray-500">Protocol A</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="relative rounded-xl overflow-hidden aspect-square">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/ab0e815c7f-ecec9f6e6f7c114ea490.png" alt="close up of cheek skin before skincare treatment, natural lighting, neutral background" />
+                            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-2 text-center">
+                                <span class="text-[10px] text-white font-medium">Day 1</span>
+                            </div>
+                        </div>
+                        <div class="relative rounded-xl overflow-hidden aspect-square">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d7c7344fc8-8667272f3fc319480a1b.png" alt="close up of clear cheek skin after skincare treatment, natural lighting, neutral background" />
+                            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent p-2 text-center">
+                                <span class="text-[10px] text-white font-medium">Day 28</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <span class="px-2.5 py-1 bg-brand-sage/10 border border-brand-sage/20 rounded-lg text-[10px] text-brand-sage font-medium">Texture Improved</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- History Table (Simplified for mobile) -->
+        <section class="bg-white rounded-[20px] border border-brand-border shadow-card overflow-hidden">
+            <div class="p-5 border-b border-brand-border flex justify-between items-center">
+                <h3 class="text-base font-bold text-brand-charcoal font-serif">Recent Entries</h3>
+            </div>
+            <div class="divide-y divide-brand-border">
+                <!-- Row 1 -->
+                <div class="p-4 flex items-center justify-between active:bg-gray-50">
+                    <div>
+                        <p class="text-sm font-bold text-brand-charcoal">May 23, 2024</p>
+                        <p class="text-[10px] text-gray-500 mt-0.5">Protocol B</p>
+                    </div>
+                    <div class="flex gap-3 text-xs">
+                        <div class="text-center"><span class="block text-[10px] text-gray-400">Hyd</span><span class="font-medium text-brand-sage">8</span></div>
+                        <div class="text-center"><span class="block text-[10px] text-gray-400">Red</span><span class="font-medium text-brand-charcoal">4</span></div>
+                        <div class="text-center"><span class="block text-[10px] text-gray-400">Tex</span><span class="font-medium text-brand-charcoal">3</span></div>
+                    </div>
+                </div>
+                <!-- Row 2 -->
+                <div class="p-4 flex items-center justify-between active:bg-gray-50">
+                    <div>
+                        <p class="text-sm font-bold text-brand-charcoal">May 22, 2024</p>
+                        <p class="text-[10px] text-gray-500 mt-0.5">Protocol A</p>
+                    </div>
+                    <div class="flex gap-3 text-xs">
+                        <div class="text-center"><span class="block text-[10px] text-gray-400">Hyd</span><span class="font-medium text-brand-sage">7</span></div>
+                        <div class="text-center"><span class="block text-[10px] text-gray-400">Red</span><span class="font-medium text-brand-terracotta">6</span></div>
+                        <div class="text-center"><span class="block text-[10px] text-gray-400">Tex</span><span class="font-medium text-brand-charcoal">4</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 bg-brand-lightGray/50 border-t border-brand-border text-center">
+                <button class="text-xs text-brand-sage font-bold">Load More</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Mobile Bottom Navigation (Frozen Shell) -->
+    <nav class="fixed bottom-0 w-full bg-white border-t border-brand-border pb-safe z-40 shadow-nav">
+        <div class="flex justify-around items-center h-16 max-w-[375px] sm:max-w-md mx-auto px-2">
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-full text-gray-400 hover:text-brand-charcoal">
+                <i class="fa-solid fa-border-all text-lg mb-1"></i>
+                <span class="text-[9px] font-medium">Home</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-full text-gray-400 hover:text-brand-charcoal">
+                <i class="fa-regular fa-calendar text-lg mb-1"></i>
+                <span class="text-[9px] font-medium">Routine</span>
+            </a>
+            <!-- Center FAB for active state / quick add -->
+            <div class="relative -top-5">
+                <button class="w-12 h-12 bg-brand-sage rounded-full text-white shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+                    <i class="fa-solid fa-plus text-xl"></i>
+                </button>
+            </div>
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-full text-brand-sage">
+                <i class="fa-solid fa-magnifying-glass-chart text-lg mb-1"></i>
+                <span class="text-[9px] font-bold">Analysis</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-16 h-full text-gray-400 hover:text-brand-charcoal">
+                <i class="fa-solid fa-box-open text-lg mb-1"></i>
+                <span class="text-[9px] font-medium">Stash</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        function initializeMobileCharts() {
+            try {
+                const dates = ['M1', 'M5', 'M10', 'M15', 'M20', 'M24']; // Shortened labels for mobile
+                
+                const hydrationTrace = {
+                    x: dates,
+                    y: [5, 6, 6, 7, 8, 8],
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Hydration',
+                    line: { shape: 'spline', smoothing: 1.3, color: '#8DA290', width: 3 },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(141, 162, 144, 0.1)'
+                };
+
+                const rednessTrace = {
+                    x: dates,
+                    y: [7, 6, 5, 4, 4, 3],
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Redness',
+                    line: { shape: 'spline', smoothing: 1.3, color: '#C68B77', width: 2 },
+                };
+
+                const textureTrace = {
+                    x: dates,
+                    y: [6, 6, 5, 4, 3, 2],
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Texture',
+                    line: { shape: 'spline', smoothing: 1.3, color: '#2D2D2D', width: 1.5, dash: 'dot' },
+                };
+
+                const layout = {
+                    margin: { t: 10, r: 10, b: 30, l: 25 },
+                    plot_bgcolor: 'transparent',
+                    paper_bgcolor: 'transparent',
+                    showlegend: false, // Custom HTML legend used instead for mobile
+                    xaxis: { 
+                        showgrid: false, 
+                        tickfont: { color: '#9CA3AF', size: 10 },
+                        fixedrange: true // Disable zoom on mobile
+                    },
+                    yaxis: { 
+                        range: [0, 10],
+                        showgrid: true, 
+                        gridcolor: 'rgba(0,0,0,0.04)',
+                        tickfont: { color: '#9CA3AF', size: 10 },
+                        fixedrange: true
+                    },
+                    dragmode: false
+                };
+
+                Plotly.newPlot('progress-chart-mobile', [hydrationTrace, rednessTrace, textureTrace], layout, {
+                    responsive: true, 
+                    displayModeBar: false,
+                    staticPlot: true // Better performance on mobile if interaction isn't strictly needed
+                });
+            } catch(e) {
+                console.error("Mobile Chart initialization failed:", e);
+            }
+        }
+
+        window.addEventListener('load', initializeMobileCharts);
+        setTimeout(initializeMobileCharts, 1200);
+    </script>
+</body>
+</html>

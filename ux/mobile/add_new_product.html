@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Custom Checkbox for Acknowledgement */
+        .ack-check input:checked + div {
+            background-color: #C68B77;
+            border-color: #C68B77;
+        }
+        .ack-check input:checked + div i {
+            opacity: 1;
+        }
+
+        /* Body Zone Selection */
+        .zone-btn.selected {
+            background-color: #8DA290;
+            color: white;
+            border-color: #8DA290;
+        }
+        
+        /* Photo Upload Area */
+        .upload-area {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%23E5E7EB' stroke-width='2' stroke-dasharray='8%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        }
+
+        /* Accordion transitions */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            max-height: 500px; /* Arbitrary large value */
+            opacity: 1;
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-icon.open {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="min-h-[100dvh] flex flex-col m-0 p-0 overflow-hidden bg-brand-lightGray text-brand-charcoal">
+
+    <!-- Mobile Header (Sticky Top) -->
+    <header class="bg-white px-5 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm border-b border-brand-border shrink-0">
+        <div class="flex items-center gap-3">
+            <button class="w-10 h-10 rounded-full bg-brand-lightGray flex items-center justify-center text-brand-charcoal active:bg-gray-200 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight leading-tight">Add Product</h1>
+                <p class="text-xs text-gray-500">Inventory</p>
+            </div>
+        </div>
+        <button class="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 active:bg-gray-100 transition-colors">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+    </header>
+
+    <!-- Main Scrollable Content -->
+    <main class="flex-1 overflow-y-auto w-full max-w-md mx-auto pb-32">
+        <div class="p-5 flex flex-col gap-6">
+
+            <!-- Section 1: Basic Details (Always visible) -->
+            <section class="bg-white rounded-[20px] p-5 shadow-card border border-brand-border flex flex-col gap-5">
+                <div class="flex items-center gap-2 mb-1">
+                    <div class="w-6 h-6 rounded-full bg-brand-sage/10 flex items-center justify-center">
+                        <i class="fa-solid fa-tag text-[10px] text-brand-sage"></i>
+                    </div>
+                    <h2 class="text-sm font-bold text-brand-charcoal">Product Identity</h2>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">Brand</label>
+                        <input type="text" placeholder="e.g. Paula's Choice" class="w-full px-4 py-3.5 rounded-[14px] border border-brand-border text-sm focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage bg-brand-cream/50 shadow-input">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">Product Name</label>
+                        <input type="text" placeholder="e.g. 2% BHA Liquid Exfoliant" class="w-full px-4 py-3.5 rounded-[14px] border border-brand-border text-sm focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage bg-brand-cream/50 shadow-input">
+                    </div>
+
+                    <!-- Photo Upload -->
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">Photo</label>
+                        <div class="upload-area rounded-[16px] p-6 flex flex-col items-center justify-center text-center cursor-pointer active:bg-brand-sage/5 transition-colors">
+                            <div class="w-12 h-12 rounded-full bg-brand-sage/10 flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-camera text-brand-sage text-xl"></i>
+                            </div>
+                            <p class="text-sm font-semibold text-brand-charcoal">Tap to upload photo</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Formulation & Safety -->
+            <section class="bg-white rounded-[20px] p-5 shadow-card border border-brand-border flex flex-col gap-5">
+                <div class="flex items-center justify-between mb-1">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-brand-terracotta/10 flex items-center justify-center">
+                            <i class="fa-solid fa-flask text-[10px] text-brand-terracotta"></i>
+                        </div>
+                        <h2 class="text-sm font-bold text-brand-charcoal">Formulation</h2>
+                    </div>
+                    <span class="px-2 py-1 bg-brand-sage/10 text-brand-sage rounded-[6px] text-[10px] font-bold uppercase tracking-wider">Screening Active</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">Key Actives</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" placeholder="Add ingredient..." class="w-full pl-10 pr-4 py-3.5 rounded-[14px] border border-brand-border text-sm focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage bg-brand-cream/50 shadow-input">
+                    </div>
+                    
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-lightGray border border-brand-border text-[13px] font-medium text-brand-charcoal">
+                            Salicylic Acid (BHA)
+                            <button class="text-gray-400 active:text-brand-terracotta w-4 h-4 flex items-center justify-center rounded-full"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-lightGray border border-brand-border text-[13px] font-medium text-brand-charcoal">
+                            Green Tea
+                            <button class="text-gray-400 active:text-brand-terracotta w-4 h-4 flex items-center justify-center rounded-full"><i class="fa-solid fa-xmark text-[10px]"></i></button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Safety Warning -->
+                <div class="bg-[#FFF5F5] border border-[#FFE5E5] rounded-[16px] p-4 flex gap-3 relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-terracotta"></div>
+                    <div class="w-7 h-7 rounded-full bg-brand-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid fa-triangle-exclamation text-brand-terracotta text-[10px]"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-[13px] font-bold text-brand-terracotta mb-1">Conflict Detected</h4>
+                        <p class="text-[13px] text-gray-600 leading-snug mb-3">You have an active AHA (10%) in your PM routine. Adding BHA may cause over-exfoliation.</p>
+                        
+                        <label class="ack-check cursor-pointer flex items-start gap-2.5 p-2.5 rounded-[10px] border border-brand-terracotta/20 bg-white">
+                            <input type="checkbox" class="sr-only" required>
+                            <div class="w-4 h-4 rounded-[4px] border border-gray-300 flex items-center justify-center transition-colors shrink-0 mt-[2px]">
+                                <i class="fa-solid fa-check text-white text-[9px] opacity-0 transition-opacity"></i>
+                            </div>
+                            <span class="text-[11px] font-medium text-brand-charcoal leading-tight">I acknowledge the risk and will patch test.</span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Usage Tracking (Accordion) -->
+            <section class="bg-white rounded-[20px] shadow-card border border-brand-border overflow-hidden">
+                <button class="w-full p-5 flex items-center justify-between bg-white active:bg-gray-50" onclick="toggleAccordion('usage-accordion', 'usage-icon')">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-brand-blue/10 flex items-center justify-center">
+                            <i class="fa-solid fa-calendar-days text-[10px] text-brand-blue"></i>
+                        </div>
+                        <h2 class="text-sm font-bold text-brand-charcoal">Usage Tracking</h2>
+                    </div>
+                    <i id="usage-icon" class="fa-solid fa-chevron-down text-gray-400 text-sm accordion-icon"></i>
+                </button>
+                
+                <div id="usage-accordion" class="accordion-content px-5 pb-5 flex flex-col gap-4">
+                    <div class="pt-2 border-t border-brand-border">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1 mt-3">Status</label>
+                        <div class="relative">
+                            <select class="w-full px-4 py-3.5 rounded-[14px] border border-brand-border text-sm text-brand-charcoal bg-brand-cream/50 focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage appearance-none shadow-input pr-10">
+                                <option>Upcoming (Unopened)</option>
+                                <option>Active (In Use)</option>
+                                <option>Paused</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">Purchase Date</label>
+                            <input type="date" class="w-full px-3 py-3 rounded-[14px] border border-brand-border text-[13px] text-brand-charcoal bg-brand-cream/50 shadow-input">
+                        </div>
+                        <div class="opacity-50">
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1 flex items-center gap-1">Open Date <i class="fa-solid fa-lock text-[8px]"></i></label>
+                            <input type="date" disabled class="w-full px-3 py-3 rounded-[14px] border border-brand-border text-[13px] text-gray-400 bg-gray-50 shadow-input">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 ml-1">PAO (Shelf Life)</label>
+                        <div class="flex shadow-input rounded-[14px]">
+                            <input type="number" placeholder="12" class="w-20 px-3 py-3.5 rounded-l-[14px] border border-brand-border text-sm text-center bg-brand-cream/50 border-r-0 focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage z-10 relative">
+                            <select class="flex-1 px-4 py-3.5 rounded-r-[14px] border border-brand-border text-sm text-brand-charcoal bg-brand-cream/50 appearance-none focus:outline-none focus:border-brand-sage focus:ring-1 focus:ring-brand-sage">
+                                <option>Months</option>
+                                <option>Weeks</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: Body Zones (Accordion) -->
+            <section class="bg-white rounded-[20px] shadow-card border border-brand-border overflow-hidden">
+                <button class="w-full p-5 flex items-center justify-between bg-white active:bg-gray-50" onclick="toggleAccordion('zone-accordion', 'zone-icon')">
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 rounded-full bg-brand-charcoal/5 flex items-center justify-center">
+                            <i class="fa-solid fa-person text-[10px] text-brand-charcoal"></i>
+                        </div>
+                        <h2 class="text-sm font-bold text-brand-charcoal">Target Zones</h2>
+                    </div>
+                    <i id="zone-icon" class="fa-solid fa-chevron-down text-gray-400 text-sm accordion-icon"></i>
+                </button>
+                
+                <div id="zone-accordion" class="accordion-content px-5 pb-5">
+                    <div class="pt-4 border-t border-brand-border">
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <button type="button" class="zone-btn px-3 py-3 rounded-[12px] border border-brand-border text-[13px] font-medium text-brand-charcoal bg-white active:bg-gray-50 transition-colors shadow-sm">Face</button>
+                            <button type="button" class="zone-btn selected px-3 py-3 rounded-[12px] border border-brand-sage text-[13px] font-medium text-white bg-brand-sage transition-colors shadow-sm">Neck & Chest</button>
+                            <button type="button" class="zone-btn px-3 py-3 rounded-[12px] border border-brand-border text-[13px] font-medium text-brand-charcoal bg-white active:bg-gray-50 transition-colors shadow-sm">Body</button>
+                            <button type="button" class="zone-btn px-3 py-3 rounded-[12px] border border-brand-border text-[13px] font-medium text-brand-charcoal bg-white active:bg-gray-50 transition-colors shadow-sm">Eyes</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Sticky Bottom CTA -->
+    <div class="fixed bottom-[70px] left-0 right-0 p-4 bg-gradient-to-t from-brand-lightGray via-brand-lightGray to-transparent z-20">
+        <div class="max-w-md mx-auto">
+            <button class="w-full py-4 bg-brand-sage text-white rounded-[16px] text-[15px] font-bold shadow-[0_8px_16px_-4px_rgba(141,162,144,0.4)] active:scale-[0.98] transition-transform flex items-center justify-center gap-2 h-[56px]">
+                <i class="fa-solid fa-check"></i> Add to Inventory
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-brand-border pb-safe z-30 h-[70px] flex items-center justify-around px-2">
+        <a href="#" class="flex flex-col items-center justify-center w-16 h-full gap-1 text-gray-400 active:text-brand-charcoal">
+            <i class="fa-solid fa-border-all text-lg"></i>
+            <span class="text-[10px] font-medium">Home</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center w-16 h-full gap-1 text-gray-400 active:text-brand-charcoal">
+            <i class="fa-regular fa-calendar text-lg"></i>
+            <span class="text-[10px] font-medium">Routine</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center w-16 h-full gap-1 text-brand-sage relative">
+            <div class="absolute -top-3 w-12 h-12 bg-brand-sage rounded-full flex items-center justify-center text-white shadow-lg border-4 border-white">
+                <i class="fa-solid fa-plus text-xl"></i>
+            </div>
+            <span class="text-[10px] font-medium mt-6">Add</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center w-16 h-full gap-1 text-gray-400 active:text-brand-charcoal">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span class="text-[10px] font-medium">Stash</span>
+        </a>
+        <a href="#" class="flex flex-col items-center justify-center w-16 h-full gap-1 text-gray-400 active:text-brand-charcoal">
+            <i class="fa-regular fa-user text-lg"></i>
+            <span class="text-[10px] font-medium">Profile</span>
+        </a>
+    </nav>
+
+    <script>
+        // Zone button toggle
+        document.querySelectorAll('.zone-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('selected');
+                if(this.classList.contains('selected')) {
+                    this.classList.replace('bg-white', 'bg-brand-sage');
+                    this.classList.replace('text-brand-charcoal', 'text-white');
+                    this.classList.replace('border-brand-border', 'border-brand-sage');
+                } else {
+                    this.classList.replace('bg-brand-sage', 'bg-white');
+                    this.classList.replace('text-white', 'text-brand-charcoal');
+                    this.classList.replace('border-brand-sage', 'border-brand-border');
+                }
+            });
+        });
+
+        // Accordion logic
+        function toggleAccordion(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+            
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slow Glow - Step 3: Health Screening Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Custom radio/checkbox styles matching previous screen */
+        .screening-option input:checked + div {
+            border-color: #8DA290;
+            background-color: rgba(141, 162, 144, 0.05);
+        }
+        .screening-option input:checked + div .check-circle {
+            background-color: #8DA290;
+            border-color: #8DA290;
+        }
+        .screening-option input:checked + div .check-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+        }
+
+        /* Tooltip hover trigger for mobile (using focus-within for tap) */
+        .group:focus-within .tooltip-content,
+        .group:active .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body class="w-full h-full min-h-screen bg-brand-cream flex justify-center">
+
+    <!-- Mobile App Container (375px max width constraint for the layout intent) -->
+    <div class="w-full max-w-[375px] bg-white min-h-screen relative flex flex-col shadow-card mx-auto overflow-x-hidden">
+        
+        <!-- Sticky Header -->
+        <header id="mobile-header" class="sticky top-0 z-50 bg-white/90 backdrop-blur-md px-6 py-4 flex items-center justify-between border-b border-brand-border">
+            <button class="w-10 h-10 flex items-center justify-start text-brand-charcoal hover:text-brand-sage transition-colors">
+                <i class="fa-solid fa-chevron-left text-lg"></i>
+            </button>
+            <div class="flex items-center gap-2 text-brand-charcoal font-semibold text-base">
+                <i class="fa-solid fa-leaf text-brand-sage"></i>
+                <span>Slow Glow</span>
+            </div>
+            <button class="w-10 h-10 flex items-center justify-end text-sm font-medium text-gray-500 hover:text-brand-charcoal transition-colors">
+                Save
+            </button>
+        </header>
+
+        <!-- Scrollable Content -->
+        <main class="flex-1 px-6 pt-6 pb-32 overflow-y-auto">
+            
+            <!-- Simplified Mobile Progress -->
+            <div id="mobile-progress" class="mb-8 flex items-center justify-between">
+                <div class="flex flex-col">
+                    <span class="text-xs font-semibold tracking-wider text-gray-400 uppercase mb-1">Step 3 of 3</span>
+                    <span class="text-sm font-medium text-brand-charcoal">Health & Safety</span>
+                </div>
+                <div class="flex gap-1">
+                    <div class="h-1.5 w-6 rounded-full bg-brand-sage"></div>
+                    <div class="h-1.5 w-6 rounded-full bg-brand-sage"></div>
+                    <div class="h-1.5 w-6 rounded-full bg-brand-blue"></div>
+                </div>
+            </div>
+
+            <!-- Intro -->
+            <div id="intro-section" class="mb-10">
+                <h1 class="text-[28px] leading-[1.1] font-bold text-brand-charcoal mb-4 tracking-tight">Health<br/>screening.</h1>
+                <p class="text-gray-600 text-[15px] leading-relaxed">To ensure your tracking is safe and effective, we need to know about any underlying conditions or strong treatments.</p>
+                
+                <!-- Safety Insight Card (Mobile Adapted) -->
+                <div class="mt-6 bg-brand-cream border border-brand-border rounded-[16px] p-5 shadow-sm">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-sage/10 flex items-center justify-center shrink-0 mt-0.5">
+                            <i class="fa-solid fa-shield-heart text-brand-sage text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-[13px] font-semibold text-brand-charcoal mb-1">Safety First</h4>
+                            <p class="text-[13px] text-brand-charcoal/80 leading-relaxed italic">"Your skin barrier is your first line of defense. We ask these questions to ensure we never recommend tracking routines that could compromise it."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questionnaire Stack -->
+            <form id="health-form" class="space-y-10">
+                
+                <!-- Pregnancy / Breastfeeding -->
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <label class="text-[15px] font-semibold text-brand-charcoal leading-snug">Are you currently pregnant or breastfeeding?</label>
+                        <div class="relative group shrink-0" tabindex="0">
+                            <button type="button" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-brand-charcoal transition-colors">
+                                <i class="fa-solid fa-circle-info text-sm"></i>
+                            </button>
+                            <!-- Mobile-friendly tooltip (centered, wider) -->
+                            <div class="tooltip-content invisible opacity-0 absolute top-full right-0 mt-2 w-[280px] p-4 bg-brand-charcoal text-white text-[13px] leading-relaxed rounded-[12px] shadow-lg transition-all z-20">
+                                Certain actives like Retinoids and high-strength Salicylic Acid are generally advised against during pregnancy.
+                                <div class="absolute bottom-full right-3 border-4 border-transparent border-b-brand-charcoal"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-3">
+                        <label class="screening-option cursor-pointer block">
+                            <input type="radio" name="pregnancy" class="sr-only" value="yes">
+                            <div class="px-5 py-4 min-h-[56px] rounded-[14px] border border-gray-200 flex items-center justify-between transition-all bg-white shadow-sm">
+                                <span class="text-[15px] font-medium text-brand-charcoal">Yes</span>
+                                <div class="w-[20px] h-[20px] rounded-full border-[1.5px] border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                            </div>
+                        </label>
+                        <label class="screening-option cursor-pointer block">
+                            <input type="radio" name="pregnancy" class="sr-only" value="no" checked>
+                            <div class="px-5 py-4 min-h-[56px] rounded-[14px] border border-gray-200 flex items-center justify-between transition-all bg-white shadow-sm">
+                                <span class="text-[15px] font-medium text-brand-charcoal">No</span>
+                                <div class="w-[20px] h-[20px] rounded-full border-[1.5px] border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                            </div>
+                        </label>
+                        <label class="screening-option cursor-pointer block">
+                            <input type="radio" name="pregnancy" class="sr-only" value="unsure">
+                            <div class="px-5 py-4 min-h-[56px] rounded-[14px] border border-gray-200 flex items-center justify-between transition-all bg-white shadow-sm">
+                                <span class="text-[15px] font-medium text-brand-charcoal">I'm not sure</span>
+                                <div class="w-[20px] h-[20px] rounded-full border-[1.5px] border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Prescription Treatments -->
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <label class="text-[15px] font-semibold text-brand-charcoal leading-snug">Are you currently using prescription topical treatments?</label>
+                        <div class="relative group shrink-0" tabindex="0">
+                            <button type="button" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-brand-charcoal transition-colors">
+                                <i class="fa-solid fa-circle-info text-sm"></i>
+                            </button>
+                            <div class="tooltip-content invisible opacity-0 absolute top-full right-0 mt-2 w-[280px] p-4 bg-brand-charcoal text-white text-[13px] leading-relaxed rounded-[12px] shadow-lg transition-all z-20">
+                                Examples: Tretinoin, Accutane, prescription Azelaic Acid, Clindamycin. These heavily impact how you should introduce other actives.
+                                <div class="absolute bottom-full right-3 border-4 border-transparent border-b-brand-charcoal"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-3">
+                        <label class="screening-option cursor-pointer block">
+                            <input type="radio" name="prescriptions" class="sr-only" value="yes">
+                            <div class="px-5 py-4 min-h-[56px] rounded-[14px] border border-gray-200 flex items-center justify-between transition-all bg-white shadow-sm">
+                                <span class="text-[15px] font-medium text-brand-charcoal">Yes, currently using</span>
+                                <div class="w-[20px] h-[20px] rounded-full border-[1.5px] border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                            </div>
+                        </label>
+                        <label class="screening-option cursor-pointer block">
+                            <input type="radio" name="prescriptions" class="sr-only" value="no" checked>
+                            <div class="px-5 py-4 min-h-[56px] rounded-[14px] border border-gray-200 flex items-center justify-between transition-all bg-white shadow-sm">
+                                <span class="text-[15px] font-medium text-brand-charcoal">No prescriptions</span>
+                                <div class="w-[20px] h-[20px] rounded-full border-[1.5px] border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <!-- Dynamic Warning Note (Simulated active state for mobile demo) -->
+                    <div class="bg-brand-terracotta/5 border border-brand-terracotta/20 rounded-[14px] p-4 mt-1">
+                        <div class="flex gap-3">
+                            <div class="w-6 h-6 rounded-full bg-brand-terracotta/10 flex items-center justify-center shrink-0 mt-0.5">
+                                <i class="fa-solid fa-triangle-exclamation text-brand-terracotta text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[14px] font-semibold text-brand-charcoal mb-1">Caution with Actives</p>
+                                <p class="text-[13px] text-gray-600 leading-relaxed">Since you're using prescriptions, we recommend tracking only basic hydration routines right now.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barrier Impairment -->
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <label class="text-[15px] font-semibold text-brand-charcoal leading-snug">Do you suspect your skin barrier is currently impaired?</label>
+                        <div class="relative group shrink-0" tabindex="0">
+                            <button type="button" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-brand-charcoal transition-colors">
+                                <i class="fa-solid fa-circle-info text-sm"></i>
+                            </button>
+                            <div class="tooltip-content invisible opacity-0 absolute bottom-full right-0 mb-2 w-[280px] p-4 bg-brand-charcoal text-white text-[13px] leading-relaxed rounded-[12px] shadow-lg transition-all z-20">
+                                Signs include: stinging when applying gentle products, excessive redness, tight/shiny appearance, or sudden severe breakouts.
+                                <div class="absolute top-full right-3 border-4 border-transparent border-t-brand-charcoal"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-3">
+                        <label class="screening-option cursor-pointer block">
+                            <input type="radio" name="barrier" class="sr-only" value="yes">
+                            <div class="px-5 py-4 min-h-[56px] rounded-[14px] border border-gray-200 flex items-center justify-between transition-all bg-white shadow-sm">
+                                <span class="text-[15px] font-medium text-brand-charcoal">Yes</span>
+                                <div class="w-[20px] h-[20px] rounded-full border-[1.5px] border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                            </div>
+                        </label>
+                        <label class="screening-option cursor-pointer block">
+                            <input type="radio" name="barrier" class="sr-only" value="no" checked>
+                            <div class="px-5 py-4 min-h-[56px] rounded-[14px] border border-gray-200 flex items-center justify-between transition-all bg-white shadow-sm">
+                                <span class="text-[15px] font-medium text-brand-charcoal">No</span>
+                                <div class="w-[20px] h-[20px] rounded-full border-[1.5px] border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                            </div>
+                        </label>
+                        <label class="screening-option cursor-pointer block">
+                            <input type="radio" name="barrier" class="sr-only" value="unsure">
+                            <div class="px-5 py-4 min-h-[56px] rounded-[14px] border border-gray-200 flex items-center justify-between transition-all bg-white shadow-sm">
+                                <span class="text-[15px] font-medium text-brand-charcoal">I'm not sure</span>
+                                <div class="w-[20px] h-[20px] rounded-full border-[1.5px] border-gray-300 check-circle relative transition-colors shrink-0"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+            </form>
+        </main>
+
+        <!-- Sticky Bottom Action Bar -->
+        <div id="mobile-action-footer" class="absolute bottom-0 left-0 right-0 bg-white border-t border-brand-border p-6 pb-8 z-50 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.05)]">
+            <div class="flex flex-col gap-3">
+                <button type="button" class="w-full min-h-[56px] bg-brand-blue hover:bg-blue-600 text-white text-[16px] font-semibold rounded-[16px] transition-colors shadow-sm flex items-center justify-center gap-2">
+                    Complete Setup
+                </button>
+                <button type="button" class="w-full min-h-[44px] text-[14px] font-medium text-gray-500 hover:text-brand-charcoal transition-colors flex items-center justify-center">
+                    Skip for now
+                </button>
+            </div>
+            
+            <!-- Home Indicator Safe Area (iOS visual match) -->
+            <div class="w-[134px] h-[5px] bg-gray-300 rounded-full mx-auto mt-6"></div>
+        </div>
+
+    </div>
+
+</body>
+</html>

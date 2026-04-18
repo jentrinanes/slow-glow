@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#7A9482',
+                            cream: '#F9F7F2',
+                            terracotta: '#D67D5C',
+                            dark: '#2C3E35',
+                            gray: '#E5E7EB',
+                            text: '#4B5563'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F9F7F2;
+            -webkit-font-smoothing: antialiased;
+        }
+        .input-notebook {
+            border: none;
+            border-bottom: 1px solid #E5E7EB;
+            border-radius: 0;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .input-notebook:focus {
+            outline: none;
+            border-bottom-color: #7A9482;
+            box-shadow: 0 1px 0 0 #7A9482;
+        }
+        .input-notebook.error {
+            border-bottom-color: #D67D5C;
+        }
+        .input-notebook.error:focus {
+            box-shadow: 0 1px 0 0 #D67D5C;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="min-h-screen flex text-brand-dark font-sans">
+
+    <!-- Split Screen Layout -->
+    <div id="auth-wrapper" class="flex w-full min-h-screen">
+        
+        <!-- Left Column: Form Area -->
+        <div id="form-section" class="w-full lg:w-[45%] flex flex-col justify-center px-8 sm:px-16 lg:px-24 xl:px-32 relative z-10 bg-brand-cream overflow-y-auto py-12">
+            
+            <!-- Brand Header -->
+            <div id="brand-header" class="absolute top-8 left-8 sm:top-12 sm:left-16 lg:left-24 xl:left-32 flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-brand-sage flex items-center justify-center text-white shadow-soft">
+                    <i class="fa-solid fa-leaf text-sm"></i>
+                </div>
+                <span class="font-serif font-medium text-xl tracking-wide text-brand-dark">Slow Glow</span>
+            </div>
+
+            <!-- Main Form Container -->
+            <div id="registration-container" class="w-full max-w-[420px] mx-auto mt-16 lg:mt-0">
+                
+                <h1 class="text-3xl font-serif font-semibold text-brand-dark mb-2">Begin your journey</h1>
+                <p class="text-brand-text text-sm mb-8">Create an account to start tracking your skin's response to minimal, intentional care.</p>
+
+                <form id="registration-form" class="space-y-6" onsubmit="event.preventDefault();">
+                    
+                    <!-- Name Field -->
+                    <div class="space-y-2">
+                        <label for="name" class="block text-sm font-medium text-brand-dark">Full Name</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            class="input-notebook w-full py-2.5 text-brand-dark placeholder:text-gray-400" 
+                            placeholder="e.g. Sarah Miller"
+                        >
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="space-y-2">
+                        <label for="email" class="block text-sm font-medium text-brand-dark">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            class="input-notebook w-full py-2.5 text-brand-dark placeholder:text-gray-400" 
+                            placeholder="sarah@example.com"
+                        >
+                    </div>
+
+                    <!-- Password Group -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Password Field -->
+                        <div class="space-y-2">
+                            <label for="password" class="block text-sm font-medium text-brand-dark">Password</label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    class="input-notebook w-full py-2.5 text-brand-dark placeholder:text-gray-400 pr-8" 
+                                    placeholder="••••••••"
+                                >
+                                <button type="button" class="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-dark">
+                                    <i class="fa-regular fa-eye-slash text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password Field (Showing Error State) -->
+                        <div class="space-y-2">
+                            <label for="confirm-password" class="block text-sm font-medium text-brand-dark">Confirm</label>
+                            <div class="relative">
+                                <input 
+                                    type="password" 
+                                    id="confirm-password" 
+                                    class="input-notebook error w-full py-2.5 text-brand-dark placeholder:text-gray-400" 
+                                    placeholder="••••••••"
+                                    value="password12"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Rules -->
+                    <div class="flex items-start gap-4 text-xs">
+                        <div class="flex items-center gap-1.5 text-brand-sage">
+                            <i class="fa-solid fa-check"></i>
+                            <span>8+ characters</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-brand-terracotta">
+                            <i class="fa-solid fa-xmark"></i>
+                            <span>1 special character</span>
+                        </div>
+                    </div>
+
+                    <hr class="border-brand-gray/50 my-6">
+
+                    <!-- Skin Profile Micro-module -->
+                    <div id="skin-profile-capture" class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-sm font-medium text-brand-dark">Skin Profile</label>
+                            <span class="text-xs text-brand-text italic">Optional</span>
+                        </div>
+                        <p class="text-xs text-brand-text mb-3">Select your primary skin type to help tailor your journal.</p>
+                        
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" class="px-4 py-1.5 rounded-full border border-brand-gray text-sm text-brand-text hover:border-brand-sage hover:text-brand-sage transition-colors bg-white">Dry</button>
+                            <button type="button" class="px-4 py-1.5 rounded-full border border-brand-sage bg-brand-sage/10 text-sm text-brand-dark font-medium transition-colors">Combination</button>
+                            <button type="button" class="px-4 py-1.5 rounded-full border border-brand-gray text-sm text-brand-text hover:border-brand-sage hover:text-brand-sage transition-colors bg-white">Oily</button>
+                            <button type="button" class="px-4 py-1.5 rounded-full border border-brand-gray text-sm text-brand-text hover:border-brand-sage hover:text-brand-sage transition-colors bg-white">Normal</button>
+                            <button type="button" class="px-4 py-1.5 rounded-full border border-brand-gray text-sm text-brand-text hover:border-brand-sage hover:text-brand-sage transition-colors bg-white">Sensitive</button>
+                        </div>
+                    </div>
+
+                    <!-- Consent and Terms -->
+                    <div id="consent-section" class="pt-4">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input 
+                                    id="terms" 
+                                    type="checkbox" 
+                                    class="w-4 h-4 rounded border-gray-300 text-brand-sage focus:ring-brand-sage accent-brand-sage mt-0.5"
+                                >
+                            </div>
+                            <label for="terms" class="ml-3 block text-xs text-brand-text leading-relaxed">
+                                I agree to the <a href="#" class="text-brand-sage hover:text-brand-dark underline decoration-brand-sage/30 underline-offset-2">Terms of Service</a> and acknowledge the <a href="#" class="text-brand-sage hover:text-brand-dark underline decoration-brand-sage/30 underline-offset-2">Privacy Policy</a>.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Primary CTA -->
+                    <button 
+                        type="submit" 
+                        class="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-[8px] shadow-sm text-sm font-medium text-white bg-brand-sage hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-sage transition-colors mt-6"
+                    >
+                        Create Account
+                    </button>
+                </form>
+
+                <!-- Secondary Link -->
+                <p class="mt-8 text-center text-sm text-brand-text">
+                    Already have an account? 
+                    <a href="#" class="font-medium text-brand-sage hover:text-brand-dark transition-colors">
+                        Log in
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Column: Visual Preview -->
+        <div id="visual-section" class="hidden lg:flex lg:w-[55%] relative bg-gradient-to-br from-brand-sage/10 to-brand-cream items-center justify-center p-12 overflow-hidden">
+            
+            <!-- Decorative Background Elements -->
+            <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-sage/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+            <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-brand-terracotta/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4"></div>
+
+            <!-- Mockup Container (Inner App Preview) -->
+            <div class="relative w-full max-w-[800px] h-[700px] glass-panel rounded-[24px] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden flex flex-col">
+                
+                <!-- Mockup Header -->
+                <div class="h-16 border-b border-brand-gray/50 flex items-center px-8 justify-between bg-white/50">
+                    <div class="flex items-center gap-6">
+                        <span class="font-serif font-medium text-lg">Science Notebook</span>
+                        <div class="h-4 w-[1px] bg-brand-gray"></div>
+                        <span class="text-sm text-brand-text">Ingredient Glossary</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-brand-cream border border-brand-gray flex items-center justify-center text-brand-text">
+                            <i class="fa-regular fa-user text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mockup Content -->
+                <div class="flex-1 p-8 grid grid-cols-12 gap-6 bg-[#FAFAFA]/50">
+                    <!-- Left Nav Area -->
+                    <div class="col-span-4 space-y-3">
+                        <div class="p-4 bg-white rounded-[12px] border border-brand-gray/50 shadow-sm">
+                            <h4 class="font-serif text-brand-dark mb-1">Your Setup</h4>
+                            <p class="text-xs text-brand-text leading-relaxed">We'll use your profile to highlight ingredients that support your skin barrier.</p>
+                            
+                            <div class="mt-4 space-y-2">
+                                <div class="flex items-center gap-3 text-sm text-brand-dark">
+                                    <div class="w-6 h-6 rounded bg-brand-sage/10 flex items-center justify-center text-brand-sage"><i class="fa-solid fa-check text-[10px]"></i></div>
+                                    Skin Type
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-brand-text opacity-50">
+                                    <div class="w-6 h-6 rounded border border-brand-gray flex items-center justify-center"></div>
+                                    Primary Goals
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-brand-text opacity-50">
+                                    <div class="w-6 h-6 rounded border border-brand-gray flex items-center justify-center"></div>
+                                    First Routine
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Data Area -->
+                    <div class="col-span-8 space-y-4">
+                        <!-- Ingredient Cards -->
+                        <div class="bg-white p-5 rounded-[12px] shadow-sm border border-brand-gray/30 flex gap-4 items-start">
+                            <div class="w-12 h-12 rounded-full bg-brand-sage/10 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-flask text-brand-sage"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-medium text-brand-dark">Niacinamide</h3>
+                                    <span class="px-2 py-0.5 rounded text-[10px] bg-brand-cream text-brand-text border border-brand-gray/50">Vitamin B3</span>
+                                </div>
+                                <p class="text-xs text-brand-text leading-relaxed">Supports the skin barrier, improves texture, and balances oil production. Ideal for combination profiles.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-[12px] shadow-sm border border-brand-gray/30 flex gap-4 items-start opacity-70">
+                            <div class="w-12 h-12 rounded-full bg-brand-terracotta/10 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-leaf text-brand-terracotta"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-medium text-brand-dark">Centella Asiatica</h3>
+                                    <span class="px-2 py-0.5 rounded text-[10px] bg-brand-cream text-brand-text border border-brand-gray/50">Botanical</span>
+                                </div>
+                                <p class="text-xs text-brand-text leading-relaxed">Known as 'Cica', highly effective for soothing irritation and reducing redness in sensitive states.</p>
+                            </div>
+                        </div>
+                        
+                         <div class="bg-white p-5 rounded-[12px] shadow-sm border border-brand-gray/30 flex gap-4 items-start opacity-40">
+                            <div class="w-12 h-12 rounded-full bg-brand-dark/5 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-droplet text-brand-dark/40"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <h3 class="font-medium text-brand-dark">Hyaluronic Acid</h3>
+                                    <span class="px-2 py-0.5 rounded text-[10px] bg-brand-cream text-brand-text border border-brand-gray/50">Humectant</span>
+                                </div>
+                                <p class="text-xs text-brand-text leading-relaxed">Draws moisture into the skin. Requires application on damp skin to prevent trans-epidermal water loss.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

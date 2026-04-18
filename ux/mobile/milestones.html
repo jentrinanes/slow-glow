@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milestone Screen - Slow Glow Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['DM Serif Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col m-0 p-0 overflow-x-hidden bg-brand-cream pb-24">
+
+    <!-- Mobile Header -->
+    <header id="mobile-header" class="bg-white border-b border-brand-border px-5 py-4 sticky top-0 z-30 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-leaf text-brand-sage text-xl"></i>
+            <h1 class="text-xl font-bold text-brand-charcoal tracking-tight font-serif">Milestones</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <button class="w-10 h-10 rounded-full bg-brand-lightGray border border-brand-border flex items-center justify-center text-brand-charcoal hover:bg-gray-100 transition-colors">
+                <i class="fa-solid fa-download"></i>
+            </button>
+            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-10 h-10 rounded-full border border-gray-200 object-cover">
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 w-full max-w-[375px] mx-auto px-4 py-6 space-y-6">
+
+        <!-- Journey Header -->
+        <section id="journey-header" class="space-y-2">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-brand-charcoal font-serif">The Tretinoin Protocol</h2>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-brand-sage bg-brand-sage/10 px-2 py-1 rounded border border-brand-sage/20">Active</span>
+            </div>
+            <p class="text-xs text-gray-500">Started: Jan 1, 2024 • Current: Month 4</p>
+        </section>
+
+        <!-- KPI Summary Cards (Horizontal Scroll) -->
+        <section id="kpi-summary" class="flex gap-3 overflow-x-auto pb-2 snap-x">
+            <div class="min-w-[140px] bg-white rounded-2xl p-4 border border-brand-border shadow-card flex flex-col justify-between snap-start shrink-0">
+                <div class="flex items-center gap-2 text-gray-500 mb-3">
+                    <i class="fa-regular fa-calendar-check text-sm"></i>
+                    <span class="text-[10px] font-medium uppercase tracking-wider">Consistency</span>
+                </div>
+                <div>
+                    <span class="text-2xl font-bold text-brand-charcoal">86%</span>
+                    <p class="text-[10px] text-gray-500 mt-1">Last 30 days</p>
+                </div>
+            </div>
+            
+            <div class="min-w-[140px] bg-white rounded-2xl p-4 border border-brand-border shadow-card flex flex-col justify-between snap-start shrink-0">
+                <div class="flex items-center gap-2 text-brand-sage mb-3">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                    <span class="text-[10px] font-medium uppercase tracking-wider">Barrier</span>
+                </div>
+                <div>
+                    <span class="text-2xl font-bold text-brand-charcoal">Stable</span>
+                    <p class="text-[10px] text-gray-500 mt-1">14 days clear</p>
+                </div>
+            </div>
+
+            <div class="min-w-[140px] bg-white rounded-2xl p-4 border border-brand-border shadow-card flex flex-col justify-between snap-start shrink-0">
+                <div class="flex items-center gap-2 text-brand-terracotta mb-3">
+                    <i class="fa-solid fa-droplet-slash text-sm"></i>
+                    <span class="text-[10px] font-medium uppercase tracking-wider">Load</span>
+                </div>
+                <div>
+                    <span class="text-2xl font-bold text-brand-charcoal">Med</span>
+                    <p class="text-[10px] text-gray-500 mt-1">2 strong actives</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vertical Timeline (Progressive Disclosure) -->
+        <section id="milestone-vertical-timeline" class="bg-white rounded-[24px] border border-brand-border shadow-card p-5">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-lg font-bold text-brand-charcoal font-serif">Journey Timeline</h3>
+                <button class="text-xs text-brand-sage font-medium">View All</button>
+            </div>
+
+            <div class="space-y-0 relative before:absolute before:left-[27px] before:top-4 before:bottom-4 before:w-[2px] before:bg-brand-border">
+                
+                <!-- Month 4 (Current - Expanded) -->
+                <div class="relative pl-14 py-3">
+                    <div class="absolute left-2 top-4 w-10 h-10 rounded-full bg-brand-sage/20 border-2 border-brand-sage flex items-center justify-center z-10">
+                        <span class="text-sm font-bold text-brand-sage">M4</span>
+                    </div>
+                    <div class="bg-brand-cream rounded-xl p-4 border border-brand-border shadow-sm">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-sm font-bold text-brand-charcoal">Month 4: Current</h4>
+                            <span class="text-[10px] text-gray-500">Apr 2024</span>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-3">Tretinoin 0.025% (3x/wk). Skin is improving, mildly dry.</p>
+                        
+                        <!-- Mini Before/After inside accordion -->
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <div class="relative rounded-lg overflow-hidden border border-brand-border aspect-square">
+                                <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/89933705e3-5a12ebb2ba8fa3447af7.png" alt="Close up side profile of face showing hyperpigmentation, neutral lighting" />
+                                <div class="absolute bottom-0 left-0 right-0 bg-black/50 p-1 text-center">
+                                    <span class="text-[10px] text-white font-medium">Jan 1</span>
+                                </div>
+                            </div>
+                            <div class="relative rounded-lg overflow-hidden border border-brand-border aspect-square">
+                                <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d9d6b3568b-91c33ef83a37f8476ab8.png" alt="Close up side profile of same face improved texture, identical neutral lighting" />
+                                <div class="absolute bottom-0 left-0 right-0 bg-black/50 p-1 text-center">
+                                    <span class="text-[10px] text-white font-medium">Today</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Month 3 (Collapsed) -->
+                <div class="relative pl-14 py-3">
+                    <div class="absolute left-2 top-4 w-10 h-10 rounded-full bg-white border-2 border-brand-border flex items-center justify-center z-10">
+                        <span class="text-sm font-bold text-gray-400">M3</span>
+                    </div>
+                    <div class="bg-white rounded-xl p-3 border border-brand-border flex justify-between items-center">
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-charcoal">Month 3: The Purge</h4>
+                            <p class="text-[10px] text-gray-500 mt-0.5">Reaction Spike Noted</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- Month 1 (Collapsed) -->
+                <div class="relative pl-14 py-3">
+                    <div class="absolute left-2 top-4 w-10 h-10 rounded-full bg-white border-2 border-brand-border flex items-center justify-center z-10">
+                        <span class="text-sm font-bold text-gray-400">M1</span>
+                    </div>
+                    <div class="bg-white rounded-xl p-3 border border-brand-border flex justify-between items-center">
+                        <div>
+                            <h4 class="text-sm font-bold text-brand-charcoal">Month 1: Intro</h4>
+                            <p class="text-[10px] text-gray-500 mt-0.5">Sandwich Method</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Notable Events List (Vertical) -->
+        <section id="events-section" class="bg-white rounded-[24px] border border-brand-border shadow-card p-5">
+            <h3 class="text-lg font-bold text-brand-charcoal font-serif mb-4">Notable Events</h3>
+            
+            <div class="space-y-3">
+                <!-- Event 1 -->
+                <div class="bg-brand-lightGray rounded-xl p-3 border border-brand-border/50 flex gap-3">
+                    <div class="w-8 h-8 rounded-full bg-brand-sage/10 border border-brand-sage flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid fa-flask text-xs text-brand-sage"></i>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h4 class="text-sm font-bold text-brand-charcoal">Azelaic Acid 15%</h4>
+                            <span class="text-[10px] text-gray-500">Apr 10</span>
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1 line-clamp-2">Added to AM routine for hyperpigmentation support.</p>
+                    </div>
+                </div>
+
+                <!-- Event 2 -->
+                <div class="bg-white rounded-xl p-3 border border-brand-terracotta/30 shadow-sm flex gap-3">
+                    <div class="w-8 h-8 rounded-full bg-brand-terracotta/10 border border-brand-terracotta flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid fa-fire text-xs text-brand-terracotta"></i>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h4 class="text-sm font-bold text-brand-charcoal">Barrier Compromise</h4>
+                            <span class="text-[10px] text-gray-500">Mar 22</span>
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1 line-clamp-2">Stinging when applying moisturizer. Pausing actives.</p>
+                        <div class="mt-2 flex gap-1">
+                            <span class="px-1.5 py-0.5 bg-brand-terracotta/5 text-brand-terracotta text-[9px] font-medium rounded border border-brand-terracotta/20">Redness</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="w-full mt-4 py-2 text-xs font-medium text-brand-sage border border-brand-sage/30 rounded-lg hover:bg-brand-sage/5 transition-colors">
+                View All Events
+            </button>
+        </section>
+
+    </main>
+
+    <!-- Floating Action Button (Primary CTA) -->
+    <div class="fixed bottom-24 right-5 z-40">
+        <button class="w-14 h-14 bg-brand-sage text-white rounded-full shadow-card flex items-center justify-center text-xl hover:bg-brand-sage/90 transition-colors">
+            <i class="fa-solid fa-camera"></i>
+        </button>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 bg-brand-charcoal rounded-t-[32px] px-6 py-4 pb-8 flex justify-between items-center z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+        <a href="#" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+            <i class="fa-solid fa-border-all text-lg"></i>
+            <span class="text-[10px] font-medium">Home</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+            <i class="fa-regular fa-calendar text-lg"></i>
+            <span class="text-[10px] font-medium">Routine</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 bg-white/10 px-4 py-2 rounded-2xl text-white transition-colors">
+            <i class="fa-solid fa-flag-checkered text-lg text-brand-sage"></i>
+            <span class="text-[10px] font-medium">Journey</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors">
+            <i class="fa-solid fa-gear text-lg"></i>
+            <span class="text-[10px] font-medium">Settings</span>
+        </a>
+    </nav>
+
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milestone Screen - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['DM Serif Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Custom Scrollbar for Timeline */
+        .timeline-scroll::-webkit-scrollbar {
+            display: block;
+            height: 6px;
+        }
+        .timeline-scroll::-webkit-scrollbar-track {
+            background: #F5F5F5;
+            border-radius: 4px;
+        }
+        .timeline-scroll::-webkit-scrollbar-thumb {
+            background: #E5E7EB;
+            border-radius: 4px;
+        }
+        .timeline-scroll::-webkit-scrollbar-thumb:hover {
+            background: #C68B77;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex m-0 p-0 overflow-hidden">
+
+    <!-- Global Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-brand-border h-screen flex flex-col shrink-0 hidden md:flex z-20">
+        <div class="p-6 flex items-center gap-3 border-b border-brand-border">
+            <i class="fa-solid fa-leaf text-brand-sage text-xl"></i>
+            <span class="text-brand-charcoal font-bold text-lg tracking-tight">Slow Glow</span>
+        </div>
+        
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-border-all w-5 text-center"></i>
+                <span class="text-sm">Home Dashboard</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-box-open w-5 text-center"></i>
+                <span class="text-sm">Product Inventory</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-regular fa-calendar w-5 text-center"></i>
+                <span class="text-sm">Routine Scheduler</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                <span class="text-sm">Progression Tracker</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-book-medical w-5 text-center"></i>
+                <span class="text-sm">Reaction Log</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-bullseye w-5 text-center"></i>
+                <span class="text-sm">Project Pan</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand-sage/10 text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-flag-checkered w-5 text-center text-brand-sage"></i>
+                <span class="text-sm">Milestones</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-magnifying-glass-chart w-5 text-center"></i>
+                <span class="text-sm">Skin Analysis Log</span>
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-100">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                    <i class="fa-solid fa-gear w-5 text-center"></i>
+                    <span class="text-sm">Settings</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="p-4 border-t border-brand-border">
+            <div class="flex items-center gap-3">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
+                <div>
+                    <p class="text-sm font-medium text-brand-charcoal">Jane Doe</p>
+                    <p class="text-xs text-gray-500">Combination Skin</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-screen overflow-y-auto bg-brand-lightGray flex flex-col relative">
+        <!-- Top Toolbar -->
+        <div class="bg-white border-b border-brand-border px-6 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+            <div>
+                <h1 class="text-2xl font-bold text-brand-charcoal tracking-tight">Milestones & Journey</h1>
+                <p class="text-sm text-gray-500 mt-1">Honest expectations and documented progress.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="px-4 py-2 bg-white border border-brand-border text-brand-charcoal rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> Export Journey
+                </button>
+                <button class="px-4 py-2 bg-brand-sage text-white rounded-lg text-sm font-bold hover:bg-brand-sage/90 transition-colors flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-camera"></i> New Snapshot
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 p-6 lg:p-8 max-w-[1440px] mx-auto w-full space-y-8">
+            
+            <!-- 12-Month Journey Timeline -->
+            <section id="timeline-section" class="bg-white rounded-[16px] border border-brand-border shadow-card overflow-hidden">
+                <div class="p-6 border-b border-brand-border flex justify-between items-center bg-brand-cream">
+                    <div>
+                        <h2 class="text-lg font-bold text-brand-charcoal font-serif">The Tretinoin Protocol</h2>
+                        <p class="text-xs text-gray-500 mt-1">Started: January 1, 2024 • Current: Month 4</p>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-brand-sage bg-brand-sage/10 px-3 py-1.5 rounded-lg border border-brand-sage/20">Active Journey</span>
+                </div>
+                
+                <div class="p-8 overflow-x-auto timeline-scroll pb-12">
+                    <div class="min-w-[1200px] relative">
+                        <!-- Connecting Line -->
+                        <div class="absolute top-[45px] left-8 right-8 h-1 bg-brand-lightGray rounded-full z-0">
+                            <div class="absolute top-0 left-0 h-full bg-brand-sage rounded-full" style="width: 33%;"></div>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-4 relative z-10">
+                            <!-- Month 1 -->
+                            <div class="relative">
+                                <div class="w-24 h-24 bg-white border-4 border-brand-sage rounded-full overflow-hidden mx-auto shadow-sm p-1">
+                                    <img class="w-full h-full object-cover rounded-full" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/142a9ea6a7-18eb843b332dd78b26ad.png" alt="Close up of a person" />
+                                </div>
+                                <div class="text-center mt-4">
+                                    <h4 class="text-sm font-bold text-brand-charcoal">Month 1: Introduction</h4>
+                                    <p class="text-xs text-gray-500 mt-1 px-4">Started 0.025% cream 2x/week. Mild flaking expected.</p>
+                                    <div class="mt-3 inline-block px-2 py-1 bg-brand-lightGray border border-brand-border rounded text-[10px] text-gray-600 font-medium">Routine: Sandwich Method</div>
+                                </div>
+                            </div>
+
+                            <!-- Month 3 -->
+                            <div class="relative">
+                                <div class="w-24 h-24 bg-white border-4 border-brand-sage rounded-full overflow-hidden mx-auto shadow-sm p-1">
+                                    <img class="w-full h-full object-cover rounded-full" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/142a9ea6a7-d9afa03590e6c53ed72e.png" alt="Close up of a person" />
+                                </div>
+                                <div class="text-center mt-4">
+                                    <h4 class="text-sm font-bold text-brand-charcoal">Month 3: The Purge</h4>
+                                    <p class="text-xs text-gray-500 mt-1 px-4">Increased to 3x/week. Breakouts are normal here. Patience required.</p>
+                                    <div class="mt-3 inline-block px-2 py-1 bg-brand-terracotta/10 border border-brand-terracotta/20 rounded text-[10px] text-brand-terracotta font-medium">Reaction Spike Noted</div>
+                                </div>
+                            </div>
+
+                            <!-- Month 6 -->
+                            <div class="relative opacity-60">
+                                <div class="w-24 h-24 bg-brand-lightGray border-4 border-brand-border rounded-full mx-auto flex items-center justify-center shadow-sm">
+                                    <i class="fa-regular fa-clock text-2xl text-gray-400"></i>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <h4 class="text-sm font-bold text-gray-500">Month 6: Stabilization</h4>
+                                    <p class="text-xs text-gray-400 mt-1 px-4">Goal: Daily use. Texture improvements should become visible.</p>
+                                </div>
+                            </div>
+
+                            <!-- Month 12 -->
+                            <div class="relative opacity-60">
+                                <div class="w-24 h-24 bg-brand-lightGray border-4 border-brand-border rounded-full mx-auto flex items-center justify-center shadow-sm">
+                                    <i class="fa-solid fa-flag-checkered text-2xl text-gray-400"></i>
+                                </div>
+                                <div class="text-center mt-4">
+                                    <h4 class="text-sm font-bold text-gray-500">Month 12: Maintenance</h4>
+                                    <p class="text-xs text-gray-400 mt-1 px-4">Collagen production benefits begin. Assess for strength increase.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Before & After + Notable Events Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Before & After Module -->
+                <section id="comparison-section" class="lg:col-span-2 bg-white rounded-[16px] border border-brand-border shadow-card p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-brand-charcoal font-serif">Progress Comparison</h3>
+                        <div class="flex gap-2">
+                            <select class="text-xs bg-brand-lightGray border border-brand-border rounded-lg px-3 py-1.5 text-brand-charcoal focus:outline-none">
+                                <option>Jan 1 vs Today</option>
+                                <option>Month 1 vs Month 3</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-terracotta/5 border border-brand-terracotta/20 rounded-lg p-3 mb-6 flex items-start gap-2">
+                        <i class="fa-solid fa-lightbulb text-brand-terracotta mt-0.5 text-sm"></i>
+                        <p class="text-xs text-brand-charcoal"><strong>Lighting Disclaimer:</strong> Ensure photos are taken in identical natural lighting conditions facing the same window. Variations in light can mimic or hide texture changes.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Before Frame -->
+                        <div class="space-y-3">
+                            <div class="relative rounded-xl overflow-hidden border border-brand-border aspect-square bg-gray-100">
+                                <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/89933705e3-35cd398f7aa4f22e8581.png" alt="Close up side profile of face showing hyperpigmentation and texture, neutral lighting" />
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                                    <span class="text-white font-bold text-sm">Before</span>
+                                </div>
+                            </div>
+                            <div class="bg-brand-lightGray rounded-lg p-3 border border-brand-border/50">
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-gray-500">Date</span>
+                                    <span class="font-medium text-brand-charcoal">Jan 1, 2024</span>
+                                </div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-gray-500">Active Load</span>
+                                    <span class="font-medium text-brand-charcoal">Minimal (Cleanser/Moisturizer)</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-gray-500">Skin State</span>
+                                    <span class="font-medium text-brand-terracotta">Congested, Dull</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- After Frame -->
+                        <div class="space-y-3">
+                            <div class="relative rounded-xl overflow-hidden border border-brand-border aspect-square bg-gray-100">
+                                <img class="w-full h-full object-cover" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/d9d6b3568b-fabf515b37e9eedae8c7.png" alt="Close up side profile of same face showing improved texture and fading hyperpigmentation, identical neutral lighting" />
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                                    <span class="text-white font-bold text-sm">Current (Month 4)</span>
+                                </div>
+                            </div>
+                            <div class="bg-brand-lightGray rounded-lg p-3 border border-brand-border/50">
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-gray-500">Date</span>
+                                    <span class="font-medium text-brand-charcoal">Apr 15, 2024</span>
+                                </div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-gray-500">Active Load</span>
+                                    <span class="font-medium text-brand-charcoal">Tretinoin 0.025% (3x/wk)</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-gray-500">Skin State</span>
+                                    <span class="font-medium text-brand-sage">Improving, Mildly Dry</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notable Events Feed -->
+                <section id="events-section" class="bg-white rounded-[16px] border border-brand-border shadow-card flex flex-col h-[580px]">
+                    <div class="p-6 border-b border-brand-border">
+                        <h3 class="text-lg font-bold text-brand-charcoal font-serif">Notable Events</h3>
+                        <p class="text-xs text-gray-500 mt-1">Variables that may impact progress.</p>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-6 space-y-5">
+                        <!-- Event Card 1: New Active -->
+                        <div class="relative pl-6 before:absolute before:left-[11px] before:top-6 before:bottom-[-20px] before:w-[2px] before:bg-brand-border last:before:hidden">
+                            <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-brand-sage/10 border border-brand-sage flex items-center justify-center z-10">
+                                <i class="fa-solid fa-flask text-[10px] text-brand-sage"></i>
+                            </div>
+                            <div class="bg-brand-lightGray rounded-xl p-4 border border-brand-border/50">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-sm font-bold text-brand-charcoal">Introduced Azelaic Acid 15%</h4>
+                                    <span class="text-[10px] text-gray-500">Apr 10</span>
+                                </div>
+                                <p class="text-xs text-gray-600 leading-relaxed">Added to AM routine for hyperpigmentation support. Spot testing on jawline first.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event Card 2: Reaction Spike -->
+                        <div class="relative pl-6 before:absolute before:left-[11px] before:top-6 before:bottom-[-20px] before:w-[2px] before:bg-brand-border last:before:hidden">
+                            <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-brand-terracotta/10 border border-brand-terracotta flex items-center justify-center z-10">
+                                <i class="fa-solid fa-fire text-[10px] text-brand-terracotta"></i>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 border border-brand-border shadow-sm">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-sm font-bold text-brand-charcoal">Barrier Compromise</h4>
+                                    <span class="text-[10px] text-gray-500">Mar 22</span>
+                                </div>
+                                <p class="text-xs text-gray-600 leading-relaxed">Experiencing stinging when applying basic moisturizer. Pausing all actives for 5 days.</p>
+                                <div class="mt-3 flex gap-2">
+                                    <span class="px-2 py-1 bg-brand-terracotta/5 text-brand-terracotta text-[10px] font-medium rounded border border-brand-terracotta/20">Redness</span>
+                                    <span class="px-2 py-1 bg-brand-terracotta/5 text-brand-terracotta text-[10px] font-medium rounded border border-brand-terracotta/20">Stinging</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event Card 3: Overload Warning -->
+                        <div class="relative pl-6 before:absolute before:left-[11px] before:top-6 before:bottom-[-20px] before:w-[2px] before:bg-brand-border last:before:hidden">
+                            <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center z-10">
+                                <i class="fa-solid fa-triangle-exclamation text-[10px] text-gray-500"></i>
+                            </div>
+                            <div class="bg-brand-lightGray rounded-xl p-4 border border-brand-border/50">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-sm font-bold text-brand-charcoal">Overload Period Logged</h4>
+                                    <span class="text-[10px] text-gray-500">Feb 14</span>
+                                </div>
+                                <p class="text-xs text-gray-600 leading-relaxed">Used BHA and Tretinoin on consecutive nights. Noted increased dryness.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Progress Snapshot Metrics -->
+            <section id="metrics-section" class="bg-white rounded-[16px] border border-brand-border shadow-card p-6">
+                <h3 class="text-lg font-bold text-brand-charcoal font-serif mb-6">Journey Metrics</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-brand-lightGray rounded-xl p-5 border border-brand-border/50 flex flex-col justify-between">
+                        <div class="flex items-center gap-2 text-gray-500 mb-2">
+                            <i class="fa-regular fa-calendar-check"></i>
+                            <span class="text-xs font-medium uppercase tracking-wider">Consistency</span>
+                        </div>
+                        <div>
+                            <span class="text-3xl font-bold text-brand-charcoal">86%</span>
+                            <p class="text-xs text-gray-500 mt-1">Routine completion rate (last 30 days)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-brand-lightGray rounded-xl p-5 border border-brand-border/50 flex flex-col justify-between">
+                        <div class="flex items-center gap-2 text-brand-sage mb-2">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span class="text-xs font-medium uppercase tracking-wider">Barrier Health</span>
+                        </div>
+                        <div>
+                            <span class="text-3xl font-bold text-brand-charcoal">Stable</span>
+                            <p class="text-xs text-gray-500 mt-1">No reaction spikes in 14 days</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-lightGray rounded-xl p-5 border border-brand-border/50 flex flex-col justify-between">
+                        <div class="flex items-center gap-2 text-brand-terracotta mb-2">
+                            <i class="fa-solid fa-droplet-slash"></i>
+                            <span class="text-xs font-medium uppercase tracking-wider">Active Load</span>
+                        </div>
+                        <div>
+                            <span class="text-3xl font-bold text-brand-charcoal">Moderate</span>
+                            <p class="text-xs text-gray-500 mt-1">2 strong actives in rotation</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-sage/10 rounded-xl p-5 border border-brand-sage/20 flex flex-col justify-center items-center text-center cursor-pointer hover:bg-brand-sage/20 transition-colors">
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-2 shadow-sm text-brand-sage">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <span class="text-sm font-bold text-brand-charcoal">Log Skin Analysis</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['DM Serif Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #8DA290;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #E5E7EB;
+            border-radius: 2px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #8DA290;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #8DA290;
+        }
+        .toggle-checkbox:checked + .toggle-label:before {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex m-0 p-0 overflow-hidden">
+
+    <!-- Global Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white border-r border-brand-border h-screen flex flex-col shrink-0 hidden md:flex z-20">
+        <div class="p-6 flex items-center gap-3 border-b border-brand-border">
+            <i class="fa-solid fa-leaf text-brand-sage text-xl"></i>
+            <span class="text-brand-charcoal font-bold text-lg tracking-tight">Slow Glow</span>
+        </div>
+        
+        <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-border-all w-5 text-center"></i>
+                <span class="text-sm">Home Dashboard</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-box-open w-5 text-center"></i>
+                <span class="text-sm">Product Inventory</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-regular fa-calendar w-5 text-center"></i>
+                <span class="text-sm">Routine Scheduler</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                <span class="text-sm">Progression Tracker</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-book-medical w-5 text-center"></i>
+                <span class="text-sm">Reaction Log</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-bullseye w-5 text-center"></i>
+                <span class="text-sm">Project Pan</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-flag-checkered w-5 text-center"></i>
+                <span class="text-sm">Milestones</span>
+            </a>
+            
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-500 hover:bg-gray-50 hover:text-brand-charcoal font-medium transition-colors">
+                <i class="fa-solid fa-magnifying-glass-chart w-5 text-center"></i>
+                <span class="text-sm">Skin Analysis Log</span>
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-100">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand-sage/10 text-brand-charcoal font-medium transition-colors">
+                    <i class="fa-solid fa-gear w-5 text-center text-brand-sage"></i>
+                    <span class="text-sm">Settings</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="p-4 border-t border-brand-border">
+            <div class="flex items-center gap-3">
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-8 h-8 rounded-full border border-gray-200 object-cover">
+                <div>
+                    <p class="text-sm font-medium text-brand-charcoal">Jane Doe</p>
+                    <p class="text-xs text-gray-500">Combination Skin</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-screen overflow-y-auto bg-brand-lightGray flex flex-col relative">
+        <!-- Top Toolbar -->
+        <div class="bg-white border-b border-brand-border px-6 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+            <div>
+                <h1 class="text-2xl font-bold text-brand-charcoal tracking-tight">Settings</h1>
+                <p class="text-sm text-gray-500 mt-1">Manage your experience, health profiles, and data.</p>
+            </div>
+        </div>
+
+        <div class="flex-1 p-6 lg:p-8 max-w-[1440px] mx-auto w-full space-y-8">
+            
+            <!-- Experience Mode Toggle -->
+            <section class="bg-white rounded-[16px] border border-brand-border shadow-card p-6 lg:p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div class="max-w-2xl">
+                        <h2 class="text-xl font-bold text-brand-charcoal font-serif mb-2">Experience Mode</h2>
+                        <p class="text-sm text-gray-500 leading-relaxed">
+                            Choose how Slow Glow presents scientific information. "Guided" uses simple terminology and focuses on basic routines. "Ingredient Nerd" unlocks dense chemical data, precise concentration tracking, and advanced conflict warnings.
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center p-1.5 bg-brand-lightGray rounded-xl border border-brand-border shrink-0">
+                        <button class="px-6 py-2.5 rounded-lg text-sm font-medium text-brand-charcoal bg-white shadow-sm transition-all">Guided</button>
+                        <button class="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:text-brand-charcoal transition-all">Ingredient Nerd</button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Health & Screening -->
+                <div class="space-y-8">
+                    <section class="bg-white rounded-[16px] border border-brand-border shadow-card overflow-hidden">
+                        <div class="p-6 border-b border-brand-border bg-brand-cream">
+                            <h3 class="text-lg font-bold text-brand-charcoal font-serif">Health & Screening Profile</h3>
+                            <p class="text-xs text-gray-500 mt-1">Update your baseline skin profile to adjust interaction warnings.</p>
+                        </div>
+                        
+                        <div class="p-6 space-y-6">
+                            <!-- Skin Type -->
+                            <div>
+                                <label class="text-sm font-medium text-brand-charcoal block mb-3">Primary Skin Type</label>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                    <button class="py-2.5 border border-brand-border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Dry</button>
+                                    <button class="py-2.5 border border-brand-sage bg-brand-sage/10 rounded-lg text-sm font-medium text-brand-sage transition-colors">Combination</button>
+                                    <button class="py-2.5 border border-brand-border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Oily</button>
+                                    <button class="py-2.5 border border-brand-border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Normal</button>
+                                </div>
+                            </div>
+
+                            <!-- Sensitivities -->
+                            <div>
+                                <label class="text-sm font-medium text-brand-charcoal block mb-3">Known Sensitivities</label>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-3 py-1.5 bg-brand-lightGray border border-brand-border rounded-full text-xs text-brand-charcoal flex items-center gap-2">
+                                        Fragrance (Synthetic) <button class="text-gray-400 hover:text-brand-terracotta"><i class="fa-solid fa-xmark"></i></button>
+                                    </span>
+                                    <span class="px-3 py-1.5 bg-brand-lightGray border border-brand-border rounded-full text-xs text-brand-charcoal flex items-center gap-2">
+                                        Essential Oils <button class="text-gray-400 hover:text-brand-terracotta"><i class="fa-solid fa-xmark"></i></button>
+                                    </span>
+                                    <span class="px-3 py-1.5 bg-brand-lightGray border border-brand-border rounded-full text-xs text-brand-charcoal flex items-center gap-2">
+                                        Niacinamide > 5% <button class="text-gray-400 hover:text-brand-terracotta"><i class="fa-solid fa-xmark"></i></button>
+                                    </span>
+                                    <button class="px-3 py-1.5 border border-dashed border-brand-border rounded-full text-xs text-gray-500 hover:border-brand-sage hover:text-brand-sage transition-colors flex items-center gap-1">
+                                        <i class="fa-solid fa-plus"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Warning Thresholds -->
+                            <div class="pt-4 border-t border-brand-border">
+                                <div class="flex justify-between items-center mb-4">
+                                    <div>
+                                        <label class="text-sm font-medium text-brand-charcoal block">Interaction Warning Sensitivity</label>
+                                        <p class="text-[10px] text-gray-500 mt-1">Adjust how quickly we warn you about layering conflicts.</p>
+                                    </div>
+                                    <span class="text-xs font-bold text-brand-terracotta bg-brand-terracotta/10 px-2 py-0.5 rounded">High</span>
+                                </div>
+                                <input type="range" min="1" max="3" value="3" class="w-full">
+                                <div class="flex justify-between text-[10px] text-gray-400 mt-2">
+                                    <span>Relaxed (Major Conflicts Only)</span>
+                                    <span>Moderate</span>
+                                    <span>Strict (All Potential Irritants)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-brand-lightGray p-4 rounded-lg border border-brand-border flex gap-3">
+                                <i class="fa-solid fa-circle-info text-brand-sage mt-0.5"></i>
+                                <p class="text-xs text-gray-600 leading-relaxed">
+                                    <strong>Never Hard-Block Policy:</strong> Slow Glow will warn you about severe interactions (e.g., Retinol + AHAs), but you can always dismiss these banners. We document your choices rather than restricting them.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column: Notifications & Data -->
+                <div class="space-y-8">
+                    
+                    <!-- Notifications -->
+                    <section class="bg-white rounded-[16px] border border-brand-border shadow-card overflow-hidden">
+                        <div class="p-6 border-b border-brand-border bg-brand-cream">
+                            <h3 class="text-lg font-bold text-brand-charcoal font-serif">Notifications & Reminders</h3>
+                            <p class="text-xs text-gray-500 mt-1">Manage non-intrusive alerts for your routines.</p>
+                        </div>
+                        
+                        <div class="p-6 space-y-5">
+                            <!-- Toggle Item 1 -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-sm font-medium text-brand-charcoal">Product Expiry Alerts</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5">Notify me 30 days before PAO (Period After Opening) ends.</p>
+                                </div>
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle1" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-brand-sage appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out" checked/>
+                                    <label for="toggle1" class="toggle-label block overflow-hidden h-5 rounded-full bg-brand-sage cursor-pointer"></label>
+                                </div>
+                            </div>
+                            
+                            <hr class="border-brand-border">
+
+                            <!-- Toggle Item 2 -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-sm font-medium text-brand-charcoal">Routine Milestones</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5">Quiet notifications when reaching 30/60/90 days of consistent use.</p>
+                                </div>
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle2" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-brand-sage appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out" checked/>
+                                    <label for="toggle2" class="toggle-label block overflow-hidden h-5 rounded-full bg-brand-sage cursor-pointer"></label>
+                                </div>
+                            </div>
+                            
+                            <hr class="border-brand-border">
+
+                            <!-- Toggle Item 3 -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-sm font-medium text-brand-charcoal">Daily Habit Check-in</h4>
+                                    <p class="text-xs text-gray-500 mt-0.5">A gentle evening reminder to log your skin state.</p>
+                                </div>
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle3" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out"/>
+                                    <label for="toggle3" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Data Management -->
+                    <section class="bg-white rounded-[16px] border border-brand-border shadow-card overflow-hidden">
+                        <div class="p-6 border-b border-brand-border bg-brand-cream">
+                            <h3 class="text-lg font-bold text-brand-charcoal font-serif">Data & Privacy</h3>
+                            <p class="text-xs text-gray-500 mt-1">Your science notebook belongs to you.</p>
+                        </div>
+                        
+                        <div class="p-6 space-y-4">
+                            <button class="w-full flex items-center justify-between p-4 border border-brand-border rounded-xl hover:bg-brand-lightGray transition-colors group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-brand-sage/10 flex items-center justify-center text-brand-sage">
+                                        <i class="fa-solid fa-file-export"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <h4 class="text-sm font-medium text-brand-charcoal">Export Skin Journey</h4>
+                                        <p class="text-[10px] text-gray-500 mt-0.5">Download all logs, photos, and routines as PDF/CSV.</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-gray-400 group-hover:text-brand-sage transition-colors"></i>
+                            </button>
+
+                            <button class="w-full flex items-center justify-between p-4 border border-brand-border rounded-xl hover:bg-brand-terracotta/5 transition-colors group">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-brand-terracotta/10 flex items-center justify-center text-brand-terracotta">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <h4 class="text-sm font-medium text-brand-terracotta">Delete Account & Data</h4>
+                                        <p class="text-[10px] text-gray-500 mt-0.5">Permanently erase your notebook. This cannot be undone.</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-brand-terracotta/50 group-hover:text-brand-terracotta transition-colors"></i>
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</body>
+</html>

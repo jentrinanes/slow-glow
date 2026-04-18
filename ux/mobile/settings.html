@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.plot.ly/plotly-3.1.1.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['DM Serif Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#8DA290',
+                            cream: '#FDFBF7',
+                            terracotta: '#C68B77',
+                            charcoal: '#2D2D2D',
+                            lightGray: '#F5F5F5',
+                            border: '#E5E7EB',
+                            blue: '#3B82F6',
+                        }
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                        'input': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            color: #2D2D2D;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #8DA290;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #E5E7EB;
+            border-radius: 2px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #8DA290;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #8DA290;
+        }
+        .toggle-checkbox:checked + .toggle-label:before {
+            transform: translateX(100%);
+        }
+        
+        /* Mobile Specific Overrides */
+        .touch-target {
+            min-height: 44px;
+        }
+    </style>
+</head>
+<body class="flex flex-col m-0 p-0 overflow-x-hidden bg-brand-lightGray h-[100dvh]">
+
+    <!-- Mobile Header -->
+    <header id="mobile-header" class="bg-white border-b border-brand-border px-4 py-3 flex items-center justify-between sticky top-0 z-30 shrink-0">
+        <div class="flex items-center gap-3">
+            <button class="w-10 h-10 flex items-center justify-center text-brand-charcoal hover:bg-gray-50 rounded-full transition-colors touch-target">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <h1 class="text-lg font-bold text-brand-charcoal tracking-tight font-serif">Settings</h1>
+        </div>
+        <button class="text-sm font-medium text-brand-sage px-3 py-2 rounded-lg hover:bg-brand-sage/10 transition-colors touch-target">
+            Save
+        </button>
+    </header>
+
+    <!-- Main Content Scroll Area -->
+    <main class="flex-1 overflow-y-auto pb-24 w-full max-w-[375px] mx-auto sm:max-w-md bg-brand-lightGray">
+        
+        <!-- Profile Summary -->
+        <section id="profile-summary" class="bg-white p-4 mb-2 flex items-center gap-4">
+            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" alt="User" class="w-16 h-16 rounded-full border border-gray-200 object-cover">
+            <div>
+                <h2 class="text-lg font-bold text-brand-charcoal">Jane Doe</h2>
+                <p class="text-sm text-gray-500">Combination Skin</p>
+                <button class="text-xs text-brand-sage font-medium mt-1">Edit Profile</button>
+            </div>
+        </section>
+
+        <!-- Experience Mode -->
+        <section id="experience-mode" class="bg-white px-4 py-5 mb-2">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-base font-bold text-brand-charcoal font-serif">Experience Mode</h3>
+                <i class="fa-solid fa-circle-info text-gray-400 text-sm"></i>
+            </div>
+            <div class="flex bg-brand-lightGray rounded-xl p-1 border border-brand-border">
+                <button class="flex-1 py-2.5 rounded-lg text-sm font-medium text-brand-charcoal bg-white shadow-sm transition-all touch-target">Guided</button>
+                <button class="flex-1 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:text-brand-charcoal transition-all touch-target">Nerd</button>
+            </div>
+            <p class="text-xs text-gray-500 mt-3 leading-relaxed">
+                "Guided" uses simple terminology. "Nerd" unlocks dense chemical data and precise concentration tracking.
+            </p>
+        </section>
+
+        <!-- Health & Screening List -->
+        <section id="health-screening" class="bg-white mb-2">
+            <div class="px-4 py-3 border-b border-brand-border bg-brand-cream">
+                <h3 class="text-sm font-bold text-brand-charcoal font-serif uppercase tracking-wider">Health Profile</h3>
+            </div>
+            
+            <div class="divide-y divide-brand-border">
+                <!-- Skin Type -->
+                <div class="p-4">
+                    <label class="text-sm font-medium text-brand-charcoal block mb-3">Primary Skin Type</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="py-2.5 border border-brand-border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors touch-target">Dry</button>
+                        <button class="py-2.5 border border-brand-sage bg-brand-sage/10 rounded-lg text-sm font-medium text-brand-sage transition-colors touch-target">Combination</button>
+                        <button class="py-2.5 border border-brand-border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors touch-target">Oily</button>
+                        <button class="py-2.5 border border-brand-border rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors touch-target">Normal</button>
+                    </div>
+                </div>
+
+                <!-- Sensitivities -->
+                <div class="p-4">
+                    <div class="flex justify-between items-center mb-3">
+                        <label class="text-sm font-medium text-brand-charcoal">Known Sensitivities</label>
+                        <button class="text-xs font-medium text-brand-sage touch-target px-2">Add</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1.5 bg-brand-lightGray border border-brand-border rounded-full text-xs text-brand-charcoal flex items-center gap-2">
+                            Fragrance <button class="text-gray-400 p-1 -mr-1"><i class="fa-solid fa-xmark"></i></button>
+                        </span>
+                        <span class="px-3 py-1.5 bg-brand-lightGray border border-brand-border rounded-full text-xs text-brand-charcoal flex items-center gap-2">
+                            Essential Oils <button class="text-gray-400 p-1 -mr-1"><i class="fa-solid fa-xmark"></i></button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Warning Thresholds Accordion -->
+                <details class="group p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-medium touch-target list-none">
+                        <span class="text-sm text-brand-charcoal">Warning Sensitivity</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-brand-terracotta bg-brand-terracotta/10 px-2 py-1 rounded">High</span>
+                            <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                        </div>
+                    </summary>
+                    <div class="mt-4 pt-4 border-t border-brand-border">
+                        <input type="range" min="1" max="3" value="3" class="w-full mb-2 touch-target">
+                        <div class="flex justify-between text-[10px] text-gray-400">
+                            <span>Relaxed</span>
+                            <span>Moderate</span>
+                            <span>Strict</span>
+                        </div>
+                        <div class="mt-4 bg-brand-lightGray p-3 rounded-lg border border-brand-border flex gap-2">
+                            <i class="fa-solid fa-circle-info text-brand-sage mt-0.5 text-xs"></i>
+                            <p class="text-[11px] text-gray-600 leading-tight">
+                                <strong>Never Hard-Block:</strong> We warn you about severe interactions, but you can always dismiss banners.
+                            </p>
+                        </div>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- Notifications & Data -->
+        <section id="notifications-data" class="bg-white mb-4">
+            <div class="px-4 py-3 border-b border-brand-border bg-brand-cream">
+                <h3 class="text-sm font-bold text-brand-charcoal font-serif uppercase tracking-wider">Preferences</h3>
+            </div>
+            
+            <div class="divide-y divide-brand-border">
+                <!-- Notifications Accordion -->
+                <details class="group" open>
+                    <summary class="flex justify-between items-center p-4 font-medium touch-target list-none cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-regular fa-bell text-gray-400 w-5 text-center"></i>
+                            <span class="text-sm text-brand-charcoal">Notifications</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-400 group-open:rotate-180 transition-transform"></i>
+                    </summary>
+                    <div class="px-4 pb-4 bg-gray-50/50 space-y-4">
+                        <div class="flex items-center justify-between touch-target">
+                            <div class="pr-4">
+                                <h4 class="text-sm font-medium text-brand-charcoal">Product Expiry Alerts</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">30 days before PAO ends.</p>
+                            </div>
+                            <div class="relative inline-block w-10 shrink-0 align-middle select-none">
+                                <input type="checkbox" id="mob-toggle1" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-brand-sage appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out" checked/>
+                                <label for="mob-toggle1" class="toggle-label block overflow-hidden h-5 rounded-full bg-brand-sage cursor-pointer"></label>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between touch-target">
+                            <div class="pr-4">
+                                <h4 class="text-sm font-medium text-brand-charcoal">Daily Check-in</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Evening reminder to log skin.</p>
+                            </div>
+                            <div class="relative inline-block w-10 shrink-0 align-middle select-none">
+                                <input type="checkbox" id="mob-toggle3" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-gray-300 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out"/>
+                                <label for="mob-toggle3" class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Data Actions -->
+                <button class="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors touch-target">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-file-export text-gray-400 w-5 text-center"></i>
+                        <span class="text-sm font-medium text-brand-charcoal">Export Skin Journey</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+                </button>
+                
+                <button class="w-full flex items-center justify-between p-4 hover:bg-red-50 transition-colors touch-target">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-trash-can text-brand-terracotta w-5 text-center"></i>
+                        <span class="text-sm font-medium text-brand-terracotta">Delete Account</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-brand-terracotta/50 text-xs"></i>
+                </button>
+            </div>
+        </section>
+        
+        <div class="text-center py-6">
+            <p class="text-xs text-gray-400">Slow Glow v1.0.4</p>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav id="bottom-nav" class="bg-white border-t border-brand-border fixed bottom-0 w-full max-w-[375px] sm:max-w-md left-1/2 -translate-x-1/2 z-40 pb-safe">
+        <div class="flex justify-around items-center h-16 px-2">
+            <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-brand-charcoal transition-colors">
+                <i class="fa-solid fa-border-all text-xl mb-1"></i>
+                <span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-brand-charcoal transition-colors">
+                <i class="fa-solid fa-box-open text-xl mb-1"></i>
+                <span class="text-[10px] font-medium">Inventory</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-brand-charcoal transition-colors">
+                <i class="fa-regular fa-calendar text-xl mb-1"></i>
+                <span class="text-[10px] font-medium">Routine</span>
+            </a>
+            <a href="#" class="flex flex-col items-center justify-center w-full h-full text-brand-sage transition-colors">
+                <i class="fa-solid fa-gear text-xl mb-1"></i>
+                <span class="text-[10px] font-medium">Settings</span>
+            </a>
+        </div>
+    </nav>
+
+</body>
+</html>

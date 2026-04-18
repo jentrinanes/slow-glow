@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        window.FontAwesomeConfig = {
+          autoReplaceSvg: 'nest'
+        };
+      </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - Slow Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            sage: '#7A9482',
+                            cream: '#F9F7F2',
+                            terracotta: '#D67D5C',
+                            dark: '#2C3E35',
+                            gray: '#E5E7EB',
+                            text: '#4B5563'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #F9F7F2;
+            -webkit-font-smoothing: antialiased;
+        }
+        .input-notebook {
+            border: none;
+            border-bottom: 1px solid #E5E7EB;
+            border-radius: 0;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+        .input-notebook:focus {
+            outline: none;
+            border-bottom-color: #7A9482;
+            box-shadow: 0 1px 0 0 #7A9482;
+        }
+        .input-notebook.error {
+            border-bottom-color: #D67D5C;
+        }
+        .input-notebook.error:focus {
+            box-shadow: 0 1px 0 0 #D67D5C;
+        }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="min-h-screen text-brand-dark font-sans flex flex-col items-center">
+
+    <!-- Mobile App Container -->
+    <div id="app-container" class="w-full max-w-[375px] min-h-[840px] bg-brand-cream relative shadow-2xl flex flex-col">
+        
+        <!-- Top Navigation Bar -->
+        <header id="top-nav" class="flex items-center justify-between px-6 py-4 bg-brand-cream sticky top-0 z-50">
+            <button class="w-10 h-10 flex items-center justify-center text-brand-dark hover:bg-brand-sage/10 rounded-full transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-brand-sage flex items-center justify-center text-white shadow-soft">
+                    <i class="fa-solid fa-leaf text-[10px]"></i>
+                </div>
+                <span class="font-serif font-medium text-lg tracking-wide text-brand-dark">Slow Glow</span>
+            </div>
+            <div class="w-10"></div> <!-- Spacer for centering -->
+        </header>
+
+        <!-- Main Scrollable Content -->
+        <main id="main-content" class="flex-1 overflow-y-auto px-6 pb-32 pt-4">
+            
+            <!-- Header Section -->
+            <div id="header-text" class="mb-8 text-center">
+                <h1 class="text-2xl font-serif font-semibold text-brand-dark mb-2">Begin your journey</h1>
+                <p class="text-brand-text text-sm px-4">Create an account to track your skin's response to minimal care.</p>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registration-form" class="space-y-6" onsubmit="event.preventDefault();">
+                
+                <!-- Name Field -->
+                <div class="space-y-2">
+                    <label for="name" class="block text-sm font-medium text-brand-dark ml-1">Full Name</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        class="input-notebook w-full py-3 px-1 text-brand-dark placeholder:text-gray-400 text-base" 
+                        placeholder="e.g. Sarah Miller"
+                    >
+                </div>
+
+                <!-- Email Field -->
+                <div class="space-y-2">
+                    <label for="email" class="block text-sm font-medium text-brand-dark ml-1">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="input-notebook w-full py-3 px-1 text-brand-dark placeholder:text-gray-400 text-base" 
+                        placeholder="sarah@example.com"
+                    >
+                </div>
+
+                <!-- Password Field -->
+                <div class="space-y-2">
+                    <label for="password" class="block text-sm font-medium text-brand-dark ml-1">Password</label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="input-notebook w-full py-3 px-1 text-brand-dark placeholder:text-gray-400 text-base pr-10" 
+                            placeholder="••••••••"
+                        >
+                        <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-dark w-8 h-8 flex items-center justify-center">
+                            <i class="fa-regular fa-eye-slash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="space-y-2">
+                    <label for="confirm-password" class="block text-sm font-medium text-brand-dark ml-1">Confirm Password</label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="confirm-password" 
+                            class="input-notebook error w-full py-3 px-1 text-brand-dark placeholder:text-gray-400 text-base" 
+                            placeholder="••••••••"
+                            value="password12"
+                        >
+                    </div>
+                </div>
+
+                <!-- Password Rules -->
+                <div class="flex items-center gap-4 text-xs px-1">
+                    <div class="flex items-center gap-1.5 text-brand-sage">
+                        <i class="fa-solid fa-check"></i>
+                        <span>8+ chars</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-brand-terracotta">
+                        <i class="fa-solid fa-xmark"></i>
+                        <span>1 special char</span>
+                    </div>
+                </div>
+
+                <!-- Skin Profile Accordion (Progressive Disclosure) -->
+                <div id="skin-profile-section" class="mt-8 border border-brand-gray/50 rounded-[12px] bg-white overflow-hidden">
+                    <button type="button" class="w-full px-5 py-4 flex items-center justify-between bg-white focus:outline-none" onclick="document.getElementById('skin-options').classList.toggle('hidden'); this.querySelector('.fa-chevron-down').classList.toggle('rotate-180')">
+                        <div class="flex flex-col items-start">
+                            <span class="text-sm font-medium text-brand-dark">Skin Profile <span class="text-brand-text font-normal italic text-xs ml-1">(Optional)</span></span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-brand-text text-sm transition-transform duration-200"></i>
+                    </button>
+                    
+                    <div id="skin-options" class="hidden px-5 pb-5 pt-1 border-t border-brand-gray/30">
+                        <p class="text-xs text-brand-text mb-4">Select your primary skin type to tailor your journal.</p>
+                        <div class="flex flex-wrap gap-2.5">
+                            <button type="button" class="px-4 py-2 rounded-full border border-brand-gray text-sm text-brand-text bg-white">Dry</button>
+                            <button type="button" class="px-4 py-2 rounded-full border border-brand-sage bg-brand-sage/10 text-sm text-brand-dark font-medium">Combination</button>
+                            <button type="button" class="px-4 py-2 rounded-full border border-brand-gray text-sm text-brand-text bg-white">Oily</button>
+                            <button type="button" class="px-4 py-2 rounded-full border border-brand-gray text-sm text-brand-text bg-white">Normal</button>
+                            <button type="button" class="px-4 py-2 rounded-full border border-brand-gray text-sm text-brand-text bg-white">Sensitive</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consent and Terms -->
+                <div id="consent-section" class="pt-4 px-1">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5 mt-0.5">
+                            <input 
+                                id="terms" 
+                                type="checkbox" 
+                                class="w-5 h-5 rounded border-gray-300 text-brand-sage focus:ring-brand-sage accent-brand-sage"
+                            >
+                        </div>
+                        <label for="terms" class="ml-3 block text-xs text-brand-text leading-relaxed">
+                            I agree to the <a href="#" class="text-brand-sage font-medium hover:underline">Terms of Service</a> and acknowledge the <a href="#" class="text-brand-sage font-medium hover:underline">Privacy Policy</a>.
+                        </label>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Secondary Link (Moved above fixed button) -->
+            <div class="mt-8 text-center pb-4">
+                <p class="text-sm text-brand-text">
+                    Already have an account? 
+                    <a href="#" class="font-medium text-brand-sage">Log in</a>
+                </p>
+            </div>
+
+        </main>
+
+        <!-- Fixed Bottom CTA -->
+        <div id="bottom-cta" class="absolute bottom-0 left-0 w-full bg-brand-cream/95 backdrop-blur-md border-t border-brand-gray/30 p-6 pt-4 pb-8 z-50">
+            <button 
+                type="submit" 
+                form="registration-form"
+                class="w-full flex justify-center items-center py-4 px-4 rounded-full shadow-sm text-base font-medium text-white bg-brand-sage active:bg-brand-dark transition-colors"
+            >
+                Create Account
+            </button>
+        </div>
+
+    </div>
+
+</body>
+</html>
