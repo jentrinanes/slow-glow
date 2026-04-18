@@ -23,7 +23,9 @@ export interface Product {
   category: string
   paoMonths: number
   openedAt: string | null
-  status: 'active' | 'finished'
+  fillPercent: number | null
+  status: 'active' | 'upcoming' | 'paused' | 'finished'
+  activeIngredients: string
   notes: string
   createdAt: string
 }

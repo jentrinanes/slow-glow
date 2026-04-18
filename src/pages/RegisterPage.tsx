@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Leaf, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react'
+import { Leaf, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 
 export default function RegisterPage() {
@@ -11,12 +11,10 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [agreed, setAgreed] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   const hasMinLength = password.length >= 8
-  const hasSpecialChar = /[^a-zA-Z0-9]/.test(password)
   const passwordMismatch = confirmPassword.length > 0 && password !== confirmPassword
   const canSubmit = name.trim() && email.trim() && hasMinLength && !passwordMismatch
 
