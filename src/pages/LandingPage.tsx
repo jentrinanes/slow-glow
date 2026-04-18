@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import {
   Leaf, Microscope, ArrowRight, PlayCircle, FlaskConical,
   Droplets, Flame, MoreHorizontal, Check, BookOpen
@@ -26,17 +27,17 @@ export default function LandingPage() {
             <span className="font-serif text-2xl font-semibold tracking-tight text-ink">Slow Glow</span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 font-mono text-sm tracking-wide">
+          {/*<div className="hidden md:flex items-center gap-8 font-mono text-sm tracking-wide">
             <a href="#philosophy" className="text-ink/70 hover:text-terracotta transition-colors">Philosophy</a>
             <a href="#ingredients" className="text-ink/70 hover:text-terracotta transition-colors">Lab Tracker</a>
             <a href="#project-pan" className="text-ink/70 hover:text-terracotta transition-colors">Project Pan</a>
-          </div>
+          </div>*/}
 
           <div className="flex items-center gap-4 font-mono text-sm">
-            <button className="hidden md:block px-4 py-2 text-ink hover:text-sage transition-colors">Log In</button>
-            <button className="bg-terracotta hover:bg-terracotta/90 text-white px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow-md">
+            <Link to="/login" className="hidden md:block px-4 py-2 text-ink hover:text-sage transition-colors">Log In</Link>
+            <Link to="/register" className="bg-terracotta hover:bg-terracotta/90 text-white px-6 py-2.5 rounded-full transition-all shadow-sm hover:shadow-md">
               Start Journal
-            </button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -213,9 +214,9 @@ export default function LandingPage() {
           <p className="font-sans text-lg text-cream/70 mb-10 max-w-xl mx-auto">
             Join thousands of intentional enthusiasts tracking their way to healthier skin through data, not hype.
           </p>
-          <button className="bg-terracotta text-white hover:bg-terracotta/90 px-8 py-4 rounded-full font-mono text-sm transition-all">
+          <Link to="/register" className="bg-terracotta text-white hover:bg-terracotta/90 px-8 py-4 rounded-full font-mono text-sm transition-all">
             Register Free Account
-          </button>
+          </Link>
         </div>
       </section>
 
