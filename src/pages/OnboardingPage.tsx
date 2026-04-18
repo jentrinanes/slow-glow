@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Leaf, Check, Compass, FlaskConical, Info, Droplets, Sun, Feather, RotateCcw, Layers, Waves } from 'lucide-react'
+import { useApp } from '../context/AppContext'
 
 type SkinType = 'Dry' | 'Normal' | 'Combination' | 'Oily' | ''
 type TrackingMode = 'guided' | 'nerd' | ''
@@ -442,6 +443,7 @@ function Step3({ data, onChange }: { data: FormData; onChange: (d: Partial<FormD
 
 export default function OnboardingPage() {
   const navigate = useNavigate()
+  const { completeOnboarding } = useApp()
   const [step, setStep] = useState(1)
   const [data, setData] = useState<FormData>({
     firstName: '',
@@ -459,8 +461,23 @@ export default function OnboardingPage() {
   const update = (partial: Partial<FormData>) => setData(d => ({ ...d, ...partial }))
 
   const handleNext = () => {
-    if (step < 3) setStep(s => s + 1)
-    else navigate('/dashboard')
+    if (step < 3) {
+      setStep(s => s + 1)
+    } else {
+      completeOnboarding({
+        name: data.firstName,
+        age: data.age ? Number(data.age) : null,
+        skinType: data.skinType,
+        fitzpatrick: data.fitzpatrick,
+        concerns: data.concerns,
+        contextNotes: data.contextNotes,
+        trackingMode: data.trackingMode,
+        pregnancy: data.pregnancy,
+        prescriptions: data.prescriptions,
+        barrier: data.barrier,
+      })
+      navigate('/dashboard')
+    }
   }
 
   return (

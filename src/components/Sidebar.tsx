@@ -3,6 +3,7 @@ import {
   Leaf, LayoutDashboard, Package, Calendar, TrendingUp,
   BookHeart, Target, Flag, ScanLine, Settings, LogOut
 } from 'lucide-react'
+import { useApp } from '../context/AppContext'
 
 const navItems = [
   { label: 'Home Dashboard', icon: LayoutDashboard, to: '/dashboard' },
@@ -18,6 +19,12 @@ const navItems = [
 export default function Sidebar() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
+  const { user, logout } = useApp()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
 
   return (
     <aside className="w-64 bg-white border-r border-border-soft h-screen flex flex-col shrink-0 hidden md:flex">
@@ -60,7 +67,7 @@ export default function Sidebar() {
             Settings
           </Link>
           <button
-            onClick={() => navigate('/')}
+            onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-ink/50 hover:bg-paper hover:text-ink transition-colors"
           >
             <LogOut className="w-4 h-4 shrink-0" />
@@ -73,11 +80,11 @@ export default function Sidebar() {
       <div className="p-4 border-t border-border-soft">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-sage/20 flex items-center justify-center text-sage text-sm font-semibold">
-            J
+            {user?.name?.[0]?.toUpperCase() ?? '?'}
           </div>
           <div>
-            <p className="text-sm font-medium text-ink">Jane Doe</p>
-            <p className="text-xs text-ink/50">Combination Skin</p>
+            <p className="text-sm font-medium text-ink">{user?.name ?? ''}</p>
+            <p className="text-xs text-ink/50">{user?.skinType ? `${user.skinType} Skin` : 'Slow Glow'}</p>
           </div>
         </div>
       </div>
