@@ -1,73 +1,79 @@
-# React + TypeScript + Vite
+# Slow Glow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> "Glow slow. Glow right."
 
-Currently, two official plugins are available:
+A free, science-based skincare tracking web app for methodical skincare enthusiasts. Slow Glow helps users manage active ingredient introductions, monitor product expiry, track routines, and document their skin journey — with zero brand partnerships, zero ads, and zero "buy more" nudges.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
 
-## React Compiler
+| Layer | Technology |
+|---|---|
+| Frontend | React 19 + Vite + TypeScript |
+| Styling | Tailwind CSS v4 |
+| Routing | React Router v7 |
+| Charts | Recharts |
+| Icons | Lucide React |
+| Backend (planned) | Azure Functions (.NET) |
+| Database (planned) | CosmosDB |
+| Storage (planned) | Azure Blob Storage |
+| Hosting (planned) | Azure Static Web Apps |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Project Structure
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+slow-glow/
+├── docs/                        # Project documentation
+│   ├── SlowGlow-PRD-v2.docx     # Product Requirements Document
+│   └── uxpilot-prompt.md        # UX Pilot design prompt
+├── ux/                          # UX designs from UX Pilot
+│   ├── desktop/                 # Desktop screen designs (HTML)
+│   └── mobile/                  # Mobile screen designs (HTML)
+├── src/
+│   ├── pages/                   # Page components
+│   │   ├── LandingPage.tsx
+│   │   ├── LoginPage.tsx
+│   │   └── RegisterPage.tsx
+│   ├── components/              # Shared components (coming soon)
+│   ├── App.tsx                  # Root component with routes
+│   ├── main.tsx
+│   └── index.css                # Global styles + Tailwind theme
+└── public/
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Pages
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Route | Page | Status |
+|---|---|---|
+| `/` | Landing Page | Done |
+| `/login` | Login | Done |
+| `/register` | Registration | Done |
+| `/onboarding` | Onboarding (3 steps) | Planned |
+| `/dashboard` | Home Dashboard | Planned |
+| `/inventory` | Product Inventory | Planned |
+| `/routines` | Routine Scheduler | Planned |
+| `/actives` | Active Ingredient Tracker | Planned |
+| `/reactions` | Skin Reaction Log | Planned |
+| `/project-pan` | Project Pan Tracker | Planned |
+| `/milestones` | Milestones | Planned |
+| `/skin-analysis` | Skin Analysis Log | Planned |
+| `/settings` | Settings | Planned |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting Started
+
+```bash
+npm install
+npm run dev
 ```
+
+## Design
+
+UX designs were generated with [UX Pilot](https://uxpilot.ai) based on the PRD. Desktop and mobile designs are in the `ux/` folder.
+
+**Color palette:**
+- Cream `#FDFBF7` — background
+- Sage `#7D8E7A` — primary
+- Terracotta `#C27059` — accent
+- Ink `#1A1A1A` — text
+- Paper `#F5F2EA` — surface
+
+**Fonts:** Playfair Display (serif) · Space Mono (mono) · Inter (sans)
