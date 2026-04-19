@@ -53,6 +53,15 @@ function migrateData(data: UserData): UserData {
           ? (p.activeIngredients as unknown as string).split(',').map((s: string) => s.trim()).filter(Boolean)
           : [],
     })),
+    routineSteps: data.routineSteps.map(s => ({
+      ...s,
+      frequency: s.frequency ?? 'daily',
+      scheduleDays: s.scheduleDays ?? [],
+      introFrequency: s.introFrequency ?? null,
+      introWeeks: s.introWeeks ?? 0,
+      introStartDate: s.introStartDate ?? null,
+      scheduledStartDate: s.scheduledStartDate ?? null,
+    })),
   }
 }
 

@@ -30,6 +30,8 @@ export interface Product {
   createdAt: string
 }
 
+export type StepFrequency = 'daily' | 'every-other-day' | '1x-week' | '2x-week' | '3x-week'
+
 export interface RoutineStep {
   id: string
   userId: string
@@ -41,6 +43,12 @@ export interface RoutineStep {
   isActive: boolean
   activeIngredient: string
   notes: string
+  frequency: StepFrequency
+  scheduleDays: number[]        // 0=Sun … 6=Sat; used for 2x/3x-week
+  introFrequency: StepFrequency | null  // lower frequency used during intro phase
+  introWeeks: number            // 0 = no intro phase
+  introStartDate: string | null // ISO date when intro phase began
+  scheduledStartDate: string | null // future date when this step becomes active
 }
 
 export interface ReactionEntry {
