@@ -25,7 +25,7 @@ export interface Product {
   openedAt: string | null
   fillPercent: number | null
   status: 'active' | 'upcoming' | 'paused' | 'finished'
-  activeIngredients: string
+  activeIngredients: string[]
   notes: string
   createdAt: string
 }
@@ -33,6 +33,7 @@ export interface Product {
 export interface RoutineStep {
   id: string
   userId: string
+  stepType: string
   productId: string | null
   productName: string
   period: 'AM' | 'PM'

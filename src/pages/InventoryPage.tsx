@@ -8,6 +8,14 @@ type StatusFilter = 'active' | 'upcoming' | 'paused' | 'finished' | ''
 
 const CATEGORIES = ['Cleanser', 'Toner', 'Serum', 'Moisturizer', 'Sunscreen', 'Exfoliant', 'Retinoid', 'Eye Cream', 'Mask', 'Other']
 
+const COMMON_ACTIVES = [
+  'Adenosine', 'AHA', 'Alpha Arbutin', 'Azelaic Acid', 'Bakuchiol', 'Benzoyl Peroxide',
+  'BHA', 'Caffeine', 'Centella Asiatica', 'Ceramides', 'Collagen', 'Ferulic Acid', 'Glycerin', 'Glycolic Acid',
+  'Hyaluronic Acid', 'Kojic Acid', 'Lactic Acid', 'Micelles', 'Niacinamide', 'Panthenol', 'Peptides',
+  'Retinal', 'Retinol', 'Salicylic Acid', 'Tranexamic Acid', 'Tretinoin',
+  'Vitamin B12', 'Vitamin C', 'Vitamin E', 'Zinc',
+]
+
 const statusStyle: Record<Product['status'], string> = {
   active:   'bg-sage/10 text-sage',
   upcoming: 'bg-paper text-ink/60',
@@ -79,12 +87,30 @@ function ProductSlideOver({ open, onClose, onSave, editing }: SlideOverProps) {
     paoMonths: editing?.paoMonths ?? 12,
     openedAt: editing?.openedAt ?? '',
     fillPercent: editing?.fillPercent ?? null as number | null,
-    activeIngredients: editing?.activeIngredients ?? '',
+    activeIngredients: editing?.activeIngredients ?? [] as string[],
     notes: editing?.notes ?? '',
   })
 
-  const set = (k: keyof typeof form, v: string | number | null) =>
+  const set = (k: keyof typeof form, v: string | number | null | string[]) =>
     setForm(f => ({ ...f, [k]: v }))
+
+  const toggleActive = (ingredient: string) => {
+    setForm(f => ({
+      ...f,
+      activeIngredients: f.activeIngredients.includes(ingredient)
+        ? f.activeIngredients.filter(i => i !== ingredient)
+        : [...f.activeIngredients, ingredient],
+    }))
+  }
+
+  const [customIngredient, setCustomIngredient] = useState('')
+  const addCustom = () => {
+    const trimmed = customIngredient.trim()
+    if (trimmed && !form.activeIngredients.includes(trimmed)) {
+      setForm(f => ({ ...f, activeIngredients: [...f.activeIngredients, trimmed] }))
+    }
+    setCustomIngredient('')
+  }
 
   const handleSave = () => {
     if (!form.name.trim()) return
@@ -215,15 +241,60 @@ function ProductSlideOver({ open, onClose, onSave, editing }: SlideOverProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-ink mb-1.5">Active Ingredients</label>
-            <input
-              type="text"
-              value={form.activeIngredients}
-              onChange={e => set('activeIngredients', e.target.value)}
-              placeholder="e.g. Vitamin C, Niacinamide"
-              className="w-full px-4 py-2.5 rounded-lg border border-border-soft text-sm focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage"
-            />
-            <p className="text-xs text-ink/50 mt-1">Separate with commas.</p>
+            <label className="block text-sm font-semibold text-ink mb-2">Active Ingredients</label>
+
+            {/* Selected pills */}
+            {form.activeIngredients.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-2">
+                {form.activeIngredients.map(ingredient => (
+                  <span
+                    key={ingredient}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sage text-white text-xs font-medium"
+                  >
+                    {ingredient}
+                    <button
+                      type="button"
+                      onClick={() => toggleActive(ingredient)}
+                      className="hover:opacity-70 transition-opacity"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Dropdown */}
+            <select
+              value=""
+              onChange={e => { if (e.target.value) toggleActive(e.target.value) }}
+              className="w-full px-4 py-2.5 rounded-lg border border-border-soft text-sm text-ink bg-white focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage"
+            >
+              <option value="">Select an ingredient…</option>
+              {COMMON_ACTIVES.filter(i => !form.activeIngredients.includes(i)).map(i => (
+                <option key={i} value={i}>{i}</option>
+              ))}
+            </select>
+
+            {/* Custom */}
+            <div className="flex gap-2 mt-2">
+              <input
+                type="text"
+                value={customIngredient}
+                onChange={e => setCustomIngredient(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustom() } }}
+                placeholder="Add custom ingredient…"
+                className="flex-1 px-3 py-2 rounded-lg border border-border-soft text-sm focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage"
+              />
+              <button
+                type="button"
+                onClick={addCustom}
+                disabled={!customIngredient.trim()}
+                className="px-3 py-2 rounded-lg border border-border-soft text-sm text-ink/60 hover:bg-paper transition-colors disabled:opacity-40"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           <div>
@@ -288,7 +359,7 @@ export default function InventoryPage() {
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.brand.toLowerCase().includes(search.toLowerCase()) ||
       p.category.toLowerCase().includes(search.toLowerCase()) ||
-      p.activeIngredients.toLowerCase().includes(search.toLowerCase())
+      p.activeIngredients.some(i => i.toLowerCase().includes(search.toLowerCase()))
     const matchCategory = categoryFilter === '' || p.category === categoryFilter
     const matchStatus = statusFilter === '' || p.status === statusFilter
     return matchSearch && matchCategory && matchStatus
@@ -446,8 +517,14 @@ export default function InventoryPage() {
                         {product.name}
                       </button>
                       <p className="text-sm text-ink/60">{product.brand}</p>
-                      {product.activeIngredients && (
-                        <p className="text-xs text-ink/40 mt-1 truncate">{product.activeIngredients}</p>
+                      {product.activeIngredients.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {product.activeIngredients.map(i => (
+                            <span key={i} className="px-2 py-0.5 rounded-full bg-paper border border-border-soft text-[10px] text-ink/60">
+                              {i}
+                            </span>
+                          ))}
+                        </div>
                       )}
                     </div>
 

@@ -42,11 +42,25 @@ function loadSession(): string | null {
   return localStorage.getItem(SESSION_KEY)
 }
 
+function migrateData(data: UserData): UserData {
+  return {
+    ...data,
+    products: data.products.map(p => ({
+      ...p,
+      activeIngredients: Array.isArray(p.activeIngredients)
+        ? p.activeIngredients
+        : p.activeIngredients
+          ? (p.activeIngredients as unknown as string).split(',').map((s: string) => s.trim()).filter(Boolean)
+          : [],
+    })),
+  }
+}
+
 function loadData(userId: string): UserData {
   try {
     const raw = localStorage.getItem(DATA_KEY(userId))
     if (!raw) return EMPTY_DATA
-    return { ...EMPTY_DATA, ...JSON.parse(raw) }
+    return migrateData({ ...EMPTY_DATA, ...JSON.parse(raw) })
   } catch { return EMPTY_DATA }
 }
 
