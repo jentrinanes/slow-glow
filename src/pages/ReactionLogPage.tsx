@@ -1,48 +1,21 @@
-import { useState } from 'react'
-import { Download, BookOpen, RefreshCw, Flame, BarChart2, List } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import {
+  Download, BookOpen, RefreshCw, Flame, BarChart2, List, Trash2, FlaskConical, Pencil,
+} from 'lucide-react'
 import {
   ComposedChart, Area, Bar, XAxis, YAxis, CartesianGrid,
-  ResponsiveContainer, Tooltip, Legend
+  ResponsiveContainer, Tooltip, Legend,
 } from 'recharts'
 import Sidebar from '../components/Sidebar'
+import { useApp } from '../context/AppContext'
 
-const chartData = [
-  { date: 'May 1',  severity: 1, active: 1 },
-  { date: 'May 3',  severity: null, active: 1 },
-  { date: 'May 4',  severity: 2, active: null },
-  { date: 'May 7',  severity: null, active: 1 },
-  { date: 'May 8',  severity: 2, active: null },
-  { date: 'May 11', severity: null, active: 1 },
-  { date: 'May 12', severity: 7, active: null },
-  { date: 'May 15', severity: null, active: 1 },
-  { date: 'May 16', severity: 4, active: null },
-  { date: 'May 17', severity: null, active: 1 },
-  { date: 'May 18', severity: 6, active: null },
-]
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const SYMPTOMS = ['Dryness', 'Stinging', 'Peeling', 'Breakouts', 'Redness', 'Itching']
+const SYMPTOMS = ['Dryness', 'Stinging', 'Peeling', 'Breakouts', 'Redness', 'Itching', 'Tightness', 'Burning']
 
-const SUSPECTED_PRODUCTS = [
-  { id: 'p1', name: 'Tretinoin 0.025% Cream', time: 'Used PM' },
-  { id: 'p2', name: 'Vitamin C 15% Serum', time: 'Used AM' },
-]
+const ZONES = ['Face (Cheeks)', 'Face (Forehead)', 'Face (Chin/Jaw)', 'Neck', 'Chest', 'Back', 'Arms']
 
-interface LogEntry {
-  id: string
-  date: string
-  zone: string
-  symptoms: string[]
-  severity: number
-  suspectProduct: string
-}
-
-const initialEntries: LogEntry[] = [
-  { id: '1', date: 'May 16, 2024', zone: 'Face (Cheeks)', symptoms: ['Dryness', 'Peeling'], severity: 4, suspectProduct: 'Tretinoin 0.025%' },
-  { id: '2', date: 'May 12, 2024', zone: 'Neck', symptoms: ['Redness', 'Stinging'], severity: 7, suspectProduct: 'Tretinoin 0.025%' },
-  { id: '3', date: 'May 08, 2024', zone: 'Face (Chin)', symptoms: ['Breakouts'], severity: 2, suspectProduct: 'AHA/BHA Toner' },
-]
-
-function severityColor(v: number) {
+function severityDot(v: number) {
   if (v <= 3) return 'bg-sage'
   if (v <= 6) return 'bg-terracotta/60'
   return 'bg-terracotta'
@@ -54,19 +27,62 @@ function severityLabel(v: number) {
   return 'Severe'
 }
 
-export default function ReactionLogPage() {
-  const [entries, setEntries] = useState<LogEntry[]>(initialEntries)
-  const [chartView, setChartView] = useState<'chart' | 'list'>('chart')
+function parseLocalDate(iso: string) {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
 
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+function formatEntryDate(iso: string) {
+  return parseLocalDate(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+// Build last-30-days chart data from real entries
+function buildChartData(entries: { date: string; severity: number }[]) {
+  const today = new Date()
+  const days: { date: string; label: string; severity: number | null; active: number | null }[] = []
+
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(today)
+    d.setDate(today.getDate() - i)
+    const iso = d.toISOString().slice(0, 10)
+    const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    const dayEntries = entries.filter(e => e.date === iso)
+    const maxSeverity = dayEntries.length ? Math.max(...dayEntries.map(e => e.severity)) : null
+    days.push({ date: iso, label, severity: maxSeverity, active: null })
+  }
+
+  // Only keep days that have data or are at most every-5th for spacing
+  return days.filter((d, i) => d.severity !== null || i % 5 === 0)
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export default function ReactionLogPage() {
+  const {
+    reactionEntries, addReactionEntry, updateReactionEntry, deleteReactionEntry,
+    products, settings,
+  } = useApp()
+
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: settings.timezone }).format(new Date())
+
+  // Form state
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [date, setDate] = useState(today)
   const [zone, setZone] = useState('Face (Cheeks)')
-  const [symptoms, setSymptoms] = useState<string[]>(['Dryness', 'Peeling'])
-  const [severity, setSeverity] = useState(6)
-  const [checkedProducts, setCheckedProducts] = useState<string[]>(['p1'])
+  const [symptoms, setSymptoms] = useState<string[]>([])
+  const [severity, setSeverity] = useState(3)
+  const [checkedProducts, setCheckedProducts] = useState<string[]>([])
   const [notes, setNotes] = useState('')
 
+  // UI state
+  const [chartView, setChartView] = useState<'chart' | 'list'>('chart')
   const [zoneFilter, setZoneFilter] = useState('All Body Zones')
   const [severityFilter, setSeverityFilter] = useState('All Severities')
+
+  const activeProducts = useMemo(
+    () => products.filter(p => p.status === 'active' || p.status === 'upcoming'),
+    [products]
+  )
 
   const toggleSymptom = (s: string) =>
     setSymptoms(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])
@@ -74,23 +90,44 @@ export default function ReactionLogPage() {
   const toggleProduct = (id: string) =>
     setCheckedProducts(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
 
-  const handleSave = () => {
-    const suspect = SUSPECTED_PRODUCTS.filter(p => checkedProducts.includes(p.id)).map(p => p.name).join(', ')
-    setEntries(prev => [{
-      id: String(Date.now()),
-      date: new Date(date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-      zone,
-      symptoms,
-      severity,
-      suspectProduct: suspect || '—',
-    }, ...prev])
+  const resetForm = () => {
+    setEditingId(null)
+    setDate(today)
+    setZone('Face (Cheeks)')
     setSymptoms([])
     setSeverity(3)
     setCheckedProducts([])
     setNotes('')
   }
 
-  const filteredEntries = entries.filter(e => {
+  const startEdit = (entry: typeof reactionEntries[0]) => {
+    setEditingId(entry.id)
+    setDate(entry.date)
+    setZone(entry.zone)
+    setSymptoms(entry.symptoms)
+    setSeverity(entry.severity)
+    setNotes(entry.notes)
+    // Match product names back to IDs
+    setCheckedProducts(
+      activeProducts.filter(p => entry.productsInvolved.includes(p.name)).map(p => p.id)
+    )
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleSave = () => {
+    const productsInvolved = activeProducts
+      .filter(p => checkedProducts.includes(p.id))
+      .map(p => p.name)
+
+    if (editingId) {
+      updateReactionEntry(editingId, { date, zone, symptoms, severity, productsInvolved, notes })
+    } else {
+      addReactionEntry({ date, zone, symptoms, severity, productsInvolved, notes })
+    }
+    resetForm()
+  }
+
+  const filteredEntries = reactionEntries.filter(e => {
     const matchZone = zoneFilter === 'All Body Zones'
       || (zoneFilter === 'Face Only' && e.zone.startsWith('Face'))
       || (zoneFilter === 'Neck & Chest' && (e.zone === 'Neck' || e.zone === 'Chest'))
@@ -100,14 +137,16 @@ export default function ReactionLogPage() {
     return matchZone && matchSeverity
   })
 
+  const chartData = useMemo(() => buildChartData(reactionEntries), [reactionEntries])
+
   return (
-    <div className="min-h-screen flex font-sans bg-paper">
+    <div className="min-h-screen flex font-sans bg-cream">
       <Sidebar />
 
-      <main className="flex-1 h-screen overflow-y-auto flex flex-col relative">
+      <main className="flex-1 h-screen overflow-y-auto bg-paper flex flex-col relative">
 
         {/* Toolbar */}
-        <div className="bg-white border-b border-border-soft px-6 lg:px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+        <div className="sticky top-0 z-20 bg-white border-b border-border-soft px-6 lg:px-8 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-ink tracking-tight">Reaction Log</h1>
             <p className="text-sm text-ink/50 mt-0.5">Document symptoms and analyze patterns to prevent barrier damage.</p>
@@ -120,15 +159,23 @@ export default function ReactionLogPage() {
         <div className="flex-1 p-6 lg:p-8 max-w-[1440px] mx-auto w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-            {/* LEFT: Log Entry Form */}
+            {/* ── LEFT: Log Entry Form ─────────────────────────────────── */}
             <div className="lg:col-span-4 flex flex-col gap-6">
               <section
-                className="bg-white rounded-2xl border border-border-soft p-6"
+                className={`bg-white rounded-2xl border p-6 transition-colors ${editingId ? 'border-sage/40' : 'border-border-soft'}`}
                 style={{ boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)' }}
               >
-                <h2 className="text-lg font-bold text-ink mb-5 border-b border-border-soft pb-4">Log New Reaction</h2>
+                <div className="flex items-center justify-between mb-5 border-b border-border-soft pb-4">
+                  <h2 className="text-lg font-bold text-ink">{editingId ? 'Edit Entry' : 'Log New Reaction'}</h2>
+                  {editingId && (
+                    <button onClick={resetForm} className="text-xs text-ink/40 hover:text-ink transition-colors">
+                      Cancel
+                    </button>
+                  )}
+                </div>
 
                 <div className="space-y-6">
+
                   {/* Date + Zone */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -147,9 +194,7 @@ export default function ReactionLogPage() {
                         onChange={e => setZone(e.target.value)}
                         className="w-full bg-paper border border-border-soft rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-sage"
                       >
-                        {['Face (Cheeks)', 'Face (Forehead)', 'Face (Chin/Jaw)', 'Neck', 'Chest'].map(z => (
-                          <option key={z}>{z}</option>
-                        ))}
+                        {ZONES.map(z => <option key={z}>{z}</option>)}
                       </select>
                     </div>
                   </div>
@@ -175,7 +220,7 @@ export default function ReactionLogPage() {
                     </div>
                   </div>
 
-                  {/* Severity Slider */}
+                  {/* Severity */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="block text-xs font-bold text-ink/40 uppercase tracking-wider">Overall Severity</label>
@@ -186,8 +231,7 @@ export default function ReactionLogPage() {
                     <div className="px-1 py-3">
                       <input
                         type="range"
-                        min={1}
-                        max={10}
+                        min={1} max={10}
                         value={severity}
                         onChange={e => setSeverity(Number(e.target.value))}
                         style={{ accentColor: '#C27059' }}
@@ -202,29 +246,37 @@ export default function ReactionLogPage() {
 
                   {/* Suspected Products */}
                   <div>
-                    <label className="block text-xs font-bold text-ink/40 uppercase tracking-wider mb-2">Suspected Products (Last 24h)</label>
-                    <div className="space-y-2">
-                      {SUSPECTED_PRODUCTS.map(p => (
-                        <label
-                          key={p.id}
-                          className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
-                            checkedProducts.includes(p.id) ? 'border-border-soft bg-paper' : 'border-border-soft bg-white hover:bg-paper/60'
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={checkedProducts.includes(p.id)}
-                            onChange={() => toggleProduct(p.id)}
-                            style={{ accentColor: '#7D8E7A' }}
-                            className="w-4 h-4 rounded"
-                          />
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-ink">{p.name}</p>
-                            <p className="text-xs text-ink/40">{p.time}</p>
-                          </div>
-                        </label>
-                      ))}
-                    </div>
+                    <label className="block text-xs font-bold text-ink/40 uppercase tracking-wider mb-2">
+                      Suspected Products (Last 24h)
+                    </label>
+                    {activeProducts.length === 0 ? (
+                      <p className="text-xs text-ink/30 italic">No active products in inventory.</p>
+                    ) : (
+                      <div className="space-y-2 max-h-48 overflow-y-auto">
+                        {activeProducts.map(p => (
+                          <label
+                            key={p.id}
+                            className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
+                              checkedProducts.includes(p.id)
+                                ? 'border-border-soft bg-paper'
+                                : 'border-border-soft bg-white hover:bg-paper/60'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checkedProducts.includes(p.id)}
+                              onChange={() => toggleProduct(p.id)}
+                              style={{ accentColor: '#7D8E7A' }}
+                              className="w-4 h-4 rounded shrink-0"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-ink truncate">{p.name}</p>
+                              <p className="text-xs text-ink/40">{p.brand || p.category}</p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* Notes */}
@@ -243,13 +295,13 @@ export default function ReactionLogPage() {
                     onClick={handleSave}
                     className="w-full bg-sage text-white font-bold py-3 px-4 rounded-lg hover:bg-ink transition-colors"
                   >
-                    Save Reaction Log
+                    {editingId ? 'Update Entry' : 'Save Reaction Log'}
                   </button>
                 </div>
               </section>
             </div>
 
-            {/* RIGHT: Analytics + History */}
+            {/* ── RIGHT: Analytics + History ──────────────────────────── */}
             <div className="lg:col-span-8 flex flex-col gap-6">
 
               {/* Filter Bar */}
@@ -300,43 +352,128 @@ export default function ReactionLogPage() {
                     <h2 className="text-lg font-bold text-ink">Reaction Frequency & Severity</h2>
                     <span className="text-xs font-bold px-2 py-1 bg-paper rounded text-ink/40">Last 30 Days</span>
                   </div>
-                  <p className="text-sm text-ink/50 mb-6">Visualizing symptom spikes against active ingredient usage days.</p>
-                  <div className="h-[280px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <ComposedChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                        <defs>
-                          <linearGradient id="severityGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#C27059" stopOpacity={0.2} />
-                            <stop offset="95%" stopColor="#C27059" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid vertical={false} stroke="rgba(229,231,235,0.6)" />
-                        <XAxis dataKey="date" tick={{ fontFamily: 'Inter', fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                        <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} tick={{ fontFamily: 'Inter', fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
-                        <Tooltip
-                          contentStyle={{ fontFamily: 'Inter', fontSize: 12, border: '1px solid #E8E4D9', borderRadius: 8 }}
-                        />
-                        <Legend
-                          wrapperStyle={{ fontFamily: 'Inter', fontSize: 12, paddingTop: 12 }}
-                          formatter={v => v === 'severity' ? 'Symptom Severity' : 'Active Applied'}
-                        />
-                        <Bar dataKey="active" name="active" fill="#8DA290" fillOpacity={0.4} radius={[3, 3, 0, 0]} barSize={16} />
-                        <Area
-                          type="monotone"
-                          dataKey="severity"
-                          name="severity"
-                          stroke="#C27059"
-                          strokeWidth={3}
-                          fill="url(#severityGrad)"
-                          connectNulls
-                          dot={{ fill: '#FDFBF7', stroke: '#C27059', strokeWidth: 2, r: 4 }}
-                          activeDot={{ r: 6 }}
-                        />
-                      </ComposedChart>
-                    </ResponsiveContainer>
-                  </div>
+                  <p className="text-sm text-ink/50 mb-6">Symptom severity over time.</p>
+                  {chartData.some(d => d.severity !== null) ? (
+                    <div className="h-[260px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <ComposedChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="severityGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#C27059" stopOpacity={0.2} />
+                              <stop offset="95%" stopColor="#C27059" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid vertical={false} stroke="rgba(229,231,235,0.6)" />
+                          <XAxis dataKey="label" tick={{ fontFamily: 'Inter', fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+                          <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} tick={{ fontFamily: 'Inter', fontSize: 10, fill: '#9CA3AF' }} axisLine={false} tickLine={false} />
+                          <Tooltip contentStyle={{ fontFamily: 'Inter', fontSize: 12, border: '1px solid #E8E4D9', borderRadius: 8 }} />
+                          <Legend wrapperStyle={{ fontFamily: 'Inter', fontSize: 12, paddingTop: 12 }} formatter={v => v === 'severity' ? 'Symptom Severity' : 'Active Applied'} />
+                          <Bar dataKey="active" name="active" fill="#8DA290" fillOpacity={0.4} radius={[3, 3, 0, 0]} barSize={16} />
+                          <Area
+                            type="monotone"
+                            dataKey="severity"
+                            name="severity"
+                            stroke="#C27059"
+                            strokeWidth={3}
+                            fill="url(#severityGrad)"
+                            connectNulls
+                            dot={{ fill: '#FDFBF7', stroke: '#C27059', strokeWidth: 2, r: 4 }}
+                            activeDot={{ r: 6 }}
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : (
+                    <div className="h-[260px] flex items-center justify-center">
+                      <p className="text-sm text-ink/30">No reactions logged in the last 30 days.</p>
+                    </div>
+                  )}
                 </section>
               )}
+
+              {/* Recent Entries Cards */}
+              <section
+                className="bg-white rounded-2xl border border-border-soft overflow-hidden"
+                style={{ boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)' }}
+              >
+                <div className="px-6 py-5 border-b border-border-soft flex items-center justify-between">
+                  <h2 className="text-lg font-bold text-ink">Recent History</h2>
+                  {reactionEntries.length > 0 && (
+                    <span className="text-xs text-ink/40 font-medium">
+                      {filteredEntries.length < reactionEntries.length
+                        ? `${filteredEntries.length} of ${reactionEntries.length}`
+                        : `${reactionEntries.length} total`}
+                    </span>
+                  )}
+                </div>
+
+                {filteredEntries.length === 0 ? (
+                  <div className="px-6 py-12 text-center text-sm text-ink/30">
+                    {reactionEntries.length === 0
+                      ? 'No reactions logged yet. Use the form to record your first entry.'
+                      : 'No entries match your filters.'}
+                  </div>
+                ) : (
+                  <div className="divide-y divide-border-soft">
+                    {filteredEntries.map(row => (
+                      <div key={row.id} className="px-6 py-5 hover:bg-paper/40 transition-colors">
+                        {/* Header row */}
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                          <div>
+                            <p className="text-sm font-bold text-ink">{formatEntryDate(row.date)}</p>
+                            <p className="text-xs text-ink/40 mt-0.5">{row.zone}</p>
+                          </div>
+                          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-bold shrink-0 ${
+                            row.severity >= 7
+                              ? 'bg-terracotta/10 border-terracotta/20 text-terracotta'
+                              : row.severity >= 4
+                                ? 'bg-terracotta/5 border-terracotta/15 text-terracotta/70'
+                                : 'bg-paper border-border-soft text-ink/50'
+                          }`}>
+                            <div className={`w-1.5 h-1.5 rounded-full ${severityDot(row.severity)}`} />
+                            {row.severity}/10
+                          </div>
+                        </div>
+
+                        {/* Symptoms */}
+                        {row.symptoms.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mb-3">
+                            {row.symptoms.map(s => (
+                              <span key={s} className="text-[11px] px-2.5 py-0.5 bg-paper border border-border-soft rounded-full text-ink/60 font-medium">{s}</span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Footer row */}
+                        <div className="flex items-center justify-between pt-3 border-t border-border-soft/60">
+                          <div className="flex items-center gap-1.5 text-xs text-ink/40">
+                            <FlaskConical className="w-3 h-3 text-ink/20 shrink-0" />
+                            {row.productsInvolved.length > 0
+                              ? row.productsInvolved.join(', ')
+                              : <span className="italic">No products linked</span>}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => startEdit(row)}
+                              className="text-ink/20 hover:text-sage transition-colors p-1"
+                              title="Edit entry"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => deleteReactionEntry(row.id)}
+                              className="text-ink/20 hover:text-terracotta transition-colors p-1"
+                              title="Delete entry"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
 
               {/* Education Card */}
               <section className="bg-ink rounded-2xl p-6 relative overflow-hidden">
@@ -379,54 +516,6 @@ export default function ReactionLogPage() {
                       </ul>
                     </div>
                   </div>
-                </div>
-              </section>
-
-              {/* Recent Entries Table */}
-              <section
-                className="bg-white rounded-2xl border border-border-soft overflow-hidden"
-                style={{ boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)' }}
-              >
-                <div className="p-6 border-b border-border-soft">
-                  <h2 className="text-lg font-bold text-ink">Recent Entries</h2>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left">
-                    <thead>
-                      <tr className="bg-paper border-b border-border-soft">
-                        {['Date', 'Zone', 'Symptoms', 'Severity', 'Suspect Product'].map(h => (
-                          <th key={h} className="px-5 py-3 text-xs font-bold text-ink/40 uppercase tracking-wider whitespace-nowrap">{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border-soft">
-                      {filteredEntries.map(row => (
-                        <tr key={row.id} className="hover:bg-paper/60 transition-colors">
-                          <td className="px-5 py-4 text-sm font-medium text-ink whitespace-nowrap">{row.date}</td>
-                          <td className="px-5 py-4 text-sm text-ink/60">{row.zone}</td>
-                          <td className="px-5 py-4">
-                            <div className="flex gap-1 flex-wrap">
-                              {row.symptoms.map(s => (
-                                <span key={s} className="text-[10px] px-2 py-0.5 bg-paper border border-border-soft rounded text-ink/60">{s}</span>
-                              ))}
-                            </div>
-                          </td>
-                          <td className="px-5 py-4">
-                            <div className="flex items-center gap-2">
-                              <div className={`w-2 h-2 rounded-full ${severityColor(row.severity)}`} />
-                              <span className={`text-sm ${row.severity >= 7 ? 'font-medium text-ink' : 'text-ink/60'}`}>{row.severity}/10</span>
-                            </div>
-                          </td>
-                          <td className="px-5 py-4 text-xs text-ink/40">{row.suspectProduct}</td>
-                        </tr>
-                      ))}
-                      {filteredEntries.length === 0 && (
-                        <tr>
-                          <td colSpan={5} className="px-5 py-12 text-center text-sm text-ink/30">No entries match your filters.</td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
                 </div>
               </section>
 

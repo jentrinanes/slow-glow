@@ -104,6 +104,7 @@ interface AppContextValue {
   setRoutineStepOrder: (period: 'AM' | 'PM', ordered: RoutineStep[]) => void
   reactionEntries: ReactionEntry[]
   addReactionEntry: (e: Omit<ReactionEntry, 'id' | 'userId' | 'createdAt'>) => void
+  updateReactionEntry: (id: string, updates: Partial<ReactionEntry>) => void
   deleteReactionEntry: (id: string) => void
   skinAnalysisEntries: SkinAnalysisEntry[]
   addSkinAnalysisEntry: (e: Omit<SkinAnalysisEntry, 'id' | 'userId' | 'createdAt'>) => void
@@ -243,6 +244,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     updateData({ reactionEntries: [entry, ...data.reactionEntries] })
   }, [user, data.reactionEntries, updateData])
 
+  const updateReactionEntry = useCallback((id: string, updates: Partial<ReactionEntry>) => {
+    updateData({ reactionEntries: data.reactionEntries.map(e => e.id === id ? { ...e, ...updates } : e) })
+  }, [data.reactionEntries, updateData])
+
   const deleteReactionEntry = useCallback((id: string) => {
     updateData({ reactionEntries: data.reactionEntries.filter(e => e.id !== id) })
   }, [data.reactionEntries, updateData])
@@ -288,7 +293,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       user, login, register, logout, completeOnboarding,
       products: data.products, addProduct, updateProduct, deleteProduct,
       routineSteps: data.routineSteps, addRoutineStep, updateRoutineStep, deleteRoutineStep, setRoutineStepOrder,
-      reactionEntries: data.reactionEntries, addReactionEntry, deleteReactionEntry,
+      reactionEntries: data.reactionEntries, addReactionEntry, updateReactionEntry, deleteReactionEntry,
       skinAnalysisEntries: data.skinAnalysisEntries, addSkinAnalysisEntry,
       projectPanItems: data.projectPanItems, addProjectPanItem, updateProjectPanItem, removeProjectPanItem,
       settings: data.settings, updateSettings,
