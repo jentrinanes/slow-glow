@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Flame, TriangleAlert, HourglassIcon, Clock, ArrowUpRight, Smile, Frown, CalendarClock, AlertTriangle } from 'lucide-react'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip
@@ -194,27 +193,27 @@ function RoutineStepCard({ step, today, checked, onToggle }: {
           {step.stepType}
         </p>
         {step.productName && (
-          <p className="text-xs text-ink/40 mt-0.5 truncate">{step.productName}</p>
+          <p className="text-xs text-ink/40 mt-0.5 leading-snug">{step.productName}</p>
+        )}
+        {step.isActive && started && (
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {onToday
+              ? step.activeIngredient.split(',').map(a => a.trim()).filter(Boolean).map(ing => (
+                  <span key={ing} className="px-2 py-0.5 rounded text-[10px] font-medium bg-sage/10 text-sage">{ing}</span>
+                ))
+              : <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-paper text-ink/30">Skip</span>
+            }
+          </div>
+        )}
+        {!started && step.scheduledStartDate && (
+          <div className="mt-1.5">
+            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-terracotta/10 text-terracotta inline-flex items-center gap-1">
+              <CalendarClock className="w-2.5 h-2.5" />
+              {parseLocalDate(step.scheduledStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            </span>
+          </div>
         )}
       </div>
-      {step.isActive && started && (
-        onToday
-          ? (
-            <span className="px-2 py-0.5 rounded text-[10px] font-medium mt-1 shrink-0 bg-sage/10 text-sage">
-              {step.activeIngredient.split(',')[0].trim() || 'Active'}
-            </span>
-          ) : (
-            <span className="px-2 py-0.5 rounded text-[10px] font-medium mt-1 shrink-0 bg-paper text-ink/30">
-              Skip
-            </span>
-          )
-      )}
-      {!started && step.scheduledStartDate && (
-        <span className="px-2 py-0.5 rounded text-[10px] font-medium mt-1 shrink-0 bg-terracotta/10 text-terracotta flex items-center gap-1">
-          <CalendarClock className="w-2.5 h-2.5" />
-          {parseLocalDate(step.scheduledStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-        </span>
-      )}
     </label>
   )
 }
@@ -233,17 +232,12 @@ const progressionData = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const { routineSteps, products, reactionEntries, settings } = useApp()
+  const { routineSteps, products, reactionEntries, settings, completedSteps, toggleStepComplete } = useApp()
   const today = getTodayInTimezone(settings.timezone)
+  const todayStr = new Intl.DateTimeFormat('en-CA', { timeZone: settings.timezone }).format(new Date())
 
-  const [amChecked, setAmChecked] = useState<Record<string, boolean>>({})
-  const [pmChecked, setPmChecked] = useState<Record<string, boolean>>({})
-
-  const toggle = (
-    id: string,
-    state: Record<string, boolean>,
-    setState: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
-  ) => setState({ ...state, [id]: !state[id] })
+  const isChecked = (stepId: string) => completedSteps[todayStr]?.includes(stepId) ?? false
+  const toggle = (stepId: string) => toggleStepComplete(todayStr, stepId)
 
   // Routine steps sorted by order
   const amSteps = [...routineSteps]
@@ -390,8 +384,8 @@ export default function DashboardPage() {
                         key={step.id}
                         step={step}
                         today={today}
-                        checked={!!amChecked[step.id]}
-                        onToggle={() => toggle(step.id, amChecked, setAmChecked)}
+                        checked={isChecked(step.id)}
+                        onToggle={() => toggle(step.id)}
                       />
                     ))}
                   </div>
@@ -420,8 +414,8 @@ export default function DashboardPage() {
                         key={step.id}
                         step={step}
                         today={today}
-                        checked={!!pmChecked[step.id]}
-                        onToggle={() => toggle(step.id, pmChecked, setPmChecked)}
+                        checked={isChecked(step.id)}
+                        onToggle={() => toggle(step.id)}
                       />
                     ))}
                   </div>

@@ -29,6 +29,7 @@ const EMPTY_DATA: UserData = {
   skinAnalysisEntries: [],
   projectPanItems: [],
   settings: DEFAULT_SETTINGS,
+  completedSteps: {},
 }
 
 function loadUsers(): UsersStore {
@@ -112,6 +113,8 @@ interface AppContextValue {
   removeProjectPanItem: (id: string) => void
   settings: UserSettings
   updateSettings: (updates: Partial<UserSettings>) => void
+  completedSteps: Record<string, string[]>
+  toggleStepComplete: (date: string, stepId: string) => void
 }
 
 const AppContext = createContext<AppContextValue | null>(null)
@@ -271,6 +274,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     updateData({ settings: { ...data.settings, ...updates } })
   }, [data.settings, updateData])
 
+  // Completed steps
+  const toggleStepComplete = useCallback((date: string, stepId: string) => {
+    const current = data.completedSteps[date] ?? []
+    const updated = current.includes(stepId)
+      ? current.filter(id => id !== stepId)
+      : [...current, stepId]
+    updateData({ completedSteps: { ...data.completedSteps, [date]: updated } })
+  }, [data.completedSteps, updateData])
+
   return (
     <AppContext.Provider value={{
       user, login, register, logout, completeOnboarding,
@@ -280,6 +292,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       skinAnalysisEntries: data.skinAnalysisEntries, addSkinAnalysisEntry,
       projectPanItems: data.projectPanItems, addProjectPanItem, updateProjectPanItem, removeProjectPanItem,
       settings: data.settings, updateSettings,
+      completedSteps: data.completedSteps, toggleStepComplete,
     }}>
       {children}
     </AppContext.Provider>

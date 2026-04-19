@@ -111,6 +111,7 @@ export interface UserData {
   skinAnalysisEntries: SkinAnalysisEntry[]
   projectPanItems: ProjectPanItem[]
   settings: UserSettings
+  completedSteps: Record<string, string[]>  // "YYYY-MM-DD" → step IDs completed that day
 }
 
 export type OnboardingProfile = Pick<
