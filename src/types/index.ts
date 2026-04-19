@@ -101,6 +101,7 @@ export interface UserSettings {
   notifExpiry: boolean
   notifMilestones: boolean
   notifCheckin: boolean
+  timezone: string
 }
 
 export interface UserData {

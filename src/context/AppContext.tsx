@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   notifExpiry: true,
   notifMilestones: true,
   notifCheckin: false,
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 }
 
 const EMPTY_DATA: UserData = {
@@ -62,6 +63,10 @@ function migrateData(data: UserData): UserData {
       introStartDate: s.introStartDate ?? null,
       scheduledStartDate: s.scheduledStartDate ?? null,
     })),
+    settings: {
+      ...DEFAULT_SETTINGS,
+      ...data.settings,
+    },
   }
 }
 

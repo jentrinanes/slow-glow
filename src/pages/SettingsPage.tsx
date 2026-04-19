@@ -1,15 +1,59 @@
-import { useState } from 'react'
-import { X, Plus, Info, FileOutput, Trash2, ChevronRight } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { X, Plus, Info, FileOutput, Trash2, ChevronRight, Globe } from 'lucide-react'
 import Sidebar from '../components/Sidebar'
+import { useApp } from '../context/AppContext'
+import type { UserSettings } from '../types'
 
-type ExperienceMode = 'guided' | 'nerd'
-type SkinType = 'Dry' | 'Combination' | 'Oily' | 'Normal'
+// ─── Timezone helpers ─────────────────────────────────────────────────────────
+
+const TZ_NOW = new Date()
+
+interface TzOption { value: string; label: string; region: string }
+
+const TIMEZONE_LIST: TzOption[] = (() => {
+  try {
+    return (Intl as unknown as { supportedValuesOf: (k: string) => string[] })
+      .supportedValuesOf('timeZone')
+      .map(tz => {
+        const offset = new Intl.DateTimeFormat('en', {
+          timeZone: tz, timeZoneName: 'shortOffset',
+        }).formatToParts(TZ_NOW).find(p => p.type === 'timeZoneName')?.value ?? ''
+        const city = tz.split('/').pop()?.replace(/_/g, ' ') ?? tz
+        return { value: tz, label: `${city} — ${offset}`, region: tz.split('/')[0] }
+      })
+  } catch {
+    return [
+      'UTC', 'America/New_York', 'America/Chicago', 'America/Denver',
+      'America/Los_Angeles', 'America/Toronto', 'America/Sao_Paulo',
+      'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Moscow',
+      'Africa/Johannesburg', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Bangkok',
+      'Asia/Singapore', 'Asia/Tokyo', 'Asia/Seoul',
+      'Australia/Sydney', 'Pacific/Auckland',
+    ].map(tz => ({ value: tz, label: tz.split('/').pop()?.replace(/_/g, ' ') ?? tz, region: tz.split('/')[0] }))
+  }
+})()
+
+const REGION_ORDER = ['America', 'Europe', 'Africa', 'Asia', 'Indian', 'Atlantic', 'Australia', 'Pacific', 'Antarctica', 'Etc', 'UTC']
+
+const TIMEZONE_REGIONS = REGION_ORDER.filter(r =>
+  TIMEZONE_LIST.some(t => t.region === r)
+)
+
+function formatNowInTz(tz: string): string {
+  try {
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: tz, weekday: 'short', month: 'short', day: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short',
+    }).format(new Date())
+  } catch { return '' }
+}
+
+// ─── Shared components ────────────────────────────────────────────────────────
+
 type WarningSensitivity = 1 | 2 | 3
 
 const sensitivityLabel: Record<WarningSensitivity, string> = {
-  1: 'Relaxed',
-  2: 'Moderate',
-  3: 'High',
+  1: 'Relaxed', 2: 'Moderate', 3: 'High',
 }
 
 const sensitivityColor: Record<WarningSensitivity, string> = {
@@ -18,51 +62,38 @@ const sensitivityColor: Record<WarningSensitivity, string> = {
   3: 'text-terracotta bg-terracotta/10',
 }
 
-interface ToggleProps {
-  id: string
-  checked: boolean
-  onChange: (val: boolean) => void
-}
-
-function Toggle({ id, checked, onChange }: ToggleProps) {
+function Toggle({ id, checked, onChange }: { id: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <button
       id={id}
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
-        checked ? 'bg-sage' : 'bg-border-soft'
-      }`}
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${checked ? 'bg-sage' : 'bg-border-soft'}`}
     >
-      <span
-        className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ${
-          checked ? 'translate-x-5' : 'translate-x-0'
-        }`}
-      />
+      <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200 ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
     </button>
   )
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function SettingsPage() {
-  const [mode, setMode] = useState<ExperienceMode>('guided')
-  const [skinType, setSkinType] = useState<SkinType>('Combination')
-  const [sensitivities, setSensitivities] = useState(['Fragrance (Synthetic)', 'Essential Oils', 'Niacinamide > 5%'])
-  const [newSensitivity, setNewSensitivity] = useState('')
+  const { settings, updateSettings } = useApp()
+
   const [addingTag, setAddingTag] = useState(false)
-  const [warningSensitivity, setWarningSensitivity] = useState<WarningSensitivity>(3)
-  const [notifExpiry, setNotifExpiry] = useState(true)
-  const [notifMilestones, setNotifMilestones] = useState(true)
-  const [notifCheckin, setNotifCheckin] = useState(false)
+  const [newSensitivity, setNewSensitivity] = useState('')
+
+  const nowInTz = useMemo(() => formatNowInTz(settings.timezone), [settings.timezone])
 
   function removeSensitivity(tag: string) {
-    setSensitivities(prev => prev.filter(s => s !== tag))
+    updateSettings({ sensitivities: settings.sensitivities.filter(s => s !== tag) })
   }
 
   function addSensitivity() {
     const trimmed = newSensitivity.trim()
-    if (trimmed && !sensitivities.includes(trimmed)) {
-      setSensitivities(prev => [...prev, trimmed])
+    if (trimmed && !settings.sensitivities.includes(trimmed)) {
+      updateSettings({ sensitivities: [...settings.sensitivities, trimmed] })
     }
     setNewSensitivity('')
     setAddingTag(false)
@@ -93,18 +124,14 @@ export default function SettingsPage() {
             </div>
             <div className="flex items-center p-1.5 bg-paper rounded-xl border border-border-soft shrink-0">
               <button
-                onClick={() => setMode('guided')}
-                className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  mode === 'guided' ? 'bg-white text-ink shadow-sm' : 'text-ink/50 hover:text-ink'
-                }`}
+                onClick={() => updateSettings({ experienceMode: 'guided' })}
+                className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${settings.experienceMode === 'guided' ? 'bg-white text-ink shadow-sm' : 'text-ink/50 hover:text-ink'}`}
               >
                 Guided
               </button>
               <button
-                onClick={() => setMode('nerd')}
-                className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  mode === 'nerd' ? 'bg-white text-ink shadow-sm' : 'text-ink/50 hover:text-ink'
-                }`}
+                onClick={() => updateSettings({ experienceMode: 'nerd' })}
+                className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${settings.experienceMode === 'nerd' ? 'bg-white text-ink shadow-sm' : 'text-ink/50 hover:text-ink'}`}
               >
                 Ingredient Nerd
               </button>
@@ -128,12 +155,12 @@ export default function SettingsPage() {
                 <div>
                   <label className="text-sm font-medium text-ink block mb-3">Primary Skin Type</label>
                   <div className="grid grid-cols-4 gap-3">
-                    {(['Dry', 'Combination', 'Oily', 'Normal'] as SkinType[]).map(type => (
+                    {(['Dry', 'Combination', 'Oily', 'Normal'] as UserSettings['skinType'][]).map(type => (
                       <button
                         key={type}
-                        onClick={() => setSkinType(type)}
+                        onClick={() => updateSettings({ skinType: type })}
                         className={`py-2.5 border rounded-lg text-sm font-medium transition-colors ${
-                          skinType === type
+                          settings.skinType === type
                             ? 'border-sage bg-sage/10 text-sage'
                             : 'border-border-soft text-ink/60 hover:bg-paper'
                         }`}
@@ -148,16 +175,10 @@ export default function SettingsPage() {
                 <div>
                   <label className="text-sm font-medium text-ink block mb-3">Known Sensitivities</label>
                   <div className="flex flex-wrap gap-2">
-                    {sensitivities.map(tag => (
-                      <span
-                        key={tag}
-                        className="px-3 py-1.5 bg-paper border border-border-soft rounded-full text-xs text-ink flex items-center gap-2"
-                      >
+                    {settings.sensitivities.map(tag => (
+                      <span key={tag} className="px-3 py-1.5 bg-paper border border-border-soft rounded-full text-xs text-ink flex items-center gap-2">
                         {tag}
-                        <button
-                          onClick={() => removeSensitivity(tag)}
-                          className="text-ink/30 hover:text-terracotta transition-colors"
-                        >
+                        <button onClick={() => removeSensitivity(tag)} className="text-ink/30 hover:text-terracotta transition-colors">
                           <X className="w-3 h-3" />
                         </button>
                       </span>
@@ -194,16 +215,16 @@ export default function SettingsPage() {
                       <label className="text-sm font-medium text-ink block">Interaction Warning Sensitivity</label>
                       <p className="text-[10px] text-ink/50 mt-1">Adjust how quickly we warn you about layering conflicts.</p>
                     </div>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded ${sensitivityColor[warningSensitivity]}`}>
-                      {sensitivityLabel[warningSensitivity]}
+                    <span className={`text-xs font-bold px-2 py-0.5 rounded ${sensitivityColor[settings.warningSensitivity as WarningSensitivity]}`}>
+                      {sensitivityLabel[settings.warningSensitivity as WarningSensitivity]}
                     </span>
                   </div>
                   <input
                     type="range"
                     min={1}
                     max={3}
-                    value={warningSensitivity}
-                    onChange={e => setWarningSensitivity(Number(e.target.value) as WarningSensitivity)}
+                    value={settings.warningSensitivity}
+                    onChange={e => updateSettings({ warningSensitivity: Number(e.target.value) as WarningSensitivity })}
                     className="w-full"
                     style={{ accentColor: '#7D8E7A' }}
                   />
@@ -243,7 +264,7 @@ export default function SettingsPage() {
                       <h4 className="text-sm font-medium text-ink">Product Expiry Alerts</h4>
                       <p className="text-xs text-ink/50 mt-0.5">Notify me 30 days before PAO (Period After Opening) ends.</p>
                     </div>
-                    <Toggle id="notif-expiry" checked={notifExpiry} onChange={setNotifExpiry} />
+                    <Toggle id="notif-expiry" checked={settings.notifExpiry} onChange={v => updateSettings({ notifExpiry: v })} />
                   </div>
 
                   <hr className="border-border-soft" />
@@ -253,7 +274,7 @@ export default function SettingsPage() {
                       <h4 className="text-sm font-medium text-ink">Routine Milestones</h4>
                       <p className="text-xs text-ink/50 mt-0.5">Quiet notifications when reaching 30/60/90 days of consistent use.</p>
                     </div>
-                    <Toggle id="notif-milestones" checked={notifMilestones} onChange={setNotifMilestones} />
+                    <Toggle id="notif-milestones" checked={settings.notifMilestones} onChange={v => updateSettings({ notifMilestones: v })} />
                   </div>
 
                   <hr className="border-border-soft" />
@@ -263,7 +284,57 @@ export default function SettingsPage() {
                       <h4 className="text-sm font-medium text-ink">Daily Habit Check-in</h4>
                       <p className="text-xs text-ink/50 mt-0.5">A gentle evening reminder to log your skin state.</p>
                     </div>
-                    <Toggle id="notif-checkin" checked={notifCheckin} onChange={setNotifCheckin} />
+                    <Toggle id="notif-checkin" checked={settings.notifCheckin} onChange={v => updateSettings({ notifCheckin: v })} />
+                  </div>
+                </div>
+              </section>
+
+              {/* Timezone */}
+              <section
+                className="bg-white rounded-2xl border border-border-soft overflow-hidden"
+                style={{ boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)' }}
+              >
+                <div className="p-6 border-b border-border-soft bg-cream">
+                  <h3 className="text-lg font-bold text-ink font-serif">Routine & Schedule</h3>
+                  <p className="text-xs text-ink/50 mt-1">Determines which steps are active or scheduled today.</p>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-sage/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <Globe className="w-4 h-4 text-sage" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label htmlFor="tz-select" className="text-sm font-medium text-ink block mb-1">Timezone</label>
+                      <p className="text-xs text-ink/50 mb-3">
+                        Controls the calendar day used to evaluate your schedule. Defaults to your browser's detected timezone.
+                      </p>
+
+                      <select
+                        id="tz-select"
+                        value={settings.timezone}
+                        onChange={e => updateSettings({ timezone: e.target.value })}
+                        className="w-full py-2.5 px-3 bg-paper border border-border-soft rounded-lg text-sm text-ink focus:outline-none focus:border-sage transition-colors"
+                      >
+                        {TIMEZONE_REGIONS.map(region => (
+                          <optgroup key={region} label={region}>
+                            {TIMEZONE_LIST
+                              .filter(t => t.region === region)
+                              .map(t => (
+                                <option key={t.value} value={t.value}>{t.label}</option>
+                              ))
+                            }
+                          </optgroup>
+                        ))}
+                      </select>
+
+                      {nowInTz && (
+                        <p className="mt-2.5 text-xs text-ink/40 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-sage inline-block" />
+                          Now: {nowInTz}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </section>

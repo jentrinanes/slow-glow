@@ -38,6 +38,16 @@ const STEP_TYPE_CATEGORIES: Record<string, string[]> = {
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
+function getTodayInTimezone(tz: string): Date {
+  try {
+    const str = new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date())
+    const [y, m, d] = str.split('-').map(Number)
+    return new Date(y, m - 1, d)
+  } catch {
+    return new Date()
+  }
+}
+
 function getDayOfYear(d: Date): number {
   const start = new Date(d.getFullYear(), 0, 0)
   return Math.floor((d.getTime() - start.getTime()) / 86400000)
@@ -50,9 +60,16 @@ function getActiveFrequency(step: RoutineStep, today: Date): StepFrequency {
   return weeksElapsed < step.introWeeks ? step.introFrequency : step.frequency
 }
 
+function parseLocalDate(iso: string): Date {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
 function hasStarted(step: RoutineStep, today: Date): boolean {
   if (!step.scheduledStartDate) return true
-  return today >= new Date(step.scheduledStartDate)
+  const start = parseLocalDate(step.scheduledStartDate)
+  const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  return todayDate >= start
 }
 
 function isScheduledToday(step: RoutineStep, today: Date): boolean {
@@ -60,7 +77,15 @@ function isScheduledToday(step: RoutineStep, today: Date): boolean {
   const freq = getActiveFrequency(step, today)
   switch (freq) {
     case 'daily': return true
-    case 'every-other-day': return getDayOfYear(today) % 2 === 0
+    case 'every-other-day': {
+      if (step.scheduledStartDate) {
+        const start = parseLocalDate(step.scheduledStartDate)
+        const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        const daysSinceStart = Math.floor((todayDate.getTime() - start.getTime()) / 86400000)
+        return daysSinceStart % 2 === 0
+      }
+      return getDayOfYear(today) % 2 === 0
+    }
     case '1x-week':
     case '2x-week':
     case '3x-week':
@@ -114,7 +139,6 @@ interface StepSlideOverProps {
 }
 
 function StepSlideOver({ open, onClose, period, products, onAdd, onUpdate, editingStep, nextOrder }: StepSlideOverProps) {
-  const today = new Date().toISOString().slice(0, 10)
   const isEdit = !!editingStep
 
   const buildInitial = () => {
@@ -346,7 +370,6 @@ function StepSlideOver({ open, onClose, period, products, onAdd, onUpdate, editi
               <input
                 type="date"
                 value={form.scheduledStartDate}
-                min={today}
                 onChange={e => set('scheduledStartDate', e.target.value)}
                 className="w-full px-4 py-2.5 rounded-lg border border-border-soft text-sm text-ink bg-white focus:outline-none focus:border-sage focus:ring-1 focus:ring-sage"
               />
@@ -538,12 +561,12 @@ function StepList({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function RoutineSchedulerPage() {
-  const { routineSteps, addRoutineStep, updateRoutineStep, deleteRoutineStep, setRoutineStepOrder, products } = useApp()
+  const { routineSteps, addRoutineStep, updateRoutineStep, deleteRoutineStep, setRoutineStepOrder, products, settings } = useApp()
   const [slideOver, setSlideOver] = useState<'AM' | 'PM' | null>(null)
   const [editingStep, setEditingStep] = useState<RoutineStep | null>(null)
 
   const closeSlideOver = () => { setSlideOver(null); setEditingStep(null) }
-  const today = new Date()
+  const today = getTodayInTimezone(settings.timezone)
 
   const amSteps = [...routineSteps].filter(s => s.period === 'AM').sort((a, b) => a.order - b.order)
   const pmSteps = [...routineSteps].filter(s => s.period === 'PM').sort((a, b) => a.order - b.order)

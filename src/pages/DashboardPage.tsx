@@ -9,20 +9,45 @@ import type { RoutineStep, Product } from '../types'
 
 // ─── Schedule helpers ─────────────────────────────────────────────────────────
 
+function getTodayInTimezone(tz: string): Date {
+  try {
+    const str = new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date())
+    const [y, m, d] = str.split('-').map(Number)
+    return new Date(y, m - 1, d)
+  } catch {
+    return new Date()
+  }
+}
+
 function getDayOfYear(d: Date): number {
   return Math.floor((d.getTime() - new Date(d.getFullYear(), 0, 0).getTime()) / 86400000)
 }
 
+function parseLocalDate(iso: string): Date {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
 function hasStarted(step: RoutineStep, today: Date): boolean {
   if (!step.scheduledStartDate) return true
-  return today >= new Date(step.scheduledStartDate)
+  const start = parseLocalDate(step.scheduledStartDate)
+  const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  return todayDate >= start
 }
 
 function isOnToday(step: RoutineStep, today: Date): boolean {
   if (!hasStarted(step, today)) return false
   const freq = step.frequency ?? 'daily'
   if (freq === 'daily') return true
-  if (freq === 'every-other-day') return getDayOfYear(today) % 2 === 0
+  if (freq === 'every-other-day') {
+    if (step.scheduledStartDate) {
+      const start = parseLocalDate(step.scheduledStartDate)
+      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      const daysSinceStart = Math.floor((todayDate.getTime() - start.getTime()) / 86400000)
+      return daysSinceStart % 2 === 0
+    }
+    return getDayOfYear(today) % 2 === 0
+  }
   if (freq === '1x-week' || freq === '2x-week' || freq === '3x-week')
     return (step.scheduleDays ?? []).includes(today.getDay())
   return true
@@ -187,7 +212,7 @@ function RoutineStepCard({ step, today, checked, onToggle }: {
       {!started && step.scheduledStartDate && (
         <span className="px-2 py-0.5 rounded text-[10px] font-medium mt-1 shrink-0 bg-terracotta/10 text-terracotta flex items-center gap-1">
           <CalendarClock className="w-2.5 h-2.5" />
-          {new Date(step.scheduledStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+          {parseLocalDate(step.scheduledStartDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
         </span>
       )}
     </label>
@@ -208,8 +233,8 @@ const progressionData = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const { routineSteps, products, reactionEntries } = useApp()
-  const today = new Date()
+  const { routineSteps, products, reactionEntries, settings } = useApp()
+  const today = getTodayInTimezone(settings.timezone)
 
   const [amChecked, setAmChecked] = useState<Record<string, boolean>>({})
   const [pmChecked, setPmChecked] = useState<Record<string, boolean>>({})
