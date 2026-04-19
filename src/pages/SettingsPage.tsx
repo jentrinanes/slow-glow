@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { X, Plus, Info, FileOutput, Trash2, ChevronRight, Globe } from 'lucide-react'
+import { X, Plus, Info, FileOutput, Trash2, ChevronRight, Globe, FlaskConical } from 'lucide-react'
 import Sidebar from '../components/Sidebar'
 import { useApp } from '../context/AppContext'
 import type { UserSettings } from '../types'
@@ -79,10 +79,11 @@ function Toggle({ id, checked, onChange }: { id: string; checked: boolean; onCha
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
-  const { settings, updateSettings } = useApp()
+  const { settings, updateSettings, products, routineSteps } = useApp()
 
   const [addingTag, setAddingTag] = useState(false)
   const [newSensitivity, setNewSensitivity] = useState('')
+  const [newActive, setNewActive] = useState('')
 
   const nowInTz = useMemo(() => formatNowInTz(settings.timezone), [settings.timezone])
 
@@ -335,6 +336,128 @@ export default function SettingsPage() {
                         </p>
                       )}
                     </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Tracked Actives */}
+              <section
+                className="bg-white rounded-2xl border border-border-soft overflow-hidden"
+                style={{ boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)' }}
+              >
+                <div className="p-6 border-b border-border-soft bg-cream">
+                  <div className="flex items-center gap-2 mb-1">
+                    <FlaskConical className="w-4 h-4 text-sage" />
+                    <h3 className="text-lg font-bold text-ink font-serif">Tracked Actives</h3>
+                  </div>
+                  <p className="text-xs text-ink/50 mt-1">
+                    Ingredients listed here appear as tabs in the Progression Tracker with tolerance data and timelines. Niacinamide and peptides are actives but don't thin the barrier — only add those you want to monitor closely.
+                  </p>
+                </div>
+
+                <div className="p-6 space-y-5">
+                  {/* Currently tracked */}
+                  <div>
+                    <label className="block text-xs font-bold text-ink/40 uppercase tracking-wider mb-3">Currently Tracked</label>
+                    {settings.trackedActives.length === 0 ? (
+                      <p className="text-xs text-ink/30 italic">No actives tracked yet.</p>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {settings.trackedActives.map(a => (
+                          <span key={a} className="flex items-center gap-1.5 px-3 py-1.5 bg-sage/10 border border-sage/20 text-sage text-sm font-medium rounded-full">
+                            {a}
+                            <button
+                              onClick={() => updateSettings({ trackedActives: settings.trackedActives.filter(x => x !== a) })}
+                              className="text-sage/60 hover:text-terracotta transition-colors"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Suggestions from inventory */}
+                  {(() => {
+                    const fromProducts = products.flatMap(p => p.activeIngredients)
+                    const fromSteps = routineSteps.flatMap(s =>
+                      s.activeIngredient ? s.activeIngredient.split(',').map(x => x.trim()).filter(Boolean) : []
+                    )
+                    const suggestions = [...new Set([...fromProducts, ...fromSteps])]
+                      .filter(i => i && !settings.trackedActives.some(t => t.toLowerCase() === i.toLowerCase()))
+                    if (suggestions.length === 0) return null
+                    return (
+                      <div>
+                        <label className="block text-xs font-bold text-ink/40 uppercase tracking-wider mb-3">From Your Inventory</label>
+                        <div className="flex flex-wrap gap-2">
+                          {suggestions.map(s => (
+                            <button
+                              key={s}
+                              onClick={() => updateSettings({ trackedActives: [...settings.trackedActives, s] })}
+                              className="px-3 py-1.5 bg-paper border border-border-soft text-ink/50 text-sm font-medium rounded-full hover:border-sage/40 hover:text-sage transition-colors flex items-center gap-1"
+                            >
+                              <Plus className="w-3 h-3" /> {s}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })()}
+
+                  {/* Common presets */}
+                  {(() => {
+                    const PRESETS = ['Retinol', 'Tretinoin', 'Vitamin C', 'Glycolic Acid', 'Salicylic Acid', 'Lactic Acid', 'Mandelic Acid', 'TXA', 'Azelaic Acid', 'Benzoyl Peroxide', 'Bakuchiol', 'Kojic Acid', 'Alpha Arbutin', 'Niacinamide', 'Peptides']
+                    const untracked = PRESETS.filter(p => !settings.trackedActives.some(t => t.toLowerCase() === p.toLowerCase()))
+                    if (untracked.length === 0) return null
+                    return (
+                      <div>
+                        <label className="block text-xs font-bold text-ink/40 uppercase tracking-wider mb-3">Common Actives</label>
+                        <div className="flex flex-wrap gap-2">
+                          {untracked.map(p => (
+                            <button
+                              key={p}
+                              onClick={() => updateSettings({ trackedActives: [...settings.trackedActives, p] })}
+                              className="px-3 py-1.5 bg-paper border border-dashed border-border-soft text-ink/40 text-sm rounded-full hover:border-sage/40 hover:text-sage transition-colors flex items-center gap-1"
+                            >
+                              <Plus className="w-3 h-3" /> {p}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })()}
+
+                  {/* Add custom */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <input
+                      type="text"
+                      value={newActive}
+                      onChange={e => setNewActive(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          const t = newActive.trim()
+                          if (t && !settings.trackedActives.some(x => x.toLowerCase() === t.toLowerCase())) {
+                            updateSettings({ trackedActives: [...settings.trackedActives, t] })
+                          }
+                          setNewActive('')
+                        }
+                      }}
+                      placeholder="Add custom ingredient…"
+                      className="flex-1 border-0 border-b border-border-soft bg-transparent text-sm text-ink focus:outline-none focus:border-sage py-1 placeholder-ink/30"
+                    />
+                    <button
+                      onClick={() => {
+                        const t = newActive.trim()
+                        if (t && !settings.trackedActives.some(x => x.toLowerCase() === t.toLowerCase())) {
+                          updateSettings({ trackedActives: [...settings.trackedActives, t] })
+                        }
+                        setNewActive('')
+                      }}
+                      className="px-3 py-1 bg-sage text-white text-xs font-bold rounded-lg hover:bg-ink transition-colors"
+                    >
+                      Add
+                    </button>
                   </div>
                 </div>
               </section>

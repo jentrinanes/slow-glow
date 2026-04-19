@@ -102,6 +102,7 @@ export interface UserSettings {
   notifMilestones: boolean
   notifCheckin: boolean
   timezone: string
+  trackedActives: string[]
 }
 
 export interface UserData {

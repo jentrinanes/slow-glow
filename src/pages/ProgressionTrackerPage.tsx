@@ -79,6 +79,7 @@ function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
 
 export default function ProgressionTrackerPage() {
   const { routineSteps, reactionEntries, products, settings } = useApp()
+  const trackedActives = settings.trackedActives
 
   const todayStr = getTodayInTimezone(settings.timezone)
   const todayDate = parseLocalDate(todayStr)
@@ -88,19 +89,16 @@ export default function ProgressionTrackerPage() {
   const [reminderTonight, setReminderTonight] = useState(true)
   const [reminderMilestone, setReminderMilestone] = useState(true)
 
-  // ── Derive unique active ingredient tabs from routine steps ────────────────
+  // ── Derive tabs: tracked actives that appear in any active routine step ────
   const ingredientTabs = useMemo(() => {
-    const seen = new Set<string>()
-    const result: string[] = []
-    routineSteps.forEach(s => {
-      if (!s.isActive || !s.activeIngredient) return
-      s.activeIngredient.split(',').map(a => a.trim()).filter(Boolean).forEach(raw => {
-        const label = classifyIngredient(raw)
-        if (!seen.has(label)) { seen.add(label); result.push(label) }
-      })
-    })
-    return result
-  }, [routineSteps])
+    const stepIngredients = routineSteps
+      .filter(s => s.isActive && s.activeIngredient)
+      .flatMap(s => s.activeIngredient.split(',').map(a => a.trim().toLowerCase()))
+
+    return trackedActives.filter(ta =>
+      stepIngredients.some(si => si.includes(ta.toLowerCase()) || ta.toLowerCase().includes(si))
+    )
+  }, [routineSteps, trackedActives])
 
   useEffect(() => {
     if (ingredientTabs.length > 0 && !ingredientTabs.includes(activeTab)) {
@@ -112,7 +110,8 @@ export default function ProgressionTrackerPage() {
   const selectedSteps = useMemo(() =>
     routineSteps.filter(s => {
       if (!s.isActive || !s.activeIngredient) return false
-      return s.activeIngredient.split(',').map(a => classifyIngredient(a.trim())).includes(activeTab)
+      const stepIngs = s.activeIngredient.split(',').map(a => a.trim().toLowerCase())
+      return stepIngs.some(si => si.includes(activeTab.toLowerCase()) || activeTab.toLowerCase().includes(si))
     }),
     [routineSteps, activeTab]
   )
@@ -259,7 +258,7 @@ export default function ProgressionTrackerPage() {
               </div>
               <h2 className="text-lg font-bold text-ink mb-2">No active ingredients tracked yet</h2>
               <p className="text-sm text-ink/40 max-w-sm leading-relaxed">
-                Add routine steps with active ingredients in the Routine Scheduler to start tracking your introduction progress here.
+                Add routine steps with active ingredients, then make sure those ingredients are listed under <strong>Tracked Actives</strong> in Settings.
               </p>
             </div>
           ) : (

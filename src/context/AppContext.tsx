@@ -20,6 +20,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   notifMilestones: true,
   notifCheckin: false,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  trackedActives: ['Retinol', 'Tretinoin', 'Vitamin C', 'Glycolic Acid', 'Salicylic Acid', 'Lactic Acid', 'TXA', 'Azelaic Acid', 'Benzoyl Peroxide'],
 }
 
 const EMPTY_DATA: UserData = {
