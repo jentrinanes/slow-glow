@@ -417,13 +417,22 @@ function StepSlideOver({ open, onClose, period, products, onAdd, onUpdate, editi
 
 // ─── Step list ────────────────────────────────────────────────────────────────
 
+function resolveProductName(step: RoutineStep, products: Product[]): string {
+  if (step.productId) {
+    const p = products.find(x => x.id === step.productId)
+    if (p) return p.brand ? `${p.name} — ${p.brand}` : p.name
+  }
+  return step.productName
+}
+
 function StepList({
-  steps, accent, today,
+  steps, accent, today, products,
   onDragStart, onDragOver, onDragEnd, onRemove, onEdit,
 }: {
   steps: RoutineStep[]
   accent: 'am' | 'pm'
   today: Date
+  products: Product[]
   onDragStart: (i: number) => void
   onDragOver: (e: React.DragEvent, i: number) => void
   onDragEnd: () => void
@@ -500,20 +509,11 @@ function StepList({
                 <Icon className={`w-4 h-4 ${step.isActive ? 'text-sage' : 'text-ink/30'}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
                   <span className={`text-xs font-bold ${accent === 'am' ? 'text-sage' : 'text-ink/40'}`}>
                     Step {i + 1}
                   </span>
                   <span className="text-sm font-semibold text-ink">{step.stepType}</span>
-                  {step.isActive && (
-                    step.activeIngredient
-                      ? step.activeIngredient.split(',').map(a => a.trim()).filter(Boolean).map(ing => (
-                          <span key={ing} className="text-[10px] font-bold px-1.5 py-0.5 bg-sage/20 text-sage rounded uppercase tracking-wide">
-                            {ing}
-                          </span>
-                        ))
-                      : <span className="text-[10px] font-bold px-1.5 py-0.5 bg-sage/20 text-sage rounded uppercase tracking-wide">Active</span>
-                  )}
                   {!started && step.scheduledStartDate && (
                     <span className="text-[10px] font-medium px-1.5 py-0.5 bg-terracotta/10 text-terracotta rounded border border-terracotta/20">
                       Starts {formatStartDate(step.scheduledStartDate)}
@@ -525,21 +525,33 @@ function StepList({
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2 mt-0.5">
-                  {step.productName && (
-                    <p className="text-xs text-ink/40 truncate">{step.productName}</p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                  {freqLabel && (
-                    <span className="text-[10px] text-ink/40 font-medium">
-                      {inIntro ? `Intro: ${freqLabel}` : freqLabel}
-                    </span>
-                  )}
-                  {step.notes && (
-                    <p className="text-xs text-ink/30 truncate italic">{step.notes}</p>
-                  )}
-                </div>
+                {resolveProductName(step, products) && (
+                  <p className="text-xs text-ink/40 leading-snug mt-0.5">{resolveProductName(step, products)}</p>
+                )}
+                {step.isActive && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {step.activeIngredient
+                      ? step.activeIngredient.split(',').map(a => a.trim()).filter(Boolean).map(ing => (
+                          <span key={ing} className="text-[10px] font-bold px-1.5 py-0.5 bg-sage/20 text-sage rounded uppercase tracking-wide">
+                            {ing}
+                          </span>
+                        ))
+                      : <span className="text-[10px] font-bold px-1.5 py-0.5 bg-sage/20 text-sage rounded uppercase tracking-wide">Active</span>
+                    }
+                  </div>
+                )}
+                {(freqLabel || step.notes) && (
+                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                    {freqLabel && (
+                      <span className="text-[10px] text-ink/40 font-medium">
+                        {inIntro ? `Intro: ${freqLabel}` : freqLabel}
+                      </span>
+                    )}
+                    {step.notes && (
+                      <p className="text-xs text-ink/30 leading-snug italic">{step.notes}</p>
+                    )}
+                  </div>
+                )}
               </div>
               <button
                 onClick={e => { e.stopPropagation(); onRemove(step.id) }}
@@ -669,6 +681,7 @@ export default function RoutineSchedulerPage() {
                   steps={amSteps}
                   accent="am"
                   today={today}
+                  products={products}
                   onDragStart={i => onDragStart('AM', i)}
                   onDragOver={(e, i) => onDragOver(e, 'AM', i)}
                   onDragEnd={onDragEnd}
@@ -699,6 +712,7 @@ export default function RoutineSchedulerPage() {
                   steps={pmSteps}
                   accent="pm"
                   today={today}
+                  products={products}
                   onDragStart={i => onDragStart('PM', i)}
                   onDragOver={(e, i) => onDragOver(e, 'PM', i)}
                   onDragEnd={onDragEnd}

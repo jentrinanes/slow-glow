@@ -159,14 +159,24 @@ function computeFocus(steps: RoutineStep[], period: 'AM' | 'PM'): string {
 
 // ─── Routine step card ────────────────────────────────────────────────────────
 
-function RoutineStepCard({ step, today, checked, onToggle }: {
+function resolveProductName(step: RoutineStep, products: Product[]): string {
+  if (step.productId) {
+    const p = products.find(x => x.id === step.productId)
+    if (p) return p.brand ? `${p.name} — ${p.brand}` : p.name
+  }
+  return step.productName
+}
+
+function RoutineStepCard({ step, today, checked, onToggle, products }: {
   step: RoutineStep
   today: Date
   checked: boolean
   onToggle: () => void
+  products: Product[]
 }) {
   const onToday = isOnToday(step, today)
   const started = hasStarted(step, today)
+  const productName = resolveProductName(step, products)
 
   return (
     <label
@@ -192,8 +202,8 @@ function RoutineStepCard({ step, today, checked, onToggle }: {
         <p className={`text-sm font-medium transition-colors ${checked ? 'text-ink/40 line-through' : 'text-ink group-hover:text-sage'}`}>
           {step.stepType}
         </p>
-        {step.productName && (
-          <p className="text-xs text-ink/40 mt-0.5 leading-snug">{step.productName}</p>
+        {productName && (
+          <p className="text-xs text-ink/40 mt-0.5 leading-snug">{productName}</p>
         )}
         {step.isActive && started && (
           <div className="mt-1.5 flex flex-wrap gap-1">
@@ -386,6 +396,7 @@ export default function DashboardPage() {
                         today={today}
                         checked={isChecked(step.id)}
                         onToggle={() => toggle(step.id)}
+                        products={products}
                       />
                     ))}
                   </div>
@@ -416,6 +427,7 @@ export default function DashboardPage() {
                         today={today}
                         checked={isChecked(step.id)}
                         onToggle={() => toggle(step.id)}
+                        products={products}
                       />
                     ))}
                   </div>
